@@ -1,5 +1,5 @@
-import GameController
-game = GameController.GameController()
+from GameController import GameController
+game = GameController()
 
 game.on('challenge', game.acceptChallenge)
 game.on('gameStart', game.streamGame)
