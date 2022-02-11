@@ -82,3 +82,6 @@ class Board:
         self.nextMoveNumber = fen[5]
 
         self.board = board
+
+    def generatePossibleMoves(self):
+        pass
