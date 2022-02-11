@@ -8,46 +8,77 @@ from Pieces.King import King
 
 class Board:
 
-    def __init__(self, fen):
-        self.board = self.generateBoardArrayWithFen(fen)
-
-    def generateBoardArrayWithFen(self, fen):
+    def __init__(self, fen, whitesMove=True):
         board = []
-        for char in fen:
-            # checking for black pieces with fen code
-            if char == 'p':
-                board.append(Pawn(False))
-            elif char == 'b':
-                board.append(Bishop(False))
-            elif char == 'n':
-                board.append(Knight(False))
-            elif char == 'r':
-                board.append(Rook(False))
-            elif char == 'q':
-                board.append(Queen(False))
-            elif char == 'k':
-                board.append(King(False))
-            
-            # checking for white pieces with fen code
-            elif char == 'P':
-                board.append(Pawn(True))
-            elif char == 'B':
-                board.append(Bishop(True))
-            elif char == 'N':
-                board.append(Knight(True))
-            elif char == 'R':
-                board.append(Rook(True))
+        row = 0
+
+        fen = fen.split()
+        
+        positionFenByRow = fen[0].split("/")
+
+        for rowFen in positionFenByRow:
+            board.append([])
+            for char in rowFen:
+                # checking for black pieces with fen code
+                if char == 'p':
+                    board[row].append(Pawn(False))
+                elif char == 'b':
+                    board[row].append(Bishop(False))
+                elif char == 'n':
+                    board[row].append(Knight(False))
+                elif char == 'r':
+                    board[row].append(Rook(False))
+                elif char == 'q':
+                    board[row].append(Queen(False))
+                elif char == 'k':
+                    board[row].append(King(False))
+                
+                # checking for white pieces with fen code
+                elif char == 'P':
+                    board[row].append(Pawn(True))
+                elif char == 'B':
+                    board[row].append(Bishop(True))
+                elif char == 'N':
+                    board[row].append(Knight(True))
+                elif char == 'R':
+                    board[row].append(Rook(True))
+                elif char == 'Q':
+                    board[row].append(Queen(True))
+                elif char == 'K':
+                    board[row].append(King(True))
+                
+                # checking for numbers to move n pieces further
+                elif char.isdigit():
+                    for i in range(0, int(char)):
+                        board[row].append(EmptyField())
+            row += 1
+        
+        if fen[1] == 'w':
+            self.whitesMove = True
+        else:
+            self.whitesMove = False
+
+        for char in fen[2]:
+            self.whiteCastle = {}
+            self.blackCastle = {}
+
+            self.whiteCastle['KingSide'] = False
+            self.whiteCastle['QueenSide'] = False
+
+            self.blackCastle['KingSide'] = False
+            self.blackCastle['QueenSide'] = False
+
+            if char == 'K':
+                self.whiteCastle['KingSide'] = True
             elif char == 'Q':
-                board.append(Queen(True))
-            elif char == 'K':
-                board.append(King(True))
-            
-            # checking for numbers to move n pieces further
-            elif char.isdigit():
-                for i in range(0, int(char)):
-                    board.append(EmptyField())
+                self.whiteCastle['QueenSide'] = True
+            elif char == 'k':
+                self.blackCastle['KingSide'] = True
+            elif char == 'q':
+                self.blackCastle['QueenSide'] = True
+        
+        self.enPassantField = fen[3]
+        self.pliesFor50MoveRule = fen[4]
+        self.nextMoveNumber = fen[5]
 
-            elif char == ' ':
-                break
-
-        return board
+        self.board = board
