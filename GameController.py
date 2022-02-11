@@ -20,11 +20,13 @@ class GameController:
                 event = json.loads(line)
                 if event['type'] == 'challenge':
                     challengeId = event['challenge']['id']
-                    self.emit('challenge', challengeId, self.acceptChallenge)
+                    challenger = event['challenge']['challenger']
+                    self.emit('challenge', challengeId, challenger, self.acceptChallenge)
                 elif event['type'] == 'gameStart':
                     gameId = event['game']['gameId']
                     self.color = event['game']['color']
-                    self.emit('gameStart', gameId, self.streamGame)
+                    opponent = event['game']['opponent']
+                    self.emit('gameStart', gameId, opponent, self.streamGame)
 
     def on(self, event, fn):
         if event in self.events.keys():
