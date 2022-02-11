@@ -1,5 +1,5 @@
 class Bishop:
     value = 3
 
-    def __init__():
-        pass
+    def __init__(self, isWhite):
+        self.isWhite = isWhite
