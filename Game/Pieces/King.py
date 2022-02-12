@@ -8,10 +8,9 @@ class King:
         positions = []
         for x in range(currentPosition[0] - 1, currentPosition[0] + 2):
             for y in range(currentPosition[1] - 1, currentPosition[1] + 2):
-                position = [
-                    x,
-                    y
-                ]
+                position = ( x, y )
                 if (position[0] >= 0 and position[1] >= 0 and position[0] <= 7 and position[1] <= 7 and position != currentPosition):
                     positions.append(position)
         return positions
+king = King(True)
+print(king.generatePossiblePositions((3, 4)))
