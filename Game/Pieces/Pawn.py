@@ -7,68 +7,31 @@ class Pawn:
     def generatePossiblePositions(self, currentPosition):
         positions = []
         if self.isWhite:
-            position = [
-                currentPosition[0],
-                currentPosition[1] - 1
-            ]
+            position = ( currentPosition[0], currentPosition[1] - 1 )
             positions.append(position)
 
-            position = [
-                currentPosition[0] - 1,
-                currentPosition[1] - 1,
-                [
-                    'isEnemyPiece',
-                    'isEnPassantField'
-                ]
-            ]
+            position = ( currentPosition[0] - 1, currentPosition[1] - 1, ( 'isEnemyPiece', 'isEnPassantField' ) )
             positions.append(position)
 
-            position = [
-                currentPosition[0] + 1,
-                currentPosition[1] - 1,
-                [
-                    'isEnemyPiece',
-                    'isEnPassantField'
-                ]
-            ]
+            position = ( currentPosition[0] + 1, currentPosition[1] - 1, ( 'isEnemyPiece', 'isEnPassantField' ) )
             positions.append(position)
 
             if currentPosition[1] == 6:
-                position = [
-                    currentPosition[0],
-                    currentPosition[1] - 2
-                ]
+                position = ( currentPosition[0],  currentPosition[1] - 2 )
                 positions.append(position)
         else:
-            position = [
-                currentPosition[0],
-                currentPosition[1] + 1
-            ]
+            position = ( currentPosition[0], currentPosition[1] + 1 )
             positions.append(position)
 
-            position = [
-                currentPosition[0] - 1,
-                currentPosition[1] + 1,
-                [
-                    'isEnemyPiece',
-                    'isEnPassantField'
-                ]
-            ]
+            position = ( currentPosition[0] - 1, currentPosition[1] + 1, ( 'isEnemyPiece', 'isEnPassantField') )
             positions.append(position)
 
-            position = [
-                currentPosition[0] + 1,
-                currentPosition[1] + 1,
-                [
-                    'isEnemyPiece',
-                    'isEnPassantField'
-                ]
-            ]
+            position = ( currentPosition[0] + 1, currentPosition[1] + 1, ( 'isEnemyPiece', 'isEnPassantField' ) )
             positions.append(position)
 
             if currentPosition[1] == 1:
-                position = [
-                    currentPosition[0],
-                    currentPosition[1] + 2
-                ]
+                position = ( currentPosition[0], currentPosition[1] + 2 )
                 positions.append(position)
+        return positions
+pawn = Pawn(False)
+print(pawn.generatePossiblePositions((4, 1)))
