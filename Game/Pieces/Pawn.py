@@ -33,5 +33,3 @@ class Pawn:
                 position = ( currentPosition[0], currentPosition[1] + 2 )
                 positions.append(position)
         return positions
-pawn = Pawn(False)
-print(pawn.generatePossiblePositions((4, 1)))
