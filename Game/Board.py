@@ -1,16 +1,26 @@
-from Pieces.EmtpyField import EmptyField
-from Pieces.Pawn import Pawn
-from Pieces.Bishop import Bishop
-from Pieces.Knight import Knight
-from Pieces.Rook import Rook
-from Pieces.Queen import Queen
-from Pieces.King import King
+from .Pieces.EmtpyField import EmptyField
+from .Pieces.Pawn import Pawn
+from .Pieces.Bishop import Bishop
+from .Pieces.Knight import Knight
+from .Pieces.Rook import Rook
+from .Pieces.Queen import Queen
+from .Pieces.King import King
 
 class Board:
 
-    def __init__(self, fen, whitesMove=True):
+    def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         board = []
         row = 0
+        self.columns = {
+            '0': 'a',
+            '1': 'b',
+            '2': 'c',
+            '3': 'd',
+            '4': 'e',
+            '5': 'f',
+            '6': 'g',
+            '7': 'h'
+        }
 
         fen = fen.split()
         
@@ -84,4 +94,33 @@ class Board:
         self.board = board
 
     def generatePossibleMoves(self):
-        pass
+        coordinateMoves = []
+        flattendedBoard = sum(self.board, [])
+        for piece in flattendedBoard:
+            index = flattendedBoard.index(piece)
+            coordinates = self.generateCoordinatesWithIndex(index)
+            newPositions = piece.generatePossiblePositions(coordinates)
+            for newPosition in newPositions:
+                coordinateMoves.append((coordinates, newPosition))
+        coordinateMoves = self.validateMoves(coordinateMoves)
+        moves = self.coordinateMovesIntoUCI(coordinateMoves)
+        return moves
+
+    def validateMoves(self, coordinateMoves):
+        return coordinateMoves
+
+    def generateCoordinatesWithIndex(self, index):
+        x = index % 8
+        y = index // 8
+        return (x, y)
+
+    def coordinateMovesIntoUCI(self, coordinateMoves):
+        moves = []
+        for coordinateMove in coordinateMoves:
+            x1 = self.columns[f"{coordinateMove[0][0]}"]
+            y1 = coordinateMove[0][1]
+            x2 = self.columns[f"{coordinateMove[1][0]}"]
+            y2 = coordinateMove[1][1]
+            move = f"{x1}{y1}{x2}{y2}"
+            moves.append(move)
+        return moves
