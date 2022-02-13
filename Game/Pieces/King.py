@@ -12,5 +12,3 @@ class King:
                 if (position[0] >= 0 and position[1] >= 0 and position[0] <= 7 and position[1] <= 7 and position != currentPosition):
                     positions.append(position)
         return positions
-king = King(True)
-print(king.generatePossiblePositions((3, 4)))
