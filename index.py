@@ -1,10 +1,11 @@
 from GameController import GameController
+from Engine import Engine
 game = GameController()
 
 game.on('challenge', game.acceptChallenge)
 game.on('gameStart', game.streamGame)
 
-# Add a function to the event to move
-# game.on('myMove', move)
+engine = Engine()
+game.on('myMove', engine.move)
 
 game.watch()

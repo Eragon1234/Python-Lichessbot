@@ -1,5 +1,5 @@
-from Bishop import Bishop
-from Rook import Rook
+from .Bishop import Bishop
+from .Rook import Rook
 
 class Queen:
     value = 9
