@@ -27,4 +27,5 @@ class Bishop:
                 positions.append(position)
             
             position = (position[0] - 1, position[1] + 1)
+        positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
         return positions

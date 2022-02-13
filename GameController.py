@@ -41,10 +41,10 @@ class GameController:
                 event(*params)
 
     def move(self, gameId, move):
-        s = f'https://lichess.org/api/bot/game/{gameId}/move/{move}'
-        print(s)
-        r = self.s.post(f'https://lichess.org/api/bot/game/{gameId}/move/{move}')
-        print(r.content)
+        status = 400
+        while status == 400:
+            r = self.s.post(f'https://lichess.org/api/bot/game/{gameId}/move/{move}')
+            status = r.status_code
     
     def acceptChallenge(self, challengeId, *other):
         self.s.post(f'https://lichess.org/api/challenge/{challengeId}/accept')

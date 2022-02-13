@@ -14,4 +14,5 @@ class Rook:
             position = (currentPosition[0], y)
             if position != currentPosition:
                 positions.append(position)
+        positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
         return positions
