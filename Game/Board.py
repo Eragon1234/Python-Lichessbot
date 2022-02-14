@@ -1,3 +1,4 @@
+from ast import Continue
 from .Pieces.EmtpyField import EmptyField
 from .Pieces.Pawn import Pawn
 from .Pieces.Bishop import Bishop
@@ -92,22 +93,25 @@ class Board:
         self.nextMoveNumber = fen[5]
 
         self.board = board
+        self.board.reverse()
 
-    def generatePossibleMoves(self):
+    def generatePossibleMoves(self, forWhite=True):
         coordinateMoves = []
+        colorBoard = []
         flattendedBoard = sum(self.board, [])
+        for row in self.board:
+            colorBoard.append([])
+            for piece in row:
+                colorBoard[-1].append(piece.isWhite)
         for piece in flattendedBoard:
             index = flattendedBoard.index(piece)
             coordinates = self.generateCoordinatesWithIndex(index)
-            newPositions = piece.generatePossiblePositions(coordinates)
-            for newPosition in newPositions:
-                coordinateMoves.append((coordinates, newPosition))
-        coordinateMoves = self.validateMoves(coordinateMoves)
+            if piece.isWhite == forWhite:
+                newPositions = piece.generatePossiblePositions(coordinates, colorBoard)
+                for newPosition in newPositions:
+                    coordinateMoves.append((coordinates, newPosition))
         moves = self.coordinateMovesIntoUCI(coordinateMoves)
         return moves
-
-    def validateMoves(self, coordinateMoves):
-        return coordinateMoves
 
     def generateCoordinatesWithIndex(self, index):
         x = index % 8
@@ -118,9 +122,9 @@ class Board:
         moves = []
         for coordinateMove in coordinateMoves:
             x1 = self.columns[f"{coordinateMove[0][0]}"]
-            y1 = coordinateMove[0][1]
+            y1 = coordinateMove[0][1] + 1
             x2 = self.columns[f"{coordinateMove[1][0]}"]
-            y2 = coordinateMove[1][1]
+            y2 = coordinateMove[1][1] + 1
             move = f"{x1}{y1}{x2}{y2}"
             moves.append(move)
         return moves
