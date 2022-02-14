@@ -4,28 +4,54 @@ class Bishop:
     def __init__(self, isWhite):
         self.isWhite = isWhite
 
-    def generatePossiblePositions(self, currentPosition):
+    def generatePossiblePositions(self, currentPosition, board):
         positions = []
 
-        diagonal1 = (currentPosition[0], currentPosition[1])
-        while (diagonal1[0] != 0 and diagonal1[1] != 0):
-            diagonal1 = (diagonal1[0] - 1, diagonal1[1] - 1)
-
-        diagonal2 = (currentPosition[0], currentPosition[1])
-        while (diagonal2[0] != 0 and diagonal2[1] != 0):
-            diagonal2 = (diagonal2[0] + 1, diagonal2[1] - 1)
-        
-        position = (diagonal1[0], diagonal1[1])
-        while (position[0] != 8 and position[1] != 8 and position[0] != -1 and position[1] != -1):
-            if position != currentPosition:
+        x = currentPosition[0]
+        y = currentPosition[1]
+        while x <= 6 and x >= -1 and y <= 6 and y >= 1:
+            x += 1
+            y += 1
+            position = (x, y)
+            targetFieldIsWhite = board[x][y] == 'white'
+            if targetFieldIsWhite == self.isWhite:
+                break
+            elif targetFieldIsWhite != 'EmptyField':
                 positions.append(position)
-            position = (position[0] + 1, position[1] + 1)
-
-        position = (diagonal2[0], diagonal2[1])
-        while (position[0] != 8 and position[1] != 8 and position[0] != -1 and position[1] != -1):
-            if position != currentPosition:
+            else:
                 positions.append(position)
-            
-            position = (position[0] - 1, position[1] + 1)
+        while x <= 6 and x >= 1 and y <= 6 and y >= 1:
+            x -= 1
+            y -= 1
+            position = (x, y)
+            targetFieldIsWhite = board[x][y] == 'white'
+            if targetFieldIsWhite == self.isWhite:
+                break
+            elif targetFieldIsWhite != 'EmptyField':
+                positions.append(position)
+            else:
+                positions.append(position)
+        while x <= 6 and x >= 1 and y <= 6 and y >= 1:
+            x += 1
+            y -= 1
+            position = (x, y)
+            targetFieldIsWhite = board[x][y] == 'white'
+            if targetFieldIsWhite == self.isWhite:
+                break
+            elif targetFieldIsWhite != 'EmptyField':
+                positions.append(position)
+            else:
+                positions.append(position)
+        while x <= 6 and x >= 1 and y <= 6 and y >= 1:
+            x -= 1
+            y += 1
+            position = (x, y)
+            targetFieldIsWhite = board[x][y] == 'white'
+            if targetFieldIsWhite == self.isWhite:
+                break
+            elif targetFieldIsWhite != 'EmptyField':
+                positions.append(position)
+            else:
+                positions.append(position)
         positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
         return positions

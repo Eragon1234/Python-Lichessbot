@@ -41,10 +41,7 @@ class GameController:
                 event(*params)
 
     def move(self, gameId, move):
-        status = 400
-        while status == 400:
-            r = self.s.post(f'https://lichess.org/api/bot/game/{gameId}/move/{move}')
-            status = r.status_code
+        r = self.s.post(f'https://lichess.org/api/bot/game/{gameId}/move/{move}')
     
     def acceptChallenge(self, challengeId, *other):
         self.s.post(f'https://lichess.org/api/challenge/{challengeId}/accept')
@@ -71,7 +68,7 @@ class GameController:
                         myMove = not myMove
 
                 if myMove:
-                    self.emit('myMove', gameId, moves, self.move)
+                    self.emit('myMove', gameId, self.color, moves, self.move)
                 else:
                     continue
                     
