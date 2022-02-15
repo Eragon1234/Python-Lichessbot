@@ -9,7 +9,12 @@ class Engine:
     def move(self, gameId, color, moves, moveFn):
         forWhite = color == 'white'
         moves = self.board.generatePossibleMoves(forWhite)
-        print(moves)
         move = moves[random.randint(0, (len(moves) - 1))]
         print(move)
+        self.board.move(move)
+        print("moved")
         moveFn(gameId, move)
+
+    def opponentsMove(self, move):
+        print("opponent moved")
+        self.board.move(move)

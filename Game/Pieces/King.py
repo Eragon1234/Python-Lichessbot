@@ -1,8 +1,11 @@
 class King:
     value = float('inf')
+    short = 'k'
 
     def __init__(self, isWhite):
         self.isWhite = isWhite
+        if self.isWhite:
+            self.short = self.short.upper()
 
     def generatePossiblePositions(self, currentPosition, board):
         positions = []

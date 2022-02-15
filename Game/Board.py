@@ -10,8 +10,8 @@ from .Pieces.King import King
 class Board:
 
     def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
-        board = []
-        row = 0
+        self.loadBoardWithFen(fen)
+
         self.columns = {
             '0': 'a',
             '1': 'b',
@@ -22,6 +22,62 @@ class Board:
             '6': 'g',
             '7': 'h'
         }
+
+    def move(self, move):
+        move = self.UCIintoCoordinateMoves(move)
+        movingPiece = self.board[move[0][1]][move[0][0]]
+        self.board[move[0][1]][move[0][0]] = EmptyField()
+        self.board[move[1][1]][move[1][0]] = movingPiece
+
+    def generatePossibleMoves(self, forWhite=True):
+        coordinateMoves = []
+        colorBoard = []
+        flattendedBoard = sum(self.board, [])
+        for row in self.board:
+            colorBoard.append([])
+            for piece in row:
+                colorBoard[-1].append(piece.isWhite)
+        for piece in flattendedBoard:
+            index = flattendedBoard.index(piece)
+            coordinates = self.generateCoordinatesWithIndex(index)
+            if piece.isWhite == forWhite:
+                newPositions = piece.generatePossiblePositions(coordinates, colorBoard)
+                for newPosition in newPositions:
+                    coordinateMoves.append((coordinates, newPosition))
+        moves = self.coordinateMovesIntoUCI(coordinateMoves)
+        return moves
+
+    def generateCoordinatesWithIndex(self, index):
+        x = index % 8
+        y = index // 8
+        return (x, y)
+
+    def coordinateMovesIntoUCI(self, coordinateMoves):
+        moves = []
+        for coordinateMove in coordinateMoves:
+            x1 = self.columns[f"{coordinateMove[0][0]}"]
+            y1 = coordinateMove[0][1] + 1
+            x2 = self.columns[f"{coordinateMove[1][0]}"]
+            y2 = coordinateMove[1][1] + 1
+            move = f"{x1}{y1}{x2}{y2}"
+            moves.append(move)
+        return moves
+    
+    def UCIintoCoordinateMoves(self, UCIMove):
+        coordinateMove = []
+        keys = list(self.columns.keys())
+        values = list(self.columns.values())
+        x1 = values.index(UCIMove[0])
+        y1 = int(UCIMove[1]) - 1
+        x2 = values.index(UCIMove[2])
+        y2 = int(UCIMove[3]) - 1
+        coordinateMove.append((x1, y1))
+        coordinateMove.append((x2, y2))
+        return coordinateMove
+        
+    def loadBoardWithFen(self, fen):
+        board = []
+        row = 0
 
         fen = fen.split()
         
@@ -95,36 +151,9 @@ class Board:
         self.board = board
         self.board.reverse()
 
-    def generatePossibleMoves(self, forWhite=True):
-        coordinateMoves = []
-        colorBoard = []
+    def generateFenForBoard(self):
+        fen = ""
         flattendedBoard = sum(self.board, [])
-        for row in self.board:
-            colorBoard.append([])
-            for piece in row:
-                colorBoard[-1].append(piece.isWhite)
         for piece in flattendedBoard:
-            index = flattendedBoard.index(piece)
-            coordinates = self.generateCoordinatesWithIndex(index)
-            if piece.isWhite == forWhite:
-                newPositions = piece.generatePossiblePositions(coordinates, colorBoard)
-                for newPosition in newPositions:
-                    coordinateMoves.append((coordinates, newPosition))
-        moves = self.coordinateMovesIntoUCI(coordinateMoves)
-        return moves
-
-    def generateCoordinatesWithIndex(self, index):
-        x = index % 8
-        y = index // 8
-        return (x, y)
-
-    def coordinateMovesIntoUCI(self, coordinateMoves):
-        moves = []
-        for coordinateMove in coordinateMoves:
-            x1 = self.columns[f"{coordinateMove[0][0]}"]
-            y1 = coordinateMove[0][1] + 1
-            x2 = self.columns[f"{coordinateMove[1][0]}"]
-            y2 = coordinateMove[1][1] + 1
-            move = f"{x1}{y1}{x2}{y2}"
-            moves.append(move)
-        return moves
+            fen += piece.short
+        return fen
