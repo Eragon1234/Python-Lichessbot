@@ -1,8 +1,11 @@
 class Bishop:
     value = 3
+    short = 'b'
 
     def __init__(self, isWhite):
         self.isWhite = isWhite
+        if self.isWhite:
+            self.short = self.short.upper()
 
     def generatePossiblePositions(self, currentPosition, board):
         positions = []

@@ -7,5 +7,6 @@ game.on('gameStart', game.streamGame)
 
 engine = Engine()
 game.on('myMove', engine.move)
+game.on('opponentsMove', engine.opponentsMove)
 
 game.watch()
