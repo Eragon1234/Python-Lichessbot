@@ -9,10 +9,11 @@ class King:
         for x in range(currentPosition[0] - 1, currentPosition[0] + 2):
             for y in range(currentPosition[1] - 1, currentPosition[1] + 2):
                 position = ( x, y )
-                targetFieldIsWhite = self.isWhite == 'white'
-                if targetFieldIsWhite == self.isWhite:
-                    continue
-                elif position != currentPosition:
-                    positions.append(position)
+                if x >= 0 and y >= 0 and x <= 7 and y <= 7:
+                    targetFieldIsWhite = board[y][x]
+                    if targetFieldIsWhite == self.isWhite:
+                        continue
+                    elif position != currentPosition:
+                        positions.append(position)
         positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
         return positions
