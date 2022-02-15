@@ -8,7 +8,7 @@ class Rook:
         positions = []
         for x in range(currentPosition[0] + 1, 8):
             position = (x, currentPosition[1])
-            targetFieldIsWhite = board[x][currentPosition[1]] == 'white'
+            targetFieldIsWhite = board[currentPosition[1]][x]
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -16,9 +16,9 @@ class Rook:
                 break
             else:
                 positions.append(position)
-        for x in range(currentPosition[0], -1):
+        for x in range(currentPosition[0] - 1, -1):
             position = (x, currentPosition[1])
-            targetFieldIsWhite = board[x][currentPosition[1]] == 'white'
+            targetFieldIsWhite = board[x][currentPosition[1]][x]
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -28,7 +28,7 @@ class Rook:
                 positions.append(position)
         for y in range(currentPosition[1] + 1, 8):
             position = (currentPosition[0], y)
-            targetFieldIsWhite = board[currentPosition[0]][y] == 'white'
+            targetFieldIsWhite = board[y][currentPosition[0]]
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -36,9 +36,9 @@ class Rook:
                 break
             else:
                 positions.append(position)
-        for y in range(currentPosition[1], -1):
+        for y in range(currentPosition[1] - 1, -1):
             position = (currentPosition[0], y)
-            targetFieldIsWhite = board[currentPosition[0]][y] == 'white'
+            targetFieldIsWhite = board[y][currentPosition[0]]
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':

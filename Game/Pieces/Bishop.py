@@ -13,7 +13,7 @@ class Bishop:
             x += 1
             y += 1
             position = (x, y)
-            targetFieldIsWhite = board[x][y] == 'white'
+            targetFieldIsWhite = board[y][x] 
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -24,7 +24,7 @@ class Bishop:
             x -= 1
             y -= 1
             position = (x, y)
-            targetFieldIsWhite = board[x][y] == 'white'
+            targetFieldIsWhite = board[y][x] 
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -35,7 +35,7 @@ class Bishop:
             x += 1
             y -= 1
             position = (x, y)
-            targetFieldIsWhite = board[x][y] == 'white'
+            targetFieldIsWhite = board[y][x]
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -46,7 +46,7 @@ class Bishop:
             x -= 1
             y += 1
             position = (x, y)
-            targetFieldIsWhite = board[x][y] == 'white'
+            targetFieldIsWhite = board[y][x] 
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
