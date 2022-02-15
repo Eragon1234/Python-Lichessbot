@@ -18,7 +18,7 @@ class Pawn:
             targetFieldIsEmpty = board[y][x]
             if targetFieldIsEmpty == 'EmptyField':
                 positions.append(position)
-                y = currentPosition[0] + 2
+                y = currentPosition[1] + 2
                 position = (x, y)
                 if x >= 0 and x <= 7 and y >= 0 and y <= 7:
                     fieldIsEmpty = board[y][x] == 'EmptyField'
