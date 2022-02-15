@@ -10,9 +10,7 @@ class Knight:
         y = currentPosition[1] - 2
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
         
@@ -20,9 +18,7 @@ class Knight:
         y = currentPosition[1] - 2
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
         
@@ -30,9 +26,7 @@ class Knight:
         y = currentPosition[1] + 1
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
 
@@ -40,9 +34,7 @@ class Knight:
         y = currentPosition[1] + 2
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
 
@@ -50,9 +42,7 @@ class Knight:
         y = currentPosition[1] + 2
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
         
@@ -60,9 +50,7 @@ class Knight:
         y = currentPosition[1] + 1
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
 
@@ -70,9 +58,7 @@ class Knight:
         y = currentPosition[1] - 1
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
         
@@ -80,9 +66,7 @@ class Knight:
         y = currentPosition[1] - 1
         if x >= 0 and y >= 0 and x <= 7 and y <= 7:
             position = (x, y)
-            print(position)
             targetFieldIsWhite = board[y][x]
-            print(targetFieldIsWhite)
             if not (targetFieldIsWhite == self.isWhite):
                 positions.append(position)
 
