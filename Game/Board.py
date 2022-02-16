@@ -1,4 +1,3 @@
-from ast import Continue
 from .Pieces.EmtpyField import EmptyField
 from .Pieces.Pawn import Pawn
 from .Pieces.Bishop import Bishop
@@ -8,6 +7,7 @@ from .Pieces.Queen import Queen
 from .Pieces.King import King
 
 class Board:
+    moves = []
 
     def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.loadBoardWithFen(fen)
@@ -24,6 +24,7 @@ class Board:
         }
 
     def move(self, move):
+        self.moves.append(move)
         move = self.UCIintoCoordinateMoves(move)
         movingPiece = self.board[move[0][1]][move[0][0]]
         self.board[move[0][1]][move[0][0]] = EmptyField()

@@ -14,7 +14,9 @@ class Engine:
         self.board.move(move)
         print("moved")
         moveFn(gameId, move)
+        print(self.board.generateFenForBoard())
 
     def opponentsMove(self, move):
         print("opponent moved")
         self.board.move(move)
+        print(self.board.generateFenForBoard())

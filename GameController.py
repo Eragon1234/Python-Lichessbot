@@ -4,6 +4,7 @@ import json
 class GameController:
     token = 'lip_2KigTbBKsXIeBFcnCnWk'
     events = {}
+    moves = []
 
     def __init__(self):
         s = requests.Session()
@@ -69,13 +70,15 @@ class GameController:
                         myMove = not myMove
                     
                 if myMove:
+                    moves = moves.split(" ")
+                    if len(moves) >= 2:
+                        move = moves[len(moves) - 1]
+                        print("opponentsMove")
+                        print(move)
+                        self.emit('opponentsMove', move)
+                        currentPliesCount += 1
+                        print("------------------------------------------------------------------------------------------------")
+                    
                     currentPliesCount += 1
                     print("myMove")
                     self.emit('myMove', gameId, self.color, moves, self.move)
-                else:
-                    move = moves.split(" ")[-1]
-                    print("opponentsMove")
-                    print(move)
-                    self.emit('opponentsMove', move)
-                    currentPliesCount += 1
-                print("------------------------------------------------------------------------------------------------")
