@@ -1,5 +1,6 @@
 from GameController import GameController
 from Engine import Engine
+
 game = GameController()
 
 game.on('challenge', game.acceptChallenge)
