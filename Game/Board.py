@@ -35,12 +35,14 @@ class Board:
         attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), self.generateColorBoard())
         for attackedField in attackedFields:
             attackedPiece = self.board[attackedField[1]][attackedField[0]]
+            print(attackedPiece.isWhite)
             if attackedPiece.isWhite == 'EmptyField':
+                print("EmptyField")
                 continue
             print(attackedPiece.short)
-            if (attackedPiece.short == 'k' or attackedPiece.short == 'K') and (attackedPiece.isWhite != movedPiece.isWhite):
+            if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
                 print("check")
-                break
+                continue
 
     def generatePossibleMoves(self, forWhite=True):
         coordinateMoves = []
