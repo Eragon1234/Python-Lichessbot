@@ -37,10 +37,9 @@ class Board:
             attackedPiece = self.board[attackedField[1]][attackedField[0]]
             if attackedPiece.isWhite == 'EmptyField':
                 continue
-            print(attackedPiece.short)
             if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
                 print("check")
-                continue
+                break
 
     def generatePossibleMoves(self, forWhite=True):
         coordinateMoves = []
