@@ -12,11 +12,11 @@ class Engine:
         move = moves[random.randint(0, (len(moves) - 1))]
         print(move)
         self.board.move(move)
-        print("moved")
         moveFn(gameId, move)
         print(self.board.generateFenForBoard())
+        print("moved")
 
     def opponentsMove(self, move):
-        print("opponent moved")
         self.board.move(move)
         print(self.board.generateFenForBoard())
+        print("opponent moved")

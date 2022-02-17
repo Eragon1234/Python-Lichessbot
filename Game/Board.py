@@ -30,14 +30,22 @@ class Board:
         self.board[move[0][1]][move[0][0]] = EmptyField()
         self.board[move[1][1]][move[1][0]] = movingPiece
 
+        flattendedBoard = sum(self.board, [])
+        movedPiece = self.board[move[1][1]][move[1][0]]
+        attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), self.generateColorBoard())
+        for attackedField in attackedFields:
+            attackedPiece = self.board[attackedField[1]][attackedField[0]]
+            if attackedPiece.isWhite == 'EmptyField':
+                continue
+            print(attackedPiece.short)
+            if (attackedPiece.short == 'k' or attackedPiece.short == 'K') and (attackedPiece.isWhite != movedPiece.isWhite):
+                print("check")
+                break
+
     def generatePossibleMoves(self, forWhite=True):
         coordinateMoves = []
-        colorBoard = []
+        colorBoard = self.generateColorBoard()
         flattendedBoard = sum(self.board, [])
-        for row in self.board:
-            colorBoard.append([])
-            for piece in row:
-                colorBoard[-1].append(piece.isWhite)
         for piece in flattendedBoard:
             index = flattendedBoard.index(piece)
             coordinates = self.generateCoordinatesWithIndex(index)
@@ -53,6 +61,13 @@ class Board:
         y = index // 8
         return (x, y)
 
+    def generateColorBoard(self):
+        colorBoard = []
+        for row in self.board:
+            colorBoard.append([])
+            for piece in row:
+                colorBoard[-1].append(piece.isWhite)
+        return colorBoard
     def coordinateMovesIntoUCI(self, coordinateMoves):
         moves = []
         for coordinateMove in coordinateMoves:
