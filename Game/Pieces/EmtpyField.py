@@ -1,6 +1,7 @@
 class EmptyField:
     isWhite = "EmptyField"
     short = 'e'
+    value = 0
 
     def __init__(self):
         pass

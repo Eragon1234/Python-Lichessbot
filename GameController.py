@@ -49,7 +49,6 @@ class GameController:
     
     def streamGame(self, gameId, *other):
         res = self.s.get(f'https://lichess.org/api/bot/game/stream/{gameId}', stream=True)
-        currentPliesCount = 0
         for line in res.iter_lines():
             if line:
                 event = json.loads(line)
@@ -72,13 +71,11 @@ class GameController:
                 if myMove:
                     moves = moves.split(" ")
                     if len(moves) >= 2:
-                        move = moves[len(moves) - 1]
-                        print("opponentsMove")
-                        print(move)
+                        move = moves[-1]
+                        print("opponents turn")
+                        print("opponent moved:", move)
                         self.emit('opponentsMove', move)
-                        currentPliesCount += 1
                         print("------------------------------------------------------------------------------------------------")
-                    
-                    currentPliesCount += 1
                     print("myMove")
                     self.emit('myMove', gameId, self.color, moves, self.move)
+                    print("------------------------------------------------------------------------------------------------")
