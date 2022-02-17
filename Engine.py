@@ -3,8 +3,8 @@ import random
 
 class Engine:
 
-    def __init__(self):
-        self.board = Board()
+    def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
+        self.board = Board(fen)
 
     def move(self, gameId, color, moves, moveFn):
         forWhite = color == 'white'
