@@ -2,6 +2,9 @@ import requests
 import json
 
 class GameController:
+    """
+    handles the connection to the lichess bot api with an event emmiter
+    """
     # our lichess token for access to the bot api
     token = 'lip_2KigTbBKsXIeBFcnCnWk'
 
@@ -34,10 +37,9 @@ class GameController:
                 if event['type'] == 'challenge':
                     # getting the challengeId and the challenger
                     challengeId = event['challenge']['id']
-                    challenger = event['challenge']['challenger']
 
                     # throwing the challenge event with the challengeId, the challenger and the function to accept the challenge as params
-                    self.emit('challenge', challengeId, challenger, self.acceptChallenge)
+                    self.emit('challenge', challengeId, self.acceptChallenge)
 
                 # checking if the event type is gameStart
                 elif event['type'] == 'gameStart':
@@ -90,7 +92,7 @@ class GameController:
         """
         r = self.s.post(f'https://lichess.org/api/bot/game/{gameId}/move/{move}')
     
-    def acceptChallenge(self, challengeId):
+    def acceptChallenge(self, challengeId, *params):
         """ accepts the challenge with the passed challengeId
 
         Args:
@@ -98,7 +100,7 @@ class GameController:
         """
         self.s.post(f'https://lichess.org/api/challenge/{challengeId}/accept')
     
-    def streamGame(self, gameId):
+    def streamGame(self, gameId, *params):
         """ subscribing to the strem of events for the game with the passed gameId
 
         Args:
@@ -141,7 +143,8 @@ class GameController:
                     # parsing the moves as an array
                     moves = moves.split(" ")
                     # checking if last move is from my opponent
-                    if len(moves) >= 2:
+                    
+                    if len(moves) >= 1 and len(moves[-1]) >= 4:
                         # sending the opponentsMove event with the move as an argument
                         move = moves[-1]
                         print("opponents turn")
