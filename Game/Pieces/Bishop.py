@@ -24,6 +24,8 @@ class Bishop:
                 break
             else:
                 positions.append(position)
+        x = currentPosition[0]
+        y = currentPosition[1]
         while x <= 7 and x >= 1 and y <= 7 and y >= 1:
             x -= 1
             y -= 1
@@ -36,6 +38,8 @@ class Bishop:
                 break
             else:
                 positions.append(position)
+        x = currentPosition[0]
+        y = currentPosition[1]
         while x <= 6 and x >= -1 and y <= 7 and y >= 1:
             x += 1
             y -= 1
@@ -48,6 +52,8 @@ class Bishop:
                 break
             else:
                 positions.append(position)
+        x = currentPosition[0]
+        y = currentPosition[1]
         while x <= 7 and x >= 1 and y <= 6 and y >= -1:
             x -= 1
             y += 1

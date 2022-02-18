@@ -24,6 +24,7 @@ class Board:
         }
 
     def move(self, move):
+        self.check = False
         self.moves.append(move)
         move = self.UCIintoCoordinateMoves(move)
         movingPiece = self.board[move[0][1]][move[0][0]]
@@ -38,8 +39,61 @@ class Board:
             if attackedPiece.isWhite == 'EmptyField':
                 continue
             if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
-                print("check")
+                self.check = True
                 break
+        startField = (move[0][0], move[0][1])
+        queen = Queen(True)
+        possibleOpenedFields = queen.generatePossiblePositions(startField, self.generateColorBoard())
+        for possibleOpenedField in possibleOpenedFields:
+            possibleOpenedPiece = self.board[possibleOpenedField[1]][possibleOpenedField[0]]
+            index = flattendedBoard.index(possibleOpenedPiece)
+            coordinates = self.generateCoordinatesWithIndex(index)
+            attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, self.generateColorBoard())
+            for attackedField in attackedFields:
+                attackedPiece = self.board[attackedField[1]][attackedField[0]]
+                if attackedPiece.isWhite == 'EmptyField':
+                    continue
+                if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
+                    self.check = True
+                    break
+        print("Check:", self.check)
+
+    def testMove(self, move):
+        print("------------------ Test -----------------")
+        check = False
+        move = self.UCIintoCoordinateMoves(move)
+        board = self.board
+        movingPiece = board[move[0][1]][move[0][0]]
+        board[move[0][1]][move[0][0]] = EmptyField()
+        board[move[1][1]][move[1][0]] = movingPiece
+
+        flattendedBoard = sum(board, [])
+        movedPiece = board[move[1][1]][move[1][0]]
+        attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), self.generateColorBoard())
+        for attackedField in attackedFields:
+            attackedPiece = board[attackedField[1]][attackedField[0]]
+            if attackedPiece.isWhite == 'EmptyField':
+                continue
+            if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
+                check = True
+                break
+        startField = (move[0][0], move[0][1])
+        queen = Queen(True)
+        possibleOpenedFields = queen.generatePossiblePositions(startField, self.generateColorBoard())
+        for possibleOpenedField in possibleOpenedFields:
+            possibleOpenedPiece = board[possibleOpenedField[1]][possibleOpenedField[0]]
+            index = flattendedBoard.index(possibleOpenedPiece)
+            coordinates = self.generateCoordinatesWithIndex(index)
+            attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, self.generateColorBoard())
+            for attackedField in attackedFields:
+                attackedPiece = board[attackedField[1]][attackedField[0]]
+                if attackedPiece.isWhite == 'EmptyField':
+                    continue
+                if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
+                    check = True
+                    break
+        print("Check:", check)
+        print("------------------ Test End -----------------")
 
     def generatePossibleMoves(self, forWhite=True):
         coordinateMoves = []
@@ -67,6 +121,7 @@ class Board:
             for piece in row:
                 colorBoard[-1].append(piece.isWhite)
         return colorBoard
+    
     def coordinateMovesIntoUCI(self, coordinateMoves):
         moves = []
         for coordinateMove in coordinateMoves:
