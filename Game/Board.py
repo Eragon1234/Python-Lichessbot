@@ -1,3 +1,6 @@
+from copy import deepcopy
+import random
+
 from .Pieces.EmtpyField import EmptyField
 from .Pieces.Pawn import Pawn
 from .Pieces.Bishop import Bishop
@@ -9,19 +12,21 @@ from .Pieces.King import King
 class Board:
     moves = []
 
+    testBoards = {}
+
+    columns = {
+        '0': 'a',
+        '1': 'b',
+        '2': 'c',
+        '3': 'd',
+        '4': 'e',
+        '5': 'f',
+        '6': 'g',
+        '7': 'h'
+    }
+
     def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.loadBoardWithFen(fen)
-
-        self.columns = {
-            '0': 'a',
-            '1': 'b',
-            '2': 'c',
-            '3': 'd',
-            '4': 'e',
-            '5': 'f',
-            '6': 'g',
-            '7': 'h'
-        }
 
     def move(self, move):
         self.check = False
@@ -60,40 +65,51 @@ class Board:
 
     def testMove(self, move):
         print("------------------ Test -----------------")
-        check = False
         move = self.UCIintoCoordinateMoves(move)
-        board = self.board
-        movingPiece = board[move[0][1]][move[0][0]]
-        board[move[0][1]][move[0][0]] = EmptyField()
-        board[move[1][1]][move[1][0]] = movingPiece
+        board = deepcopy(self)
+        movingPiece = board.board[move[0][1]][move[0][0]]
+        board.board[move[0][1]][move[0][0]] = EmptyField()
+        board.board[move[1][1]][move[1][0]] = movingPiece
+        board.check = False
 
-        flattendedBoard = sum(board, [])
-        movedPiece = board[move[1][1]][move[1][0]]
-        attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), self.generateColorBoard())
+        flattendedBoard = sum(board.board, [])
+        movedPiece = board.board[move[1][1]][move[1][0]]
+        attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), board.generateColorBoard())
         for attackedField in attackedFields:
-            attackedPiece = board[attackedField[1]][attackedField[0]]
+            attackedPiece = board.board[attackedField[1]][attackedField[0]]
             if attackedPiece.isWhite == 'EmptyField':
                 continue
             if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
-                check = True
+                board.check = True
                 break
         startField = (move[0][0], move[0][1])
         queen = Queen(True)
-        possibleOpenedFields = queen.generatePossiblePositions(startField, self.generateColorBoard())
+        possibleOpenedFields = queen.generatePossiblePositions(startField, board.generateColorBoard())
         for possibleOpenedField in possibleOpenedFields:
-            possibleOpenedPiece = board[possibleOpenedField[1]][possibleOpenedField[0]]
+            possibleOpenedPiece = board.board[possibleOpenedField[1]][possibleOpenedField[0]]
             index = flattendedBoard.index(possibleOpenedPiece)
-            coordinates = self.generateCoordinatesWithIndex(index)
-            attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, self.generateColorBoard())
+            coordinates = board.generateCoordinatesWithIndex(index)
+            attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, board.generateColorBoard())
             for attackedField in attackedFields:
-                attackedPiece = board[attackedField[1]][attackedField[0]]
+                attackedPiece = board.board[attackedField[1]][attackedField[0]]
                 if attackedPiece.isWhite == 'EmptyField':
                     continue
                 if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
-                    check = True
+                    board.check = True
                     break
-        print("Check:", check)
+        print("Check:", board.check)
         print("------------------ Test End -----------------")
+
+        boardKey = self.generateRandomString(8)
+        while boardKey in self.testBoards.keys():
+            boardKey = self.generateRandomString(8)
+        
+        self.testBoards[boardKey] = board
+        
+        return boardKey
+
+    def popTestBoard(self, boardKey):
+        return self.testBoards.pop(boardKey)
 
     def generatePossibleMoves(self, forWhite=True):
         coordinateMoves = []
@@ -107,6 +123,12 @@ class Board:
                 for newPosition in newPositions:
                     coordinateMoves.append((coordinates, newPosition))
         moves = self.coordinateMovesIntoUCI(coordinateMoves)
+
+        for move in moves:
+            boardKey = self.testMove(move)
+            if self.testBoards[boardKey].check:
+                moves.remove(move)
+            self.popTestBoard(boardKey)
         return moves
 
     def generateCoordinatesWithIndex(self, index):
@@ -226,4 +248,13 @@ class Board:
         flattendedBoard = sum(self.board, [])
         for piece in flattendedBoard:
             fen += piece.short
+            if flattendedBoard.index(piece) % 7 == 0:
+                fen += "/"
         return fen
+
+    def generateRandomString(self, length):
+        randomString = ''
+        for i in range(0, length):
+            randomInteger = random.randint(0, 255)
+            randomString += chr(randomInteger)
+        return randomString
