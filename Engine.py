@@ -10,7 +10,7 @@ class Engine:
         self.board = Board(fen)
 
     def move(self, gameId, color, moves, moveFn):
-        """ generates the best possible move
+        """ handles the calculations for the best possible moves
 
         Args:
             gameId (string): the id of the game to move in
@@ -20,7 +20,8 @@ class Engine:
         """
         forWhite = color == 'white'
         moves = self.board.generatePossibleMoves(forWhite)
-        move = moves[random.randint(0, (len(moves) - 1))]
+        moves.sort(key = self.getMaterialDifferenceForMove, reverse = forWhite)
+        move = moves[0]
         print(move)
         self.board.move(move)
         moveFn(gameId, move)
@@ -31,3 +32,9 @@ class Engine:
         self.board.move(move)
         print(self.board.generateFenForBoard())
         print("opponent moved")
+
+    def getMaterialDifferenceForMove(self, move):
+        boardKey = self.board.testMove(move)
+        materialDifference = self.board.testBoards[boardKey].calculateMaterialDifference()
+        print(materialDifference)
+        return materialDifference

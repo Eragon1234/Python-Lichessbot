@@ -223,6 +223,23 @@ class Board:
         
         return moves
 
+    def calculateMaterialDifference(self):
+        """ caculates the material difference between white and black
+
+        Returns:
+            int: the material difference
+        """
+        whiteMaterial = 0
+        blackMaterial = 0
+        flattendedBoard = sum(self.board, [])
+        for piece in flattendedBoard:
+            if piece.short.upper() == "K":
+                continue
+            if piece.isWhite:
+                whiteMaterial += piece.value
+            else:
+                blackMaterial += piece.value
+        return whiteMaterial - blackMaterial
     def generateCoordinatesWithIndex(self, index):
         """ calculates the coordinates of a piece on the given index in 1d array with the length 64
 
@@ -279,7 +296,7 @@ class Board:
         Returns:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
-        coordinateMove = ()
+        coordinateMove = []
         keys = list(self.columns.keys())
         values = list(self.columns.values())
         x1 = values.index(UCIMove[0]) # getting the key of the letter in the UCIMove to get the x start coordinate
