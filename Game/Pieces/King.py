@@ -1,5 +1,5 @@
 class King:
-    value = float('inf')
+    value = 999
     short = 'k'
 
     def __init__(self, isWhite):
