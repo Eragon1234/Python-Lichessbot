@@ -109,7 +109,6 @@ class Board:
             string: a key to get the board from the testBoards dictionary
         """
 
-        print("------------------ Test -----------------")
         # converting the UCIMove into a coordinate move
         move = self.UCIintoCoordinateMove(move)
 
@@ -160,8 +159,6 @@ class Board:
                 if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
                     board.check = True
                     break
-        print("Check:", board.check)
-        print("------------------ Test End -----------------")
 
         # generate key for access over testBoards array
         boardKey = self.generateRandomString(8)
@@ -233,8 +230,6 @@ class Board:
         blackMaterial = 0
         flattendedBoard = sum(self.board, [])
         for piece in flattendedBoard:
-            if piece.short.upper() == "K":
-                continue
             if piece.isWhite:
                 whiteMaterial += piece.value
             else:

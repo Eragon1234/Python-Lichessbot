@@ -19,9 +19,8 @@ class Engine:
             moveFn (fn): function to make the move
         """
         forWhite = color == 'white'
-        moves = self.board.generatePossibleMoves(forWhite)
-        moves.sort(key = self.getMaterialDifferenceForMove, reverse = forWhite)
-        move = moves[0]
+        
+        move = self.calculateBestMove(forWhite, 3)[0]
         print(move)
         self.board.move(move)
         moveFn(gameId, move)
@@ -33,8 +32,24 @@ class Engine:
         print(self.board.generateFenForBoard())
         print("opponent moved")
 
-    def getMaterialDifferenceForMove(self, move):
-        boardKey = self.board.testMove(move)
-        materialDifference = self.board.testBoards[boardKey].calculateMaterialDifference()
-        print(materialDifference)
+    def calculateBestMove(self, forWhite, depth, board=False):
+        if not board:
+            board = self.board
+        moves = board.generatePossibleMoves(forWhite)
+        if depth == 0:
+            moves.sort(key = self.getMaterialDifferenceForMove, reverse = forWhite)
+            return (moves[0], self.getMaterialDifferenceForMove(moves[0]))
+        for move in moves:
+            boardKey = board.testMove(move)
+            bestMove = self.calculateBestMove(not forWhite, depth - 1, board.testBoards[boardKey])
+            moves[moves.index(move)] = (moves[moves.index(move)], bestMove[1])
+            self.board.popTestBoard(boardKey)
+        moves.sort(key = lambda x: x[1], reverse = forWhite)
+        return moves[0]
+
+    def getMaterialDifferenceForMove(self, move, board=False):
+        if not board:
+            board = self.board
+        boardKey = board.testMove(move)
+        materialDifference = board.testBoards[boardKey].calculateMaterialDifference()
         return materialDifference
