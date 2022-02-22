@@ -208,7 +208,7 @@ class Board:
             if self.testBoards[boardKey].check:
                 moves.remove(move)
             self.popTestBoard(boardKey)
-        
+        np.random.shuffle(moves)
         return moves
 
     def calculateMaterialDifference(self):

@@ -1,5 +1,6 @@
 from Game.Board import Board
 import random
+import numpy as np
 
 class Engine:
     """
@@ -30,7 +31,6 @@ class Engine:
 
     def opponentsMove(self, move):
         self.board.move(move)
-        print(self.board.generateFenForBoard())
         print("opponent moved")
 
     def calculateBestMove(self, forWhite, depth, board=False):
@@ -45,7 +45,9 @@ class Engine:
             bestMove = self.calculateBestMove(not forWhite, depth - 1, board.testBoards[boardKey])
             moves[moves.index(move)] = (moves[moves.index(move)], bestMove[1])
             self.board.popTestBoard(boardKey)
+        np.random.shuffle(moves)
         moves.sort(key = lambda x: x[1], reverse = forWhite)
+        print(moves)
         return moves[0]
 
     def getMaterialDifferenceForMove(self, move, board=False):
