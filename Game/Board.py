@@ -217,15 +217,11 @@ class Board:
         Returns:
             int: the material difference
         """
-        whiteMaterial = 0
-        blackMaterial = 0
+        materialDifference = 0
         
         for piece in list(self.board.flat):
-            if piece.isWhite:
-                whiteMaterial += piece.value
-            else:
-                blackMaterial += piece.value
-        return whiteMaterial - blackMaterial
+            materialDifference += piece.value
+        return materialDifference
     def generateCoordinatesWithIndex(self, index):
         """ calculates the coordinates of a piece on the given index in 1d array with the length 64
 
