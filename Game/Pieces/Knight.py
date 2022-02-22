@@ -1,5 +1,5 @@
 class Knight:
-    value = 3
+    value = 30
     short = 'n'
 
     def __init__(self, isWhite):

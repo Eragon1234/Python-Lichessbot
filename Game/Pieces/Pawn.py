@@ -1,5 +1,5 @@
 class Pawn:
-    value = 1
+    value = 10
     short = 'p'
 
     def __init__(self, isWhite):

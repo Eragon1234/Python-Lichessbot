@@ -1,5 +1,8 @@
-from timeit import Timer
+import os
+import sys
+sys.path.append(os.getcwd())
 
+from timeit import Timer
 from Engine import Engine
 
 engine = Engine()
