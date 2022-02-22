@@ -1,8 +1,12 @@
-from .Bishop import Bishop
-from .Rook import Rook
+import os
+import sys
+sys.path.append(os.getcwd())
+
+from Game.Pieces.Bishop import Bishop
+from Game.Pieces.Rook import Rook
 
 class Queen:
-    value = 9
+    value = 90
     short = 'q'
 
     def __init__(self, isWhite):

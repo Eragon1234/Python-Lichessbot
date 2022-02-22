@@ -1,5 +1,5 @@
 class Rook:
-    value = 5
+    value = 50
     short = 'r'
 
     def __init__(self, isWhite):
