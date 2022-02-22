@@ -1,3 +1,4 @@
+import numpy as np
 from copy import deepcopy
 import random
 
@@ -33,12 +34,6 @@ class Board:
     }
 
     def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
-        """ creates a board with the pieces structured in a 2d array
-
-        Args:
-            fen (str): the string for the positions the board should represent. Defaults to 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'.
-        """
-
         # loads the board with the given fen
         self.loadBoardWithFen(fen)
 
@@ -56,14 +51,11 @@ class Board:
         # converting the UCIMove into a coordinate move
         move = self.UCIintoCoordinateMove(move)
         # getting the moving piece
-        movingPiece = self.board[move[0][1]][move[0][0]]
+        movingPiece = self.board[move[0][1], move[0][0]]
         # emptying the startField
-        self.board[move[0][1]][move[0][0]] = EmptyField()
+        self.board[move[0][1], move[0][0]] = EmptyField()
         # setting the targetField to the movingPiece
-        self.board[move[1][1]][move[1][0]] = movingPiece
-        
-        # flattening the board
-        flattendedBoard = sum(self.board, [])
+        self.board[move[1][1], move[1][0]] = movingPiece
 
         # getting the moved piece
         movedPiece = self.board[move[1][1]][move[1][0]]
@@ -71,7 +63,7 @@ class Board:
         attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), self.generateColorBoard())
         # checking for every attacking piece if it is attacking the opponents king
         for attackedField in attackedFields:
-            attackedPiece = self.board[attackedField[1]][attackedField[0]]
+            attackedPiece = self.board[attackedField[1], attackedField[0]]
             if attackedPiece.isWhite == 'EmptyField':
                 continue
             if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
@@ -86,12 +78,13 @@ class Board:
         possibleOpenedFields = queen.generatePossiblePositions(startField, self.generateColorBoard())
         # checking if one of the possible opened fields checked the king
         for possibleOpenedField in possibleOpenedFields:
-            possibleOpenedPiece = self.board[possibleOpenedField[1]][possibleOpenedField[0]]
-            index = flattendedBoard.index(possibleOpenedPiece)
-            coordinates = self.generateCoordinatesWithIndex(index)
+            possibleOpenedPiece = self.board[possibleOpenedField[1], possibleOpenedField[0]]
+            coordinates = np.where(self.board == possibleOpenedPiece)
+            coordinates = (coordinates[1][0], coordinates[0][0])
+
             attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, self.generateColorBoard())
             for attackedField in attackedFields:
-                attackedPiece = self.board[attackedField[1]][attackedField[0]]
+                attackedPiece = self.board[attackedField[1], attackedField[0]]
                 if attackedPiece.isWhite == 'EmptyField':
                     continue
                 if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
@@ -116,25 +109,22 @@ class Board:
         board = deepcopy(self)
 
         # getting the moving piece
-        movingPiece = board.board[move[0][1]][move[0][0]]
+        movingPiece = board.board[move[0][1], move[0][0]]
         # emptying the startField
-        board.board[move[0][1]][move[0][0]] = EmptyField()
+        board.board[move[0][1], move[0][0]] = EmptyField()
         # setting the targetField to the movingPiece
-        board.board[move[1][1]][move[1][0]] = movingPiece
+        board.board[move[1][1], move[1][0]] = movingPiece
         # reseting the check to false
         board.check = False
 
-        # flattening the board
-        flattendedBoard = sum(board.board, [])
-
         # getting the moved piece
-        movedPiece = board.board[move[1][1]][move[1][0]]
+        movedPiece = board.board[move[1][1], move[1][0]]
         # getting the new attacked fields of the attacking piece
         attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), board.generateColorBoard())
 
         # checking for every attacking piece if it is attacking the opponents king
         for attackedField in attackedFields:
-            attackedPiece = board.board[attackedField[1]][attackedField[0]]
+            attackedPiece = board.board[attackedField[1], attackedField[0]]
             if attackedPiece.isWhite == 'EmptyField':
                 continue
             if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
@@ -148,12 +138,16 @@ class Board:
         possibleOpenedFields = queen.generatePossiblePositions(startField, board.generateColorBoard())
         # checking if one of the possible opened fields checked the king
         for possibleOpenedField in possibleOpenedFields:
-            possibleOpenedPiece = board.board[possibleOpenedField[1]][possibleOpenedField[0]]
-            index = flattendedBoard.index(possibleOpenedPiece)
-            coordinates = board.generateCoordinatesWithIndex(index)
+            possibleOpenedPiece = board.board[possibleOpenedField[1], possibleOpenedField[0]]
+            coordinates = np.where(self.board == possibleOpenedPiece)
+            try:
+                coordinates = (coordinates[1][0], coordinates[0][0])
+            except:
+                continue
+
             attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, board.generateColorBoard())
             for attackedField in attackedFields:
-                attackedPiece = board.board[attackedField[1]][attackedField[0]]
+                attackedPiece = board.board[attackedField[1], attackedField[0]]
                 if attackedPiece.isWhite == 'EmptyField':
                     continue
                 if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
@@ -193,13 +187,10 @@ class Board:
         coordinateMoves = []
         # generating the colorBoard as a parameter for the generatePossiblePositions method of the pieces
         colorBoard = self.generateColorBoard()
-        # flattening the board
-        flattendedBoard = sum(self.board, [])
-        for piece in flattendedBoard:
-            # getting the index of the piece in the flattened array
-            index = flattendedBoard.index(piece)
-            # getting the position coordinates with the index of the piece in the flattened array
-            coordinates = self.generateCoordinatesWithIndex(index)
+        for piece in list(self.board.flat):
+            # getting the coordinates of the piece in the flattened array
+            coordinates = np.where(self.board == piece)
+            coordinates = (coordinates[1][0], coordinates[0][0])
 
             # if piece is the color for which to generate moves for
             if piece.isWhite == forWhite:
@@ -228,8 +219,8 @@ class Board:
         """
         whiteMaterial = 0
         blackMaterial = 0
-        flattendedBoard = sum(self.board, [])
-        for piece in flattendedBoard:
+        
+        for piece in list(self.board.flat):
             if piece.isWhite:
                 whiteMaterial += piece.value
             else:
@@ -292,7 +283,6 @@ class Board:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
         coordinateMove = []
-        keys = list(self.columns.keys())
         values = list(self.columns.values())
         x1 = values.index(UCIMove[0]) # getting the key of the letter in the UCIMove to get the x start coordinate
         y1 = int(UCIMove[1]) - 1
@@ -381,8 +371,9 @@ class Board:
         self.nextMoveNumber = fen[5] # setting the number of the next move
 
         # setting self.board to the board
+        board.reverse()
+        board = np.array(board)
         self.board = board
-        self.board.reverse()
 
     def generateFenForBoard(self):
         """ generates the fen for the current board
@@ -391,7 +382,7 @@ class Board:
             string: the fen string for the current position on the board
         """
         fen = ""
-        flattendedBoard = sum(self.board, []) # flattening the board
+        flattendedBoard = list(self.board.flatten()) # flattening the board
         for piece in flattendedBoard:
             fen += piece.short # adding the short of the piece to the fen string
             if (flattendedBoard.index(piece) + 1) % 8 == 0:
