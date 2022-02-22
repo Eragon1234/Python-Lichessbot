@@ -217,10 +217,7 @@ class Board:
         Returns:
             int: the material difference
         """
-        materialDifference = 0
-        
-        for piece in list(self.board.flat):
-            materialDifference += piece.value
+        materialDifference = np.sum([piece.value for piece in list(self.board.flat)])
         return materialDifference
     def generateCoordinatesWithIndex(self, index):
         """ calculates the coordinates of a piece on the given index in 1d array with the length 64
@@ -377,12 +374,7 @@ class Board:
         Returns:
             string: the fen string for the current position on the board
         """
-        fen = ""
-        flattendedBoard = list(self.board.flatten()) # flattening the board
-        for piece in flattendedBoard:
-            fen += piece.short # adding the short of the piece to the fen string
-            if (flattendedBoard.index(piece) + 1) % 8 == 0:
-                fen += "/"
+        fen = '/'.join([''.join([piece.short for piece in row]) for row in self.board])
         return fen
 
     def generateRandomString(self, length):
