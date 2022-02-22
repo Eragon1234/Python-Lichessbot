@@ -40,6 +40,7 @@ class Board:
     def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         # loads the board with the given fen
         self.loadBoardWithFen(fen)
+        self.colorBoard = False
 
     def move(self, move):
         """ makes a move on the board
@@ -47,6 +48,8 @@ class Board:
         Args:
             move (UCIMove): the move to move
         """
+
+        self.colorBoard = False
 
         # reseting the check to false
         self.check = False
@@ -120,6 +123,8 @@ class Board:
         board.board[move[1][1], move[1][0]] = movingPiece
         # reseting the check to false
         board.check = False
+
+        self.colorBoard = False
 
         # getting the moved piece
         movedPiece = board.board[move[1][1], move[1][0]]
@@ -242,11 +247,14 @@ class Board:
         Returns:
             list: a 2d array with values True for white, False for black and EmptyField for an empty field
         """
+        if self.colorBoard:
+            return self.colorBoard
         colorBoard = []
         for row in self.board:
             colorBoard.append([])
             for piece in row:
                 colorBoard[-1].append(piece.isWhite)
+        self.colorBoard = colorBoard
         return colorBoard
     
     def coordinateMovesIntoUCI(self, coordinateMoves):
