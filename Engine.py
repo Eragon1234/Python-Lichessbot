@@ -20,7 +20,9 @@ class Engine:
         """
         forWhite = color == 'white'
         
-        move = self.calculateBestMove(forWhite, 3)[0]
+        bestMove = self.calculateBestMove(forWhite, 3)
+        print("Evaluation:", bestMove[1])
+        move = bestMove[0]
         print(move)
         self.board.move(move)
         moveFn(gameId, move)
