@@ -6,6 +6,8 @@ class Rook:
         self.isWhite = isWhite
         if self.isWhite:
             self.short = self.short.upper()
+        else:
+            self.value = self.value * -1
 
     def generatePossiblePositions(self, currentPosition, board):
         positions = []
