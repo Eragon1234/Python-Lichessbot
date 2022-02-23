@@ -21,7 +21,7 @@ class Engine:
         """
         forWhite = color == 'white'
         
-        bestMove = self.calculateBestMove(forWhite, 3)
+        bestMove = self.calculateBestMove(forWhite, 4)
         print("Evaluation:", bestMove[1])
         move = bestMove[0]
         print(move)
@@ -35,24 +35,64 @@ class Engine:
 
     def calculateBestMove(self, forWhite, depth, board=False):
         if not board:
-            board = self.board
-        moves = board.generatePossibleMoves(forWhite)
+            board = self.board        
+
+        if forWhite:
+            move = self.max(depth, float("-inf"), float("inf"), board, True)
+        else:
+            move = self.min(depth, float("-inf"), float("inf"), board, True)
+        
+        return move
+    
+    def max(self, depth, alpha, beta, board, returnMove=False):
+        moves = board.generatePossibleMoves(True)
+        moves.sort(key = self.getMaterialDifferenceForMove, reverse = True)
+
         if depth == 0:
-            moves.sort(key = self.getMaterialDifferenceForMove, reverse = forWhite)
-            return (moves[0], self.getMaterialDifferenceForMove(moves[0]))
+            return self.getMaterialDifferenceForMove(moves[0])
+
+        maxWert = alpha
+        maxMove = moves[0]
+
         for move in moves:
-            boardKey = board.testMove(move)
-            bestMove = self.calculateBestMove(not forWhite, depth - 1, board.testBoards[boardKey])
-            moves[moves.index(move)] = (moves[moves.index(move)], bestMove[1])
+            boardKey = self.board.testMove(move, board)
+            evaluation = self.min(depth - 1, maxWert, beta, board.testBoards[boardKey])
+            if evaluation > maxWert:
+                maxWert = evaluation
+                maxMove = move
+                if maxWert >= beta:
+                    break
             self.board.popTestBoard(boardKey)
-        np.random.shuffle(moves)
-        moves.sort(key = lambda x: x[1], reverse = forWhite)
-        print(moves)
-        return moves[0]
+        if returnMove:
+            return maxMove, maxWert
+        return maxWert
+
+    def min(self, depth, alpha, beta, board, returnMove=False):
+        moves = board.generatePossibleMoves(False)
+        moves.sort(key = self.getMaterialDifferenceForMove, reverse = False)
+
+        if depth == 0:
+            return self.getMaterialDifferenceForMove(moves[0])
+
+        minWert = beta
+        minMove = moves[0]
+
+        for move in moves:
+            boardKey = self.board.testMove(move, board)
+            evaluation = self.max(depth - 1, alpha, minWert, board.testBoards[boardKey])
+            if evaluation < minWert:
+                minWert = evaluation
+                minMove = move
+                if minWert <= alpha:
+                    break
+            self.board.popTestBoard(boardKey)
+        if returnMove:
+            return minMove, minWert
+        return minWert
 
     def getMaterialDifferenceForMove(self, move, board=False):
         if not board:
             board = self.board
-        boardKey = board.testMove(move)
-        materialDifference = board.testBoards[boardKey].calculateMaterialDifference()
+        boardKey = self.board.testMove(move, board)
+        materialDifference = self.board.testBoards[boardKey].calculateMaterialDifference()
         return materialDifference
