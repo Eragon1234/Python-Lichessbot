@@ -99,7 +99,7 @@ class Board:
                     break
         print("Check:", self.check)
 
-    def testMove(self, move):
+    def testMove(self, move, board=False):
         """ creates a copy of the board on which the move is moved
 
         Args:
@@ -108,12 +108,14 @@ class Board:
         Returns:
             string: a key to get the board from the testBoards dictionary
         """
+        if not board:
+            board = self
 
         # converting the UCIMove into a coordinate move
         move = self.UCIintoCoordinateMove(move)
 
         # creating a deepcopy of the board
-        board = deepcopy(self)
+        board = deepcopy(board)
 
         # getting the moving piece
         movingPiece = board.board[move[0][1], move[0][0]]
@@ -228,6 +230,7 @@ class Board:
         """
         materialDifference = np.sum([piece.value for piece in list(self.board.flat)])
         return materialDifference
+
     def generateCoordinatesWithIndex(self, index):
         """ calculates the coordinates of a piece on the given index in 1d array with the length 64
 
@@ -345,35 +348,36 @@ class Board:
                     for i in range(0, int(char)):
                         board[-1].append(EmptyField())
         
-        # looking if it's white or blacks turn
-        if fen[1] == 'w':
-            self.whitesMove = True
-        else:
-            self.whitesMove = False
+        if len(fen) == 6:
+            # looking if it's white or blacks turn
+            if fen[1] == 'w':
+                self.whitesMove = True
+            else:
+                self.whitesMove = False
 
-        # setting the castle rights of black and white
-        for char in fen[2]:
-            self.whiteCastle = {}
-            self.blackCastle = {}
+            # setting the castle rights of black and white
+            for char in fen[2]:
+                self.whiteCastle = {}
+                self.blackCastle = {}
 
-            self.whiteCastle['KingSide'] = False
-            self.whiteCastle['QueenSide'] = False
+                self.whiteCastle['KingSide'] = False
+                self.whiteCastle['QueenSide'] = False
 
-            self.blackCastle['KingSide'] = False
-            self.blackCastle['QueenSide'] = False
+                self.blackCastle['KingSide'] = False
+                self.blackCastle['QueenSide'] = False
 
-            if char == 'K':
-                self.whiteCastle['KingSide'] = True
-            elif char == 'Q':
-                self.whiteCastle['QueenSide'] = True
-            elif char == 'k':
-                self.blackCastle['KingSide'] = True
-            elif char == 'q':
-                self.blackCastle['QueenSide'] = True
-        
-        self.enPassantField = fen[3] # setting the enPassantField with the corresponding value of the fen
-        self.pliesFor50MoveRule = fen[4] # setting the number of plies since the last pawn move or take for the 50 move rule
-        self.nextMoveNumber = fen[5] # setting the number of the next move
+                if char == 'K':
+                    self.whiteCastle['KingSide'] = True
+                elif char == 'Q':
+                    self.whiteCastle['QueenSide'] = True
+                elif char == 'k':
+                    self.blackCastle['KingSide'] = True
+                elif char == 'q':
+                    self.blackCastle['QueenSide'] = True
+            
+            self.enPassantField = fen[3] # setting the enPassantField with the corresponding value of the fen
+            self.pliesFor50MoveRule = fen[4] # setting the number of plies since the last pawn move or take for the 50 move rule
+            self.nextMoveNumber = fen[5] # setting the number of the next move
 
         # setting self.board to the board
         board.reverse()
