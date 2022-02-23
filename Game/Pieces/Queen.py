@@ -1,5 +1,4 @@
-import os
-import sys
+import os, sys
 sys.path.append(os.getcwd())
 
 from Game.Pieces.Bishop import Bishop
