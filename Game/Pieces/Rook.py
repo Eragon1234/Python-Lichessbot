@@ -21,7 +21,7 @@ class Rook:
                 break
             else:
                 positions.append(position)
-        for x in range(currentPosition[0] - 1, -1):
+        for x in range(currentPosition[0] - 1, -1, -1):
             position = (x, currentPosition[1])
             targetFieldIsWhite = board[currentPosition[1]][x]
             if targetFieldIsWhite == self.isWhite:
@@ -41,7 +41,7 @@ class Rook:
                 break
             else:
                 positions.append(position)
-        for y in range(currentPosition[1] - 1, -1):
+        for y in range(currentPosition[1] - 1, -1, -1):
             position = (currentPosition[0], y)
             targetFieldIsWhite = board[y][currentPosition[0]]
             if targetFieldIsWhite == self.isWhite:
