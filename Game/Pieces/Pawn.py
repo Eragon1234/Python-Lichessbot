@@ -28,10 +28,10 @@ class Pawn:
                 if x >= 0 and x <= 7 and y >= 0 and y <= 7:
                     fieldIsEmpty = board[y][x] == 'EmptyField'
                     if fieldIsEmpty:
-                        if self.isWhite and position[1] == 1:
+                        if self.isWhite and currentPosition[1] == 1:
                             positions.append(position)
-                        elif (not self.isWhite) and position[1] == 6:
-                                positions.append(position)
+                        elif (not self.isWhite) and currentPosition[1] == 6:
+                            positions.append(position)
 
 
         y = currentPosition[1] + (1 * directionMultiplier)
