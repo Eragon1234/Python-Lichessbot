@@ -1,3 +1,4 @@
+from sys import float_repr_style
 from Game.Board import Board
 import random
 import numpy as np
@@ -21,7 +22,7 @@ class Engine:
         """
         forWhite = color == 'white'
         
-        bestMove = self.calculateBestMove(forWhite, 4)
+        bestMove = self.calculateBestMove(forWhite, 3)
         print("Evaluation:", bestMove[1])
         move = bestMove[0]
         print(move)
@@ -35,7 +36,7 @@ class Engine:
 
     def calculateBestMove(self, forWhite, depth, board=False):
         if not board:
-            board = self.board        
+            board = self.board
 
         if forWhite:
             move = self.max(depth, float("-inf"), float("inf"), board, True)
@@ -46,8 +47,10 @@ class Engine:
     
     def max(self, depth, alpha, beta, board, returnMove=False):
         moves = board.generatePossibleMoves(True)
-        moves.sort(key = self.getMaterialDifferenceForMove, reverse = True)
 
+        if len(moves) == 0:
+            return float("-inf")
+            
         if depth == 0:
             return self.getMaterialDifferenceForMove(moves[0])
 
@@ -57,6 +60,7 @@ class Engine:
         for move in moves:
             boardKey = self.board.testMove(move, board)
             evaluation = self.min(depth - 1, maxWert, beta, board.testBoards[boardKey])
+            evaluation = int(evaluation)
             if evaluation > maxWert:
                 maxWert = evaluation
                 maxMove = move
@@ -69,17 +73,21 @@ class Engine:
 
     def min(self, depth, alpha, beta, board, returnMove=False):
         moves = board.generatePossibleMoves(False)
-        moves.sort(key = self.getMaterialDifferenceForMove, reverse = False)
+
+        if len(moves) == 0:
+            return float("inf")
+
 
         if depth == 0:
             return self.getMaterialDifferenceForMove(moves[0])
-
+        
         minWert = beta
         minMove = moves[0]
 
         for move in moves:
             boardKey = self.board.testMove(move, board)
             evaluation = self.max(depth - 1, alpha, minWert, board.testBoards[boardKey])
+            evaluation = int(evaluation)
             if evaluation < minWert:
                 minWert = evaluation
                 minMove = move
@@ -93,6 +101,6 @@ class Engine:
     def getMaterialDifferenceForMove(self, move, board=False):
         if not board:
             board = self.board
-        boardKey = self.board.testMove(move, board)
-        materialDifference = self.board.testBoards[boardKey].calculateMaterialDifference()
-        return materialDifference
+        board = self.board.popTestBoard(self.board.testMove(move, board))
+        evaluation = board.calculateMaterialDifference()
+        return evaluation

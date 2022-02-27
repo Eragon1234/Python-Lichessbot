@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.append(os.getcwd())
-
 import unittest
 
 class TestMoveGeneration(unittest.TestCase):
@@ -22,7 +21,7 @@ class TestMoveGeneration(unittest.TestCase):
         self.assertEqual(len(self.board.generatePossibleMoves(False)), 43)
 
     def test_correctNumberOfMovesInExamplePosition3(self):
-        self.board.loadBoardWithFen('r6k/1q3pp1/4p3/8/p1pr1P2/P2n4/1PQB2PP/1R3RK1 w - - 0 26')
+        self.board.loadBoardWithFen('r6k/1q3pp1/4p3/8/p1pr1P2/P2n4/1PQB2PP/1R3RK1 w - - 0 26')  
         self.assertEqual(len(self.board.generatePossibleMoves(True)), 30)
 
     def test_correctNumberOfMovesInExamplePositionWithCheck(self):

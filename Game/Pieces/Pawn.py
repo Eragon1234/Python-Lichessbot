@@ -24,14 +24,14 @@ class Pawn:
             if targetFieldIsEmpty == 'EmptyField':
                 positions.append(position)
                 y = currentPosition[1] + (2 * directionMultiplier)
-                position = (x, y)
+                enPassantPosition = (x, y)
                 if x >= 0 and x <= 7 and y >= 0 and y <= 7:
                     fieldIsEmpty = board[y][x] == 'EmptyField'
                     if fieldIsEmpty:
                         if self.isWhite and currentPosition[1] == 1:
-                            positions.append(position)
+                            positions.append((enPassantPosition, ("enPassant", position)))
                         elif (not self.isWhite) and currentPosition[1] == 6:
-                            positions.append(position)
+                            positions.append((enPassantPosition, ("enPassant", position)))
 
 
         y = currentPosition[1] + (1 * directionMultiplier)
@@ -50,5 +50,4 @@ class Pawn:
             if (targetFieldIsWhite != self.isWhite) and (targetFieldIsWhite != "EmptyField"):
                 positions.append(position)
 
-        positions = list(filter(lambda position: (position[0] >= 0) and (position[0] <= 7) and (position[1] >= 0) and (position[1] <= 7), positions))
         return positions
