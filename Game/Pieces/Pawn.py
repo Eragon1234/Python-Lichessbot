@@ -1,6 +1,7 @@
 class Pawn:
     value = 10
     short = 'p'
+    positions = []
 
     def __init__(self, isWhite):
         self.isWhite = isWhite
@@ -50,4 +51,12 @@ class Pawn:
             if (targetFieldIsWhite != self.isWhite) and (targetFieldIsWhite != "EmptyField"):
                 positions.append(position)
 
+        self.positions = positions
         return positions
+
+    def getValue(self, position=False):
+        if self.isWhite:
+            directionMultiplier = 1
+        else:
+            directionMultiplier = -1
+        return self.value + ((len(self.positions) / 100) * directionMultiplier)

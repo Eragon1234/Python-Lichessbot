@@ -103,7 +103,16 @@ class Board:
         # creating a deepcopy of the board
         board = deepcopy(board)
 
-        board.move(move)
+        # getting the moving piece
+        movingPiece = board.board[move[0][1], move[0][0]]
+        # emptying the startField
+        board.board[move[0][1], move[0][0]] = EmptyField()
+        # setting the targetField to the movingPiece
+        board.board[move[1][1], move[1][0]] = movingPiece
+        # reseting the check to false
+        board.check = False
+
+        board.colorBoard = False
 
         # generate key for access over testBoards array
         boardKey = self.generateRandomString(8)
@@ -156,7 +165,7 @@ class Board:
                 king = piece
         # converting coordinate moves into UCIMoves
         moves = self.coordinateMovesIntoUCI(coordinateMoves)
-        evaluations = []
+        evaluations = {}
 
         if checkForCheck:
             for move in moves:
@@ -167,13 +176,14 @@ class Board:
                 isCheck = False
                 for testMove in testMoves:
                     board = self.popTestBoard(self.testMove(testMove, board))
-                    evaluation = board.calculateMaterialDifference()
-                    if (not forWhite) and (evaluation > max):
+                    evaluation = board.calculateValueDifference()
+                    if evaluation > max:
                         max = evaluation
-                    elif forWhite and (evaluation < min):
+
+                    if evaluation < min:
                         min = evaluation
 
-                    if king in list(board.board.flat):
+                    if king in tuple(board.board.flat):
                         isCheck = True
                 
                 if isCheck:
@@ -181,11 +191,14 @@ class Board:
                     continue
 
                 if forWhite:
-                    evaluations.append(max)
+                    evaluations[move] = max
                 else:
-                    evaluations.append(min)
+                    evaluations[move] = min
 
-        np.random.shuffle(moves)
+            moves.sort(key=lambda move: evaluations.get(move), reverse=forWhite)
+        else:
+            np.random.shuffle(moves)
+        
         return moves
 
     def calculateMaterialDifference(self):
@@ -195,6 +208,15 @@ class Board:
             int: the material difference
         """
         materialDifference = np.sum([piece.value for piece in list(self.board.flat)])
+        return materialDifference
+
+    def calculateValueDifference(self):
+        """ caculates the difference of the values of the pieces between white and black
+
+        Returns:
+            int: the material difference
+        """
+        materialDifference = np.sum([piece.getValue() for piece in list(self.board.flat)])
         return materialDifference
 
     def generateCoordinatesWithIndex(self, index):
