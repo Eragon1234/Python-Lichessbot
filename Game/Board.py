@@ -103,16 +103,7 @@ class Board:
         # creating a deepcopy of the board
         board = deepcopy(board)
 
-        # getting the moving piece
-        movingPiece = board.board[move[0][1], move[0][0]]
-        # emptying the startField
-        board.board[move[0][1], move[0][0]] = EmptyField()
-        # setting the targetField to the movingPiece
-        board.board[move[1][1], move[1][0]] = movingPiece
-        # reseting the check to false
-        board.check = False
-
-        board.colorBoard = False
+        board.move(move)
 
         # generate key for access over testBoards array
         boardKey = self.generateRandomString(8)
@@ -239,6 +230,15 @@ class Board:
         
         self.colorBoard = colorBoard
         return colorBoard
+
+    def generateShortBoard(self):
+        shortBoard = []
+        for row in self.board:
+            shortBoard.append([])
+            for piece in row:
+                shortBoard[-1].append(piece.short)
+        
+        return shortBoard
     
     def coordinateMovesIntoUCI(self, coordinateMoves):
         """ converts the passed array of coordinate moves into an array of UCIMoves
