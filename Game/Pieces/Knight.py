@@ -1,6 +1,7 @@
 class Knight:
     value = 30
     short = 'n'
+    positions = []
 
     def __init__(self, isWhite):
         self.isWhite = isWhite
@@ -76,4 +77,12 @@ class Knight:
                 positions.append(position)
 
         positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
+        self.positions = positions
         return positions
+
+    def getValue(self, position=False):
+        if self.isWhite:
+            directionMultiplier = 1
+        else:
+            directionMultiplier = -1
+        return self.value + ((len(self.positions) / 100) * directionMultiplier)

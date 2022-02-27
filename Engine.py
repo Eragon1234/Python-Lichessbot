@@ -22,7 +22,7 @@ class Engine:
         """
         forWhite = color == 'white'
         
-        bestMove = self.calculateBestMove(forWhite, 2)
+        bestMove = self.calculateBestMove(forWhite, 4)
         print("Evaluation:", bestMove[1])
         move = bestMove[0]
         print(move)
@@ -52,16 +52,16 @@ class Engine:
             return float("-inf")
             
         if depth == 0:
-            return self.getMaterialDifferenceForMove(moves[0])
+            return self.getValueDifferenceForMove(moves[0])
 
         maxWert = alpha
         maxMove = moves[0]
 
         for move in moves:
             boardKey = self.board.testMove(move, board)
-            shortBoard = self.board.testBoards[boardKey].generateShortBoard()
+            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generateShortBoard()).flat)
 
-            if tuple(np.array(shortBoard).flat) in positions:
+            if shortBoard in positions:
                 return positions.get(shortBoard)
             
             evaluation = self.min(depth - 1, maxWert, beta, board.testBoards[boardKey], positions)
@@ -72,7 +72,7 @@ class Engine:
                 if maxWert >= beta:
                     break
 
-            positions[tuple(np.array(shortBoard).flat)] = maxWert
+            positions[shortBoard] = maxWert
             self.board.popTestBoard(boardKey)
         if returnMove:
             return maxMove, maxWert
@@ -85,16 +85,16 @@ class Engine:
             return float("inf")
 
         if depth == 0:
-            return self.getMaterialDifferenceForMove(moves[0])
+            return self.getValueDifferenceForMove(moves[0])
         
         minWert = beta
         minMove = moves[0]
 
         for move in moves:
             boardKey = self.board.testMove(move, board)
-            shortBoard = self.board.testBoards[boardKey].generateShortBoard()
+            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generateShortBoard()).flat)
 
-            if tuple(np.array(shortBoard).flat) in positions:
+            if shortBoard in positions:
                 return positions.get(shortBoard)
 
             evaluation = self.max(depth - 1, alpha, minWert, board.testBoards[boardKey], positions)
@@ -105,11 +105,18 @@ class Engine:
                 if minWert <= alpha:
                     break
 
-            positions[tuple(np.array(shortBoard).flat)] = minWert
+            positions[shortBoard] = minWert
             self.board.popTestBoard(boardKey)
         if returnMove:
             return minMove, minWert
         return minWert
+
+    def getValueDifferenceForMove(self, move, board=False):
+        if not board:
+            board = self.board
+        board = self.board.popTestBoard(self.board.testMove(move, board))
+        evaluation = board.calculateValueDifference()
+        return evaluation
 
     def getMaterialDifferenceForMove(self, move, board=False):
         if not board:

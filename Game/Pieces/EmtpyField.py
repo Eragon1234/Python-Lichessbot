@@ -8,3 +8,6 @@ class EmptyField:
 
     def generatePossiblePositions(self, currentPosition, board):
         return []
+
+    def getValue(self, position=False):
+        return self.value
