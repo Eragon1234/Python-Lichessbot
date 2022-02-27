@@ -1,3 +1,4 @@
+from inspect import isclass
 import os, sys
 sys.path.append(os.getcwd())
 
@@ -47,13 +48,14 @@ class Board:
         Args:
             move (UCIMove): the move to move
         """
-
         self.colorBoard = False
+        self.enPassantField = "-"
 
         # reseting the check to false
         self.check = False
         # appending the move to the array of moves
         self.moves.append(move)
+
         # converting the UCIMove into a coordinate move
         move = self.UCIintoCoordinateMove(move)
         # getting the moving piece
@@ -63,40 +65,26 @@ class Board:
         # setting the targetField to the movingPiece
         self.board[move[1][1], move[1][0]] = movingPiece
 
+        if movingPiece.short.upper() == "P" and abs(move[0][1] - move[1][1]) == 2:
+            newX = move[0][0]
+            newY = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
+            self.enPassantField = self.coordinateMovesIntoUCI([((newX, newY), (0, 0))])[0][:2]
+        print("enPassantField:", self.enPassantField)
+
+    def unmove(self, move, board=False):
+        self.colorBoard = False
+
+        # reseting the check to false
+        self.check = False
+        # removing the move to the array of moves
+        self.moves.remove(move)
+        # converting the UCIMove into a coordinate move
+        move = self.UCIintoCoordinateMove(move)
         # getting the moved piece
-        movedPiece = self.board[move[1][1]][move[1][0]]
-        # getting the new attacked fields of the attacking piece
-        attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), self.generateColorBoard())
-        # checking for every attacking piece if it is attacking the opponents king
-        for attackedField in attackedFields:
-            attackedPiece = self.board[attackedField[1], attackedField[0]]
-            if attackedPiece.isWhite == 'EmptyField':
-                continue
-            if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
-                self.check = True
-                break
-
-        # getting the startField of the moving piece
-        startField = (move[0][0], move[0][1])
-        queen = Queen(True)
-
-        # generating all diagonals and rows where a piece possibly has been opened
-        possibleOpenedFields = queen.generatePossiblePositions(startField, self.generateColorBoard())
-        # checking if one of the possible opened fields checked the king
-        for possibleOpenedField in possibleOpenedFields:
-            possibleOpenedPiece = self.board[possibleOpenedField[1], possibleOpenedField[0]]
-            coordinates = np.where(self.board == possibleOpenedPiece)
-            coordinates = (coordinates[1][0], coordinates[0][0])
-
-            attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, self.generateColorBoard())
-            for attackedField in attackedFields:
-                attackedPiece = self.board[attackedField[1], attackedField[0]]
-                if attackedPiece.isWhite == 'EmptyField':
-                    continue
-                if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
-                    self.check = True
-                    break
-        print("Check:", self.check)
+        movedPiece = self.board[move[1][1], move[1][0]]
+        # adding the moved piece to the startField
+        self.board[move[0][1], move[0][0]] = movedPiece
+        self.board[move[1][1], move[1][0]] = EmptyField()
 
     def testMove(self, move, board=False):
         """ creates a copy of the board on which the move is moved
@@ -109,9 +97,8 @@ class Board:
         """
         if not board:
             board = self
-
         # converting the UCIMove into a coordinate move
-        move = self.UCIintoCoordinateMove(move)
+        move = self.UCIintoCoordinateMove(move)        
 
         # creating a deepcopy of the board
         board = deepcopy(board)
@@ -125,44 +112,7 @@ class Board:
         # reseting the check to false
         board.check = False
 
-        self.colorBoard = False
-
-        # getting the moved piece
-        movedPiece = board.board[move[1][1], move[1][0]]
-        # getting the new attacked fields of the attacking piece
-        attackedFields = movedPiece.generatePossiblePositions((move[1][0], move[1][1]), board.generateColorBoard())
-
-        # checking for every attacking piece if it is attacking the opponents king
-        for attackedField in attackedFields:
-            attackedPiece = board.board[attackedField[1], attackedField[0]]
-            if attackedPiece.isWhite == 'EmptyField':
-                continue
-            if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
-                board.check = True
-                break
-
-        # getting the startField of the moving piece
-        startField = (move[0][0], move[0][1])
-        queen = Queen(True)
-        # generating all diagonals and rows where a piece possibly has been opened
-        possibleOpenedFields = queen.generatePossiblePositions(startField, board.generateColorBoard())
-        # checking if one of the possible opened fields checked the king
-        for possibleOpenedField in possibleOpenedFields:
-            possibleOpenedPiece = board.board[possibleOpenedField[1], possibleOpenedField[0]]
-            coordinates = np.where(self.board == possibleOpenedPiece)
-            try:
-                coordinates = (coordinates[1][0], coordinates[0][0])
-            except:
-                continue
-
-            attackedFields = possibleOpenedPiece.generatePossiblePositions(coordinates, board.generateColorBoard())
-            for attackedField in attackedFields:
-                attackedPiece = board.board[attackedField[1], attackedField[0]]
-                if attackedPiece.isWhite == 'EmptyField':
-                    continue
-                if (attackedPiece.short == 'K' or attackedPiece.short == 'k') and (attackedPiece.isWhite != movedPiece.isWhite):
-                    board.check = True
-                    break
+        board.colorBoard = False
 
         # generate key for access over testBoards array
         boardKey = self.generateRandomString(8)
@@ -185,7 +135,7 @@ class Board:
         """
         return self.testBoards.pop(boardKey)
 
-    def generatePossibleMoves(self, forWhite=True):
+    def generatePossibleMoves(self, forWhite=True, checkForCheck=True):
         """ generating all possible moves in the current position
 
         Args:
@@ -208,16 +158,42 @@ class Board:
                 newPositions = piece.generatePossiblePositions(coordinates, colorBoard)
                 # appending every position with the start and end coordinates
                 for newPosition in newPositions:
+                    if len(str(newPosition[1])) > 1:
+                        newPosition = newPosition[0]
                     coordinateMoves.append((coordinates, newPosition))
+            if piece.short.upper() == "K":
+                king = piece
         # converting coordinate moves into UCIMoves
         moves = self.coordinateMovesIntoUCI(coordinateMoves)
+        evaluations = []
 
-        # testing every move if the king is in check
-        for move in moves:
-            boardKey = self.testMove(move)
-            if self.testBoards[boardKey].check:
-                moves.remove(move)
-            self.popTestBoard(boardKey)
+        if checkForCheck:
+            for move in moves:
+                board = self.popTestBoard(self.testMove(move))
+                testMoves = board.generatePossibleMoves(not forWhite, checkForCheck=False)
+                max = float("-inf")
+                min = float("inf")
+                isCheck = False
+                for testMove in testMoves:
+                    board = self.popTestBoard(self.testMove(testMove, board))
+                    evaluation = board.calculateMaterialDifference()
+                    if (not forWhite) and (evaluation > max):
+                        max = evaluation
+                    elif forWhite and (evaluation < min):
+                        min = evaluation
+
+                    if king in list(board.board.flat):
+                        isCheck = True
+                
+                if isCheck:
+                    moves.remove(move)
+                    continue
+
+                if forWhite:
+                    evaluations.append(max)
+                else:
+                    evaluations.append(min)
+
         np.random.shuffle(moves)
         return moves
 
@@ -256,6 +232,11 @@ class Board:
             colorBoard.append([])
             for piece in row:
                 colorBoard[-1].append(piece.isWhite)
+        
+        if self.enPassantField != "-":
+            enPassantCoordinate = self.UCIintoCoordinateMove(f"{self.enPassantField}h7")[:2][0]
+            colorBoard[enPassantCoordinate[1]][enPassantCoordinate[0]] = "enemy"
+        
         self.colorBoard = colorBoard
         return colorBoard
     
