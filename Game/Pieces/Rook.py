@@ -10,7 +10,7 @@ class Rook:
         else:
             self.value = self.value * -1
 
-    def generatePossiblePositions(self, currentPosition, board):
+    def generate_possible_positions(self, currentPosition, board):
         positions = []
         for x in range(currentPosition[0] + 1, 8):
             position = (x, currentPosition[1])
@@ -56,7 +56,7 @@ class Rook:
         self.positions = positions
         return positions
 
-    def getValue(self, position=False):
+    def get_value(self, position=False):
         if self.isWhite:
             directionMultiplier = 1
         else:

@@ -1,7 +1,7 @@
-from sys import float_repr_style
-from Game.Board import Board
-import random
 import numpy as np
+
+from Game.Board import Board
+
 
 class Engine:
     """
@@ -22,7 +22,7 @@ class Engine:
         """
         forWhite = color == 'white'
         
-        bestMove = self.calculateBestMove(forWhite, 4)
+        bestMove = self.calculate_best_move(forWhite, 1)
         print("Evaluation:", bestMove[1])
         move = bestMove[0]
         print(move)
@@ -30,11 +30,11 @@ class Engine:
         moveFn(gameId, move)
         print("moved")
 
-    def opponentsMove(self, move):
+    def opponents_move(self, move):
         self.board.move(move)
         print("opponent moved")
 
-    def calculateBestMove(self, forWhite, depth, board=False):
+    def calculate_best_move(self, forWhite, depth, board=False):
         if not board:
             board = self.board
 
@@ -46,81 +46,81 @@ class Engine:
         return move
     
     def max(self, depth, alpha, beta, board, positions={}, returnMove=False):
-        moves = board.generatePossibleMoves(True)
+        moves = board.generate_possible_moves(True)
 
         if len(moves) == 0:
             return float("-inf")
             
         if depth == 0:
-            return self.getValueDifferenceForMove(moves[0])
+            return self.get_value_difference_for_move(moves[0])
 
-        maxWert = alpha
+        maxValue = alpha
         maxMove = moves[0]
 
         for move in moves:
-            boardKey = self.board.testMove(move, board)
-            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generateShortBoard()).flat)
+            boardKey = self.board.test_move(move, board)
+            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generate_short_board()).flat)
 
-            if shortBoard in positions:
+            if shortBoard in positions and not returnMove:
                 return positions.get(shortBoard)
             
-            evaluation = self.min(depth - 1, maxWert, beta, board.testBoards[boardKey], positions)
+            evaluation = self.min(depth - 1, maxValue, beta, board.testBoards[boardKey], positions)
             evaluation = int(evaluation)
-            if evaluation > maxWert:
-                maxWert = evaluation
+            if evaluation > maxValue:
+                maxValue = evaluation
                 maxMove = move
-                if maxWert >= beta:
+                if maxValue >= beta:
                     break
 
-            positions[shortBoard] = maxWert
-            self.board.popTestBoard(boardKey)
+            positions[shortBoard] = maxValue
+            self.board.pop_test_board(boardKey)
         if returnMove:
-            return maxMove, maxWert
-        return maxWert
+            return maxMove, maxValue
+        return maxValue
 
     def min(self, depth, alpha, beta, board, positions={}, returnMove=False):
-        moves = board.generatePossibleMoves(False)
+        moves = board.generate_possible_moves(False)
 
         if len(moves) == 0:
             return float("inf")
 
         if depth == 0:
-            return self.getValueDifferenceForMove(moves[0])
+            return self.get_value_difference_for_move(moves[0])
         
-        minWert = beta
+        minValue = beta
         minMove = moves[0]
 
         for move in moves:
-            boardKey = self.board.testMove(move, board)
-            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generateShortBoard()).flat)
+            boardKey = self.board.test_move(move, board)
+            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generate_short_board()).flat)
 
-            if shortBoard in positions:
+            if shortBoard in positions and not returnMove:
                 return positions.get(shortBoard)
 
-            evaluation = self.max(depth - 1, alpha, minWert, board.testBoards[boardKey], positions)
+            evaluation = self.max(depth - 1, alpha, minValue, board.testBoards[boardKey], positions)
             evaluation = int(evaluation)
-            if evaluation < minWert:
-                minWert = evaluation
+            if evaluation < minValue:
+                minValue = evaluation
                 minMove = move
-                if minWert <= alpha:
+                if minValue <= alpha:
                     break
 
-            positions[shortBoard] = minWert
-            self.board.popTestBoard(boardKey)
+            positions[shortBoard] = minValue
+            self.board.pop_test_board(boardKey)
         if returnMove:
-            return minMove, minWert
-        return minWert
+            return minMove, minValue
+        return minValue
 
-    def getValueDifferenceForMove(self, move, board=False):
+    def get_value_difference_for_move(self, move, board=False):
         if not board:
             board = self.board
-        board = self.board.popTestBoard(self.board.testMove(move, board))
-        evaluation = board.calculateValueDifference()
+        board = self.board.pop_test_board(self.board.test_move(move, board))
+        evaluation = board.calculate_value_difference()
         return evaluation
 
-    def getMaterialDifferenceForMove(self, move, board=False):
+    def get_material_difference_for_move(self, move, board=False):
         if not board:
             board = self.board
-        board = self.board.popTestBoard(self.board.testMove(move, board))
-        evaluation = board.calculateMaterialDifference()
+        board = self.board.pop_test_board(self.board.test_move(move, board))
+        evaluation = board.calculate_material_difference()
         return evaluation

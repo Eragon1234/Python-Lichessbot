@@ -6,8 +6,8 @@ class EmptyField:
     def __init__(self):
         pass
 
-    def generatePossiblePositions(self, currentPosition, board):
+    def generate_possible_positions(self, currentPosition, board):
         return []
 
-    def getValue(self, position=False):
+    def get_value(self, position=False):
         return self.value

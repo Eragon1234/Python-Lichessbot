@@ -1,4 +1,4 @@
-# importing the GameController for handling the connetion to the Lichess API
+# importing the GameController for handling the connection to the Lichess API
 from GameController import GameController
 
 # importing our Engine
@@ -8,15 +8,15 @@ from Engine import Engine
 game = GameController()
 
 # justa accepting challenges and streaming games without further processing
-game.on('challenge', game.acceptChallenge)
-game.on('gameStart', game.streamGame)
+game.on('challenge', game.accept_challenge)
+game.on('gameStart', game.stream_game)
 
 # initializing our Engine
 engine = Engine()
 
 # adding the methods of the engine to handle the engines turn and the incoming moves of the opponent
 game.on('myMove', engine.move)
-game.on('opponentsMove', engine.opponentsMove)
+game.on('opponents_move', engine.opponents_move)
 
 # starting to watch for events
 game.watch()
