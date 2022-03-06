@@ -1,5 +1,6 @@
 import requests
 import json
+import _thread
 
 class GameController:
     """
@@ -39,7 +40,7 @@ class GameController:
                     challengeId = event['challenge']['id']
 
                     # throwing the challenge event with the challengeId, the challenger and the function to accept the challenge as params
-                    self.emit('challenge', challengeId, self.acceptChallenge)
+                    self.emit('challenge', challengeId, self.accept_challenge)
 
                 # checking if the event type is gameStart
                 elif event['type'] == 'gameStart':
@@ -50,7 +51,7 @@ class GameController:
                     opponent = event['game']['opponent']
 
                     # throwing the gameStart event with the gameId, the opponent and the function to start streaming the game
-                    self.emit('gameStart', gameId, opponent, self.streamGame)
+                    _thread.start_new_thread(self.emit, ('gameStart', gameId, opponent, self.stream_game))
 
     def on(self, event, fn):
         """ adds functions to be called on the mentioned incoming events
@@ -92,7 +93,7 @@ class GameController:
         """
         r = self.s.post(f'https://lichess.org/api/bot/game/{gameId}/move/{move}')
     
-    def acceptChallenge(self, challengeId, *params):
+    def accept_challenge(self, challengeId, *params):
         """ accepts the challenge with the passed challengeId
 
         Args:
@@ -100,8 +101,8 @@ class GameController:
         """
         self.s.post(f'https://lichess.org/api/challenge/{challengeId}/accept')
     
-    def streamGame(self, gameId, *params):
-        """ subscribing to the strem of events for the game with the passed gameId
+    def stream_game(self, gameId, *params):
+        """ subscribing to the stream of events for the game with the passed gameId
 
         Args:
             gameId (string): the gameId of the game to be subscribed to
@@ -145,11 +146,11 @@ class GameController:
                     # checking if last move is from my opponent
                     
                     if len(moves) >= 1 and len(moves[-1]) >= 4:
-                        # sending the opponentsMove event with the move as an argument
+                        # sending the opponents_move event with the move as an argument
                         move = moves[-1]
                         print("opponents turn")
                         print("opponent moved:", move)
-                        self.emit('opponentsMove', move)
+                        self.emit('opponents_move', move)
                         print("------------------------------------------------------------------------------------------------")
                     
                     # sending the myMove event with the gameId, the moves and the move function as arguments

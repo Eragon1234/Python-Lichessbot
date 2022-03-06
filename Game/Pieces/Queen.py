@@ -1,8 +1,10 @@
 import os, sys
+
 sys.path.append(os.getcwd())
 
 from Game.Pieces.Bishop import Bishop
 from Game.Pieces.Rook import Rook
+
 
 class Queen:
     value = 90
@@ -17,16 +19,16 @@ class Queen:
         else:
             self.value = self.value * -1
 
-    def generatePossiblePositions(self, currentPosition, board):
+    def generate_possible_positions(self, currentPosition, board):
         bishop = Bishop(self.isWhite)
         rook = Rook(self.isWhite)
-        rookPositions = rook.generatePossiblePositions(currentPosition, board)
-        bishopPositions = bishop.generatePossiblePositions(currentPosition, board)
+        rookPositions = rook.generate_possible_positions(currentPosition, board)
+        bishopPositions = bishop.generate_possible_positions(currentPosition, board)
         positions = rookPositions + bishopPositions
         self.positions = positions
         return positions
 
-    def getValue(self, position=False):
+    def get_value(self, position=False):
         if self.isWhite:
             directionMultiplier = 1
         else:

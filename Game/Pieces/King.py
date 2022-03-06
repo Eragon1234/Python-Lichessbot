@@ -10,7 +10,7 @@ class King:
         else:
             self.value = self.value * -1
 
-    def generatePossiblePositions(self, currentPosition, board):
+    def generate_possible_positions(self, currentPosition, board):
         positions = []
         for x in range(currentPosition[0] - 1, currentPosition[0] + 2):
             for y in range(currentPosition[1] - 1, currentPosition[1] + 2):
@@ -25,7 +25,7 @@ class King:
         self.positions = positions
         return positions
 
-    def getValue(self, position=False):
+    def get_value(self, position=False):
         if self.isWhite:
             directionMultiplier = 1
         else:

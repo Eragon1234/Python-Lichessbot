@@ -10,7 +10,7 @@ class Bishop:
         else:
             self.value = self.value * -1
 
-    def generatePossiblePositions(self, currentPosition, board):
+    def generate_possible_positions(self, currentPosition, board):
         positions = []
 
         x = currentPosition[0]
@@ -73,7 +73,7 @@ class Bishop:
         self.positions = positions
         return positions
 
-    def getValue(self, position=False):
+    def get_value(self, position=False):
         if self.isWhite:
             directionMultiplier = 1
         else:

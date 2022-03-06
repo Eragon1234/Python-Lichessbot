@@ -10,7 +10,7 @@ class Pawn:
         else:
             self.value = self.value * -1
 
-    def generatePossiblePositions(self, currentPosition, board):
+    def generate_possible_positions(self, currentPosition, board):
         positions = []
         if self.isWhite:
             directionMultiplier = 1
@@ -54,7 +54,7 @@ class Pawn:
         self.positions = positions
         return positions
 
-    def getValue(self, position=False):
+    def get_value(self, position=False):
         if self.isWhite:
             directionMultiplier = 1
         else:
