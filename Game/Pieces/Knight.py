@@ -3,86 +3,62 @@ class Knight:
     short = 'n'
     positions = []
 
-    def __init__(self, isWhite):
-        self.isWhite = isWhite
+    def __init__(self, is_white):
+        self.isWhite = is_white
         if self.isWhite:
             self.short = self.short.upper()
+            self.direction_multiplier = 1
         else:
             self.value = self.value * -1
+            self.direction_multiplier = -1
     
-    def generate_possible_positions(self, currentPosition, board):
+    def generate_possible_positions(self, current_position, board):
         positions = []
-        x = currentPosition[0] - 1
-        y = currentPosition[1] - 2
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] - 1
+        y = current_position[1] - 2
+        self.check_if_position_is_legal(board, positions, x, y)
         
-        x = currentPosition[0] + 1
-        y = currentPosition[1] - 2
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] + 1
+        y = current_position[1] - 2
+        self.check_if_position_is_legal(board, positions, x, y)
         
-        x = currentPosition[0] + 2
-        y = currentPosition[1] + 1
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] + 2
+        y = current_position[1] + 1
+        self.check_if_position_is_legal(board, positions, x, y)
 
-        x = currentPosition[0] + 1
-        y = currentPosition[1] + 2
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] + 1
+        y = current_position[1] + 2
+        self.check_if_position_is_legal(board, positions, x, y)
 
-        x = currentPosition[0] - 1
-        y = currentPosition[1] + 2
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] - 1
+        y = current_position[1] + 2
+        self.check_if_position_is_legal(board, positions, x, y)
         
-        x = currentPosition[0] - 2
-        y = currentPosition[1] + 1
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] - 2
+        y = current_position[1] + 1
+        self.check_if_position_is_legal(board, positions, x, y)
 
-        x = currentPosition[0] - 2 
-        y = currentPosition[1] - 1
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] - 2
+        y = current_position[1] - 1
+        self.check_if_position_is_legal(board, positions, x, y)
         
-        x = currentPosition[0] + 2
-        y = currentPosition[1] - 1
-        if x >= 0 and y >= 0 and x <= 7 and y <= 7:
-            position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if not (targetFieldIsWhite == self.isWhite):
-                positions.append(position)
+        x = current_position[0] + 2
+        y = current_position[1] - 1
+        self.check_if_position_is_legal(board, positions, x, y)
 
-        positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
+        positions = list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
         self.positions = positions
         return positions
 
-    def get_value(self, position=False):
-        if self.isWhite:
-            directionMultiplier = 1
-        else:
-            directionMultiplier = -1
-        return self.value + ((len(self.positions) / 100) * directionMultiplier)
+    def check_if_position_is_legal(self, board, positions, x, y):
+        if 0 <= x <= 7 and 0 <= y <= 7:
+            position = (x, y)
+            target_field_is_white = board[y][x]
+            if not (target_field_is_white == self.isWhite):
+                positions.append(position)
+
+    def get_value(self, position=(0, 0)):
+        possible_moves_bonus = (len(self.positions) / 100) * self.direction_multiplier
+        rim_position_deduction = abs((position[0] * position[1] - 15) / 15) * self.direction_multiplier
+
+        return self.value + possible_moves_bonus + rim_position_deduction
