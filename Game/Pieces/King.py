@@ -17,7 +17,7 @@ class King(AbstractPiece):
         for x in range(current_position[0] - 1, current_position[0] + 2):
             for y in range(current_position[1] - 1, current_position[1] + 2):
                 position = ( x, y )
-                if x >= 0 and y >= 0 and x <= 7 and y <= 7:
+                if 0 <= x <= 7 and 0 <= y <= 7:
                     targetFieldIsWhite = board[y][x]
                     if targetFieldIsWhite == self.isWhite:
                         continue
