@@ -16,45 +16,45 @@ class Rook(AbstractPiece):
         positions = []
         for x in range(current_position[0] + 1, 8):
             position = (x, current_position[1])
-            targetFieldIsWhite = board[current_position[1]][x]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[current_position[1]][x]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:
                 positions.append(position)
         for x in range(current_position[0] - 1, -1, -1):
             position = (x, current_position[1])
-            targetFieldIsWhite = board[current_position[1]][x]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[current_position[1]][x]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:
                 positions.append(position)
         for y in range(current_position[1] + 1, 8):
             position = (current_position[0], y)
-            targetFieldIsWhite = board[y][current_position[0]]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[y][current_position[0]]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:
                 positions.append(position)
         for y in range(current_position[1] - 1, -1, -1):
             position = (current_position[0], y)
-            targetFieldIsWhite = board[y][current_position[0]]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[y][current_position[0]]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:
                 positions.append(position)
-        positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
+        positions = list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
         self.position = position
         self.positions = positions
         return positions

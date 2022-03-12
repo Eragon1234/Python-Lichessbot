@@ -21,10 +21,10 @@ class Bishop(AbstractPiece):
             x += 1
             y += 1
             position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[y][x]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:
@@ -35,10 +35,10 @@ class Bishop(AbstractPiece):
             x -= 1
             y -= 1
             position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[y][x]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:
@@ -49,10 +49,10 @@ class Bishop(AbstractPiece):
             x += 1
             y -= 1
             position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[y][x]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:
@@ -63,10 +63,10 @@ class Bishop(AbstractPiece):
             x -= 1
             y += 1
             position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if targetFieldIsWhite == self.isWhite:
+            target_field_is_white = board[y][x]
+            if target_field_is_white == self.isWhite:
                 break
-            elif targetFieldIsWhite != 'EmptyField':
+            elif target_field_is_white != 'EmptyField':
                 positions.append(position)
                 break
             else:

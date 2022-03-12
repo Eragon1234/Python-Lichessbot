@@ -17,9 +17,9 @@ class Queen(AbstractPiece):
     def generate_possible_positions(self, current_position, board):
         bishop = Bishop(self.isWhite)
         rook = Rook(self.isWhite)
-        rookPositions = rook.generate_possible_positions(current_position, board)
-        bishopPositions = bishop.generate_possible_positions(current_position, board)
-        positions = rookPositions + bishopPositions
+        rook_positions = rook.generate_possible_positions(current_position, board)
+        bishop_positions = bishop.generate_possible_positions(current_position, board)
+        positions = rook_positions + bishop_positions
         self.position = current_position
         self.positions = positions
         return positions

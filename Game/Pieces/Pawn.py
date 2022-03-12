@@ -4,6 +4,7 @@ sys.path.append(os.getcwd())
 
 from Game.Pieces.AbstractPiece import AbstractPiece
 
+
 class Pawn(AbstractPiece):
     value = 10
     short = 'p'
@@ -21,35 +22,34 @@ class Pawn(AbstractPiece):
         x = current_position[0]
         y = current_position[1] + (1 * directionMultiplier)
         position = (x, y)
-        if x >= 0 and x <= 7 and y >= 0 and y <= 7:
-            targetFieldIsEmpty = board[y][x]
-            if targetFieldIsEmpty == 'EmptyField':
+        if 0 <= x <= 7 and 0 <= y <= 7:
+            target_field_is_empty = board[y][x]
+            if target_field_is_empty == 'EmptyField':
                 positions.append(position)
                 y = current_position[1] + (2 * directionMultiplier)
-                enPassantPosition = (x, y)
-                if x >= 0 and x <= 7 and y >= 0 and y <= 7:
-                    fieldIsEmpty = board[y][x] == 'EmptyField'
-                    if fieldIsEmpty:
+                en_passant_position = (x, y)
+                if 0 <= x <= 7 and 0 <= y <= 7:
+                    field_is_empty = board[y][x] == 'EmptyField'
+                    if field_is_empty:
                         if self.isWhite and current_position[1] == 1:
-                            positions.append((enPassantPosition, ("enPassant", position)))
+                            positions.append((en_passant_position, ("enPassant", position)))
                         elif (not self.isWhite) and current_position[1] == 6:
-                            positions.append((enPassantPosition, ("enPassant", position)))
-
+                            positions.append((en_passant_position, ("enPassant", position)))
 
         y = current_position[1] + (1 * directionMultiplier)
 
         x = current_position[0] + 1
         if x >= 0 and x <= 7 and y >= 0 and y <= 7:
             position = (x, y)
-            targetFieldIsWhite = board[y][x] 
-            if (targetFieldIsWhite != self.isWhite) and (targetFieldIsWhite != "EmptyField"):
+            target_field_is_white = board[y][x]
+            if (target_field_is_white != self.isWhite) and (target_field_is_white != "EmptyField"):
                 positions.append(position)
 
         x = current_position[0] - 1
         if x >= 0 and x <= 7 and y >= 0 and y <= 7:
             position = (x, y)
-            targetFieldIsWhite = board[y][x]
-            if (targetFieldIsWhite != self.isWhite) and (targetFieldIsWhite != "EmptyField"):
+            target_field_is_white = board[y][x]
+            if (target_field_is_white != self.isWhite) and (target_field_is_white != "EmptyField"):
                 positions.append(position)
 
         self.position = position
