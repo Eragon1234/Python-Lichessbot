@@ -22,7 +22,7 @@ class Engine:
         """
         forWhite = color == 'white'
         
-        bestMove = self.calculate_best_move(forWhite, 1)
+        bestMove = self.calculate_best_move(forWhite, 2)
         print("Evaluation:", bestMove[1])
         move = bestMove[0]
         print(move)

@@ -1,21 +1,23 @@
-class Bishop:
+import os, sys
+
+sys.path.append(os.getcwd())
+
+from Game.Pieces.AbstractPiece import AbstractPiece
+
+
+class Bishop(AbstractPiece):
     value = 30
     short = 'b'
-    positions = []
 
-    def __init__(self, isWhite):
-        self.isWhite = isWhite
-        if self.isWhite:
-            self.short = self.short.upper()
-        else:
-            self.value = self.value * -1
+    def __init__(self, is_white):
+        super().__init__(is_white)
 
-    def generate_possible_positions(self, currentPosition, board):
+    def generate_possible_positions(self, current_position, board):
         positions = []
 
-        x = currentPosition[0]
-        y = currentPosition[1]
-        while x <= 6 and x >= -1 and y <= 6 and y >= -1:
+        x = current_position[0]
+        y = current_position[1]
+        while 6 >= x >= -1 and 6 >= y >= -1:
             x += 1
             y += 1
             position = (x, y)
@@ -27,13 +29,13 @@ class Bishop:
                 break
             else:
                 positions.append(position)
-        x = currentPosition[0]
-        y = currentPosition[1]
-        while x <= 7 and x >= 1 and y <= 7 and y >= 1:
+        x = current_position[0]
+        y = current_position[1]
+        while 1 <= x <= 7 and 1 <= y <= 7:
             x -= 1
             y -= 1
             position = (x, y)
-            targetFieldIsWhite = board[y][x] 
+            targetFieldIsWhite = board[y][x]
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -41,9 +43,9 @@ class Bishop:
                 break
             else:
                 positions.append(position)
-        x = currentPosition[0]
-        y = currentPosition[1]
-        while x <= 6 and x >= -1 and y <= 7 and y >= 1:
+        x = current_position[0]
+        y = current_position[1]
+        while 6 >= x >= -1 and 7 >= y >= 1:
             x += 1
             y -= 1
             position = (x, y)
@@ -55,13 +57,13 @@ class Bishop:
                 break
             else:
                 positions.append(position)
-        x = currentPosition[0]
-        y = currentPosition[1]
-        while x <= 7 and x >= 1 and y <= 6 and y >= -1:
+        x = current_position[0]
+        y = current_position[1]
+        while 7 >= x >= 1 and 6 >= y >= -1:
             x -= 1
             y += 1
             position = (x, y)
-            targetFieldIsWhite = board[y][x] 
+            targetFieldIsWhite = board[y][x]
             if targetFieldIsWhite == self.isWhite:
                 break
             elif targetFieldIsWhite != 'EmptyField':
@@ -69,13 +71,12 @@ class Bishop:
                 break
             else:
                 positions.append(position)
-        positions = list(filter(lambda position: position[0] >= 0 and position[0] <= 7 and position[1] >= 0 and position[1] <= 7, positions))
+        positions = list(
+            filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7,
+                   positions))
+        self.position = position
         self.positions = positions
         return positions
 
-    def get_value(self, position=False):
-        if self.isWhite:
-            directionMultiplier = 1
-        else:
-            directionMultiplier = -1
-        return self.value + ((len(self.positions) / 100) * directionMultiplier)
+    def get_value(self):
+        return self.value + ((len(self.positions) / 100) * self.direction_multiplier)

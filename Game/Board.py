@@ -70,7 +70,6 @@ class Board:
             newX = move[0][0]
             newY = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.enPassantField = self.coordinate_moves_into_uci([((newX, newY), (0, 0))])[0][:2]
-        print("enPassantField:", self.enPassantField)
 
     def unmove(self, move, board=False):
         self.colorBoard = False
@@ -98,22 +97,11 @@ class Board:
         """
         if not board:
             board = self
-        # converting the UCIMove into a coordinate move
-        move = self.uci_into_coordinate_move(move)
 
         # creating a deepcopy of the board
         board = deepcopy(board)
 
-        # getting the moving piece
-        movingPiece = board.board[move[0][1], move[0][0]]
-        # emptying the startField
-        board.board[move[0][1], move[0][0]] = EmptyField()
-        # setting the targetField to the movingPiece
-        board.board[move[1][1], move[1][0]] = movingPiece
-        # reseting the check to false
-        board.check = False
-
-        board.colorBoard = False
+        board.move(move)
 
         # generate key for access over testBoards array
         boardKey = self.generate_random_string(8)
@@ -186,6 +174,7 @@ class Board:
 
                     if king in tuple(board.board.flat):
                         isCheck = True
+                        print(move, "check")
 
                 if isCheck:
                     moves.remove(move)

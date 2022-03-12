@@ -4,33 +4,25 @@ sys.path.append(os.getcwd())
 
 from Game.Pieces.Bishop import Bishop
 from Game.Pieces.Rook import Rook
+from Game.Pieces.AbstractPiece import AbstractPiece
 
 
-class Queen:
+class Queen(AbstractPiece):
     value = 90
     short = 'q'
 
-    positions = []
+    def __init__(self, is_white):
+        super().__init__(is_white)
 
-    def __init__(self, isWhite):
-        self.isWhite = isWhite
-        if self.isWhite:
-            self.short = self.short.upper()
-        else:
-            self.value = self.value * -1
-
-    def generate_possible_positions(self, currentPosition, board):
+    def generate_possible_positions(self, current_position, board):
         bishop = Bishop(self.isWhite)
         rook = Rook(self.isWhite)
-        rookPositions = rook.generate_possible_positions(currentPosition, board)
-        bishopPositions = bishop.generate_possible_positions(currentPosition, board)
+        rookPositions = rook.generate_possible_positions(current_position, board)
+        bishopPositions = bishop.generate_possible_positions(current_position, board)
         positions = rookPositions + bishopPositions
+        self.position = current_position
         self.positions = positions
         return positions
 
-    def get_value(self, position=False):
-        if self.isWhite:
-            directionMultiplier = 1
-        else:
-            directionMultiplier = -1
-        return self.value + ((len(self.positions) / 100) * directionMultiplier)
+    def get_value(self):
+        return self.value + ((len(self.positions) / 100) * self.direction_multiplier)
