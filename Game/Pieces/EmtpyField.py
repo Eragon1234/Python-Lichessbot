@@ -1,4 +1,11 @@
-class EmptyField:
+import os, sys
+
+sys.path.append(os.getcwd())
+
+from Game.Pieces.AbstractPiece import AbstractPiece
+
+
+class EmptyField(AbstractPiece):
     isWhite = "EmptyField"
     short = 'e'
     value = 0
@@ -6,7 +13,7 @@ class EmptyField:
     def __init__(self):
         pass
 
-    def generate_possible_positions(self, currentPosition, board):
+    def generate_possible_positions(self, current_position, board):
         return []
 
     def get_value(self, position=False):
