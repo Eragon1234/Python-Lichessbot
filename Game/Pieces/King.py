@@ -13,19 +13,18 @@ class King(AbstractPiece):
         super().__init__(is_white)
 
     def generate_possible_positions(self, current_position, board):
+        self.position = current_position
+
         positions = []
         for x in range(current_position[0] - 1, current_position[0] + 2):
             for y in range(current_position[1] - 1, current_position[1] + 2):
-                position = ( x, y )
-                if 0 <= x <= 7 and 0 <= y <= 7:
-                    targetFieldIsWhite = board[y][x]
-                    if targetFieldIsWhite == self.isWhite:
-                        continue
-                    elif position != current_position:
-                        positions.append(position)
-        positions = list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
-        self.position = position
+                position = (x, y)
+                self.check_if_position_is_legal(board, positions, *position)
+
+        positions = self.filter_positions(positions)
+
         self.positions = positions
+
         return positions
 
     def get_value(self):
