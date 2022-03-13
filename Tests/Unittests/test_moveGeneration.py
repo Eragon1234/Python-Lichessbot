@@ -5,6 +5,7 @@ import unittest
 
 
 class TestMoveGeneration(unittest.TestCase):
+    maxDiff = None
 
     def setUp(self):
         from Game.Board import Board

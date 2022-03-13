@@ -10,6 +10,7 @@ class Engine:
 
     def __init__(self, fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = Board(fen)
+        self.positions = False
 
     def move(self, gameId, color, moves, moveFn):
         """ handles the calculations for the best possible moves
@@ -47,6 +48,8 @@ class Engine:
     
     def max(self, depth, alpha, beta, board, positions={}, returnMove=False):
         moves = board.generate_possible_moves(True)
+        if returnMove:
+            moves.sort(key=self.get_sort_value_for_move)
 
         if len(moves) == 0:
             return float("-inf")
@@ -75,11 +78,14 @@ class Engine:
             positions[shortBoard] = maxValue
             self.board.pop_test_board(boardKey)
         if returnMove:
+            self.positions = positions
             return maxMove, maxValue
         return maxValue
 
     def min(self, depth, alpha, beta, board, positions={}, returnMove=False):
         moves = board.generate_possible_moves(False)
+        if returnMove:
+            moves.sort(key=self.get_sort_value_for_move)
 
         if len(moves) == 0:
             return float("inf")
@@ -124,3 +130,11 @@ class Engine:
         board = self.board.pop_test_board(self.board.test_move(move, board))
         evaluation = board.calculate_material_difference()
         return evaluation
+
+    def get_sort_value_for_move(self, move):
+        if self.positions:
+            board = self.board.pop_test_board(self.board.test_move(move))
+            short_board = board.generate_short_board()
+            if short_board in self.positions:
+                return self.positions.get(short_board)
+        return self.get_value_difference_for_move(move)
