@@ -160,9 +160,9 @@ class Board:
                 test_moves = board.generate_possible_moves(not forWhite, checkForCheck=False)
                 max_evaluation = float("-inf")
                 min_evaluation = float("inf")
-                is_check = True
-                for testMove in test_moves:
-                    board = self.pop_test_board(self.test_move(testMove, board))
+                is_check = False
+                for test_move in test_moves:
+                    board = self.pop_test_board(self.test_move(test_move, board))
                     evaluation = board.calculate_value_difference()
                     if evaluation > max_evaluation:
                         max_evaluation = evaluation
@@ -170,9 +170,13 @@ class Board:
                     if evaluation < min_evaluation:
                         min_evaluation = evaluation
 
+                    found_king = False
                     for piece in list(board.board.flat):
                         if piece.short.upper() == "K" and piece.is_white == forWhite:
-                            is_check = False
+                            found_king = True
+
+                    if not found_king:
+                        is_check = True
 
                 if is_check:
                     moves.remove(move)
@@ -183,7 +187,8 @@ class Board:
                 else:
                     evaluations[move] = min_evaluation
 
-            moves.sort(key=lambda move: evaluations.get(move), reverse=forWhite)
+            if len(moves) == len(evaluations):
+                moves.sort(key=lambda move: evaluations.get(move), reverse=forWhite)
         else:
             np.random.shuffle(moves)
 
