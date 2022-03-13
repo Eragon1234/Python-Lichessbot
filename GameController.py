@@ -2,6 +2,7 @@ import requests
 import json
 import _thread
 
+
 class GameController:
     """
     handles the connection to the lichess bot api with an event emmiter
@@ -44,7 +45,7 @@ class GameController:
 
                 # checking if the event type is gameStart
                 elif event['type'] == 'gameStart':
-                    
+
                     # getting the gameId, the color the engine is playing and data about the opponent
                     gameId = event['game']['gameId']
                     self.color = event['game']['color']
@@ -64,11 +65,11 @@ class GameController:
         # if event already exists append function
         if event in self.events.keys():
             self.events[event].append(fn)
-        
+
         # else create a new array for the functions with the event name as the key
         else:
             self.events[event] = []
-            self.events[event].append(fn) 
+            self.events[event].append(fn)
 
     def emit(self, event, *params):
         """ calls the assigned functions to the passed event with the given parameters
@@ -92,7 +93,7 @@ class GameController:
             move (UCIMove): the move to play in UCI notation
         """
         r = self.s.post(f'https://lichess.org/api/bot/game/{gameId}/move/{move}')
-    
+
     def accept_challenge(self, challengeId, *params):
         """ accepts the challenge with the passed challengeId
 
@@ -100,7 +101,7 @@ class GameController:
             challengeId (string): the challengeId of the challenge to be accepted
         """
         self.s.post(f'https://lichess.org/api/challenge/{challengeId}/accept')
-    
+
     def stream_game(self, gameId, *params):
         """ subscribing to the stream of events for the game with the passed gameId
 
@@ -134,26 +135,26 @@ class GameController:
                         myMove = True
                     else:
                         myMove = False
-                    
+
                     # inverting myMove if I'm black
                     if self.color == 'black':
                         myMove = not myMove
-                
+
                 # checking if it's myMove
                 if myMove:
                     # parsing the moves as an array
                     moves = moves.split(" ")
                     # checking if last move is from my opponent
-                    
+
                     if len(moves) >= 1 and len(moves[-1]) >= 4:
                         # sending the opponents_move event with the move as an argument
                         move = moves[-1]
                         print("opponents turn")
                         print("opponent moved:", move)
                         self.emit('opponents_move', move)
-                        print("------------------------------------------------------------------------------------------------")
-                    
+                        print("---------------------------------------------------------------------------------------")
+
                     # sending the myMove event with the gameId, the moves and the move function as arguments
                     print("myMove")
                     self.emit('myMove', gameId, self.color, moves, self.move)
-                    print("------------------------------------------------------------------------------------------------")
+                    print("-------------------------------------------------------------------------------------------")

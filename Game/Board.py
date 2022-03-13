@@ -154,8 +154,9 @@ class Board:
         moves = self.coordinate_moves_into_uci(coordinateMoves)
         evaluations = {}
 
+        filtered_moves = []
         if checkForCheck:
-            for move in moves:
+            for move in tuple(moves):
                 board = self.pop_test_board(self.test_move(move))
                 test_moves = board.generate_possible_moves(not forWhite, checkForCheck=False)
                 max_evaluation = float("-inf")
@@ -212,7 +213,8 @@ class Board:
         materialDifference = np.sum([piece.get_value() for piece in list(self.board.flat)])
         return materialDifference
 
-    def generate_coordinates_with_index(self, index):
+    @staticmethod
+    def generate_coordinates_with_index(index):
         """ calculates the coordinates of a piece on the given index in 1d array with the length 64
 
         Args:
@@ -223,7 +225,7 @@ class Board:
         """
         x = index % 8
         y = index // 8
-        return (x, y)
+        return x, y
 
     def generate_color_board(self):
         """ converts the current board state into a board with True, False and EmptyField as values that are standing for whitePiece, blackPiece and EmptyField
