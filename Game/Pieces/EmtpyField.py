@@ -6,7 +6,7 @@ from Game.Pieces.AbstractPiece import AbstractPiece
 
 
 class EmptyField(AbstractPiece):
-    isWhite = "EmptyField"
+    is_white = "EmptyField"
     short = 'e'
     value = 0
 

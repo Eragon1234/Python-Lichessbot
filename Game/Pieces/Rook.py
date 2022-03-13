@@ -13,49 +13,39 @@ class Rook(AbstractPiece):
         super().__init__(is_white)
 
     def generate_possible_positions(self, current_position, board):
+        self.position = current_position
+
         positions = []
         for x in range(current_position[0] + 1, 8):
             position = (x, current_position[1])
-            target_field_is_white = board[current_position[1]][x]
-            if target_field_is_white == self.isWhite:
+            target_field = self.check_if_position_is_legal(board, positions, *position)
+            if (not self.is_white) == target_field:
                 break
-            elif target_field_is_white != 'EmptyField':
-                positions.append(position)
+            elif target_field is None:
                 break
-            else:
-                positions.append(position)
         for x in range(current_position[0] - 1, -1, -1):
             position = (x, current_position[1])
-            target_field_is_white = board[current_position[1]][x]
-            if target_field_is_white == self.isWhite:
+            target_field = self.check_if_position_is_legal(board, positions, *position)
+            if (not self.is_white) == target_field:
                 break
-            elif target_field_is_white != 'EmptyField':
-                positions.append(position)
+            elif target_field is None:
                 break
-            else:
-                positions.append(position)
         for y in range(current_position[1] + 1, 8):
             position = (current_position[0], y)
-            target_field_is_white = board[y][current_position[0]]
-            if target_field_is_white == self.isWhite:
+            target_field = self.check_if_position_is_legal(board, positions, *position)
+            if (not self.is_white) == target_field:
                 break
-            elif target_field_is_white != 'EmptyField':
-                positions.append(position)
+            elif target_field is None:
                 break
-            else:
-                positions.append(position)
         for y in range(current_position[1] - 1, -1, -1):
             position = (current_position[0], y)
-            target_field_is_white = board[y][current_position[0]]
-            if target_field_is_white == self.isWhite:
+            target_field = self.check_if_position_is_legal(board, positions, *position)
+            if (not self.is_white) == target_field:
                 break
-            elif target_field_is_white != 'EmptyField':
-                positions.append(position)
+            elif target_field is None:
                 break
-            else:
-                positions.append(position)
-        positions = list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
-        self.position = position
+        positions = self.filter_positions(positions)
+
         self.positions = positions
         return positions
 

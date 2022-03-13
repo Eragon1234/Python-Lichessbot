@@ -142,7 +142,7 @@ class Board:
             coordinates = (coordinates[1][0], coordinates[0][0])
 
             # if piece is the color for which to generate moves for
-            if piece.isWhite == forWhite:
+            if piece.is_white == forWhite:
                 # generating possible positions
                 newPositions = piece.generate_possible_positions(coordinates, colorBoard)
                 # appending every position with the start and end coordinates
@@ -150,8 +150,6 @@ class Board:
                     if len(str(newPosition[1])) > 1:
                         newPosition = newPosition[0]
                     coordinateMoves.append((coordinates, newPosition))
-            if piece.short.upper() == "K":
-                king = piece
         # converting coordinate moves into UCIMoves
         moves = self.coordinate_moves_into_uci(coordinateMoves)
         evaluations = {}
@@ -159,31 +157,31 @@ class Board:
         if checkForCheck:
             for move in moves:
                 board = self.pop_test_board(self.test_move(move))
-                testMoves = board.generate_possible_moves(not forWhite, checkForCheck=False)
-                max = float("-inf")
-                min = float("inf")
-                isCheck = False
-                for testMove in testMoves:
+                test_moves = board.generate_possible_moves(not forWhite, checkForCheck=False)
+                max_evaluation = float("-inf")
+                min_evaluation = float("inf")
+                is_check = True
+                for testMove in test_moves:
                     board = self.pop_test_board(self.test_move(testMove, board))
                     evaluation = board.calculate_value_difference()
-                    if evaluation > max:
-                        max = evaluation
+                    if evaluation > max_evaluation:
+                        max_evaluation = evaluation
 
-                    if evaluation < min:
-                        min = evaluation
+                    if evaluation < min_evaluation:
+                        min_evaluation = evaluation
 
-                    if king in tuple(board.board.flat):
-                        isCheck = True
-                        print(move, "check")
+                    for piece in list(board.board.flat):
+                        if piece.short.upper() == "K" and piece.is_white == forWhite:
+                            is_check = False
 
-                if isCheck:
+                if is_check:
                     moves.remove(move)
                     continue
 
                 if forWhite:
-                    evaluations[move] = max
+                    evaluations[move] = max_evaluation
                 else:
-                    evaluations[move] = min
+                    evaluations[move] = min_evaluation
 
             moves.sort(key=lambda move: evaluations.get(move), reverse=forWhite)
         else:
@@ -234,7 +232,7 @@ class Board:
         for row in self.board:
             colorBoard.append([])
             for piece in row:
-                colorBoard[-1].append(piece.isWhite)
+                colorBoard[-1].append(piece.is_white)
 
         if self.enPassantField != "-":
             enPassantCoordinate = self.uci_into_coordinate_move(f"{self.enPassantField}h7")[:2][0]
