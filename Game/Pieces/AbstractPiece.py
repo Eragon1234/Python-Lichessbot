@@ -4,6 +4,16 @@ import abc
 class AbstractPiece(abc.ABC):
     position = (0, 0)
     positions = []
+    bonus_map = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0]
+    ]
 
     def __init__(self, is_white):
         self.is_white = is_white
@@ -39,6 +49,8 @@ class AbstractPiece(abc.ABC):
     def generate_possible_positions(self, current_position, board):
         pass
 
-    @abc.abstractmethod
     def get_value(self):
-        pass
+        possible_moves_bonus = (len(self.positions) / 100) * self.direction_multiplier
+        position_bonus = self.bonus_map[self.position[1]][self.position[0]]
+
+        return self.value + possible_moves_bonus + position_bonus

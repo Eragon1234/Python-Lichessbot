@@ -8,6 +8,16 @@ from Game.Pieces.AbstractPiece import AbstractPiece
 class Bishop(AbstractPiece):
     value = 30
     short = 'b'
+    bonus_map = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 5, 0, 3, 3, 0, 5, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 5, 0, 0, 5, 0, 0],
+        [0, 0, 5, 0, 0, 5, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 5, 0, 3, 3, 0, 5, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0]
+    ]
 
     def __init__(self, is_white):
         super().__init__(is_white)
@@ -68,6 +78,3 @@ class Bishop(AbstractPiece):
         self.positions = positions
 
         return positions
-
-    def get_value(self):
-        return self.value + ((len(self.positions) / 100) * self.direction_multiplier)

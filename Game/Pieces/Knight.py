@@ -8,6 +8,16 @@ from Game.Pieces.AbstractPiece import AbstractPiece
 class Knight(AbstractPiece):
     value = 30
     short = 'n'
+    bonus_map = [
+        [-5, -5, -5, -5, -5, -5, -5, -5],
+        [-5, 0, 0, 0, 0, 0, 0, -5],
+        [-5, 0, 5, 0, 0, 5, 0, -5],
+        [-5, 0, 0, 3, 3, 0, 0, -5],
+        [-5, 0, 0, 3, 3, 0, 0, -5],
+        [-5, 0, 5, 0, 0, 5, 0, -5],
+        [-5, 0, 0, 0, 0, 0, 0, -5],
+        [-5, -5, -5, -5, -5, -5, -5, -5]
+    ]
 
     def __init__(self, is_white):
         super().__init__(is_white)
@@ -53,9 +63,3 @@ class Knight(AbstractPiece):
         self.positions = positions
 
         return positions
-
-    def get_value(self, position=(0, 0)):
-        possible_moves_bonus = (len(self.positions) / 100) * self.direction_multiplier
-        rim_position_deduction = abs((position[0] * position[1] - 15) / 15) * self.direction_multiplier
-
-        return self.value + possible_moves_bonus + rim_position_deduction
