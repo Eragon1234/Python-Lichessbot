@@ -46,10 +46,10 @@ class Engine:
         
         return move
     
-    def max(self, depth, alpha, beta, board, positions={}, returnMove=False):
+    def max(self, depth, alpha, beta, board, positions=None, returnMove=False):
+        if positions is None:
+            positions = {}
         moves = board.generate_possible_moves(True)
-        if returnMove:
-            moves.sort(key=self.get_sort_value_for_move)
 
         if len(moves) == 0:
             return float("-inf")
@@ -62,10 +62,10 @@ class Engine:
 
         for move in moves:
             boardKey = self.board.test_move(move, board)
-            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generate_short_board()).flat)
+            # shortBoard = tuple(np.array(self.board.testBoards[boardKey].generate_short_board()).flat)
 
-            if shortBoard in positions and not returnMove:
-                return positions.get(shortBoard)
+            # if shortBoard in positions and not returnMove:
+            #     return positions.get(shortBoard)
             
             evaluation = self.min(depth - 1, maxValue, beta, board.testBoards[boardKey], positions)
             evaluation = int(evaluation)
@@ -75,17 +75,17 @@ class Engine:
                 if maxValue >= beta:
                     break
 
-            positions[shortBoard] = maxValue
+            # positions[shortBoard] = maxValue
             self.board.pop_test_board(boardKey)
         if returnMove:
             self.positions = positions
             return maxMove, maxValue
         return maxValue
 
-    def min(self, depth, alpha, beta, board, positions={}, returnMove=False):
+    def min(self, depth, alpha, beta, board, positions=None, returnMove=False):
+        if positions is None:
+            positions = {}
         moves = board.generate_possible_moves(False)
-        if returnMove:
-            moves.sort(key=self.get_sort_value_for_move)
 
         if len(moves) == 0:
             return float("inf")
@@ -98,10 +98,11 @@ class Engine:
 
         for move in moves:
             boardKey = self.board.test_move(move, board)
-            shortBoard = tuple(np.array(self.board.testBoards[boardKey].generate_short_board()).flat)
+            # TODO: create performant variation of position evaluation storing
+            # shortBoard = tuple(np.array(self.board.testBoards[boardKey].generate_short_board()).flat)
 
-            if shortBoard in positions and not returnMove:
-                return positions.get(shortBoard)
+            # if shortBoard in positions and not returnMove:
+            #     return positions.get(shortBoard)
 
             evaluation = self.max(depth - 1, alpha, minValue, board.testBoards[boardKey], positions)
             evaluation = int(evaluation)
@@ -111,7 +112,7 @@ class Engine:
                 if minValue <= alpha:
                     break
 
-            positions[shortBoard] = minValue
+            # positions[shortBoard] = minValue
             self.board.pop_test_board(boardKey)
         if returnMove:
             return minMove, minValue
@@ -132,9 +133,9 @@ class Engine:
         return evaluation
 
     def get_sort_value_for_move(self, move):
-        if self.positions:
-            board = self.board.pop_test_board(self.board.test_move(move))
-            short_board = board.generate_short_board()
-            if short_board in self.positions:
-                return self.positions.get(short_board)
+        # if self.positions:
+        #     board = self.board.pop_test_board(self.board.test_move(move))
+        #     short_board = board.generate_short_board()
+        #     if short_board in self.positions:
+        #         return self.positions.get(short_board)
         return self.get_value_difference_for_move(move)
