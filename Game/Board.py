@@ -41,7 +41,8 @@ class Board:
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         # loads the board with the given fen
         self.load_board_with_fen(fen)
-        self.colorBoard = False
+        self.color_board = None
+        self.short_board = None
 
     def move(self, move):
         """ makes a move on the board
@@ -49,44 +50,42 @@ class Board:
         Args:
             move (UCIMove): the move to move
         """
-        self.colorBoard = False
+        self.color_board = None
+        self.short_board = None
         self.enPassantField = "-"
 
-        # reseting the check to false
-        self.check = False
         # appending the move to the array of moves
         self.moves.append(move)
 
         # converting the UCIMove into a coordinate move
         move = self.uci_into_coordinate_move(move)
         # getting the moving piece
-        movingPiece = self.board[move[0][1], move[0][0]]
+        moving_piece = self.board[move[0][1], move[0][0]]
         # emptying the startField
         self.board[move[0][1], move[0][0]] = EmptyField()
-        # setting the targetField to the movingPiece
-        self.board[move[1][1], move[1][0]] = movingPiece
+        # setting the targetField to the moving_piece
+        self.board[move[1][1], move[1][0]] = moving_piece
 
-        if movingPiece.short.upper() == "P" and abs(move[0][1] - move[1][1]) == 2:
-            newX = move[0][0]
-            newY = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
-            self.enPassantField = self.coordinate_moves_into_uci([((newX, newY), (0, 0))])[0][:2]
+        if moving_piece.short.upper() == "P" and abs(move[0][1] - move[1][1]) == 2:
+            new_x = move[0][0]
+            new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
+            self.enPassantField = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
 
-    def unmove(self, move, board=False):
-        self.colorBoard = False
+    def unmove(self, move):
+        self.color_board = None
+        self.short_board = None
 
-        # reseting the check to false
-        self.check = False
         # removing the move to the array of moves
         self.moves.remove(move)
         # converting the UCIMove into a coordinate move
         move = self.uci_into_coordinate_move(move)
         # getting the moved piece
-        movedPiece = self.board[move[1][1], move[1][0]]
+        moved_piece = self.board[move[1][1], move[1][0]]
         # adding the moved piece to the startField
-        self.board[move[0][1], move[0][0]] = movedPiece
+        self.board[move[0][1], move[0][0]] = moved_piece
         self.board[move[1][1], move[1][0]] = EmptyField()
 
-    def test_move(self, move, board=False):
+    def test_move(self, move, board=None):
         """ creates a copy of the board on which the move is moved
 
         Args:
@@ -95,7 +94,7 @@ class Board:
         Returns:
             string: a key to get the board from the testBoards dictionary
         """
-        if not board:
+        if board is None:
             board = self
 
         # creating a deepcopy of the board
@@ -104,61 +103,61 @@ class Board:
         board.move(move)
 
         # generate key for access over testBoards array
-        boardKey = self.generate_random_string(8)
-        while boardKey in self.testBoards.keys():
-            boardKey = self.generate_random_string(8)
+        board_key = self.generate_random_string(8)
+        while board_key in self.testBoards.keys():
+            board_key = self.generate_random_string(8)
 
         # adding the board at the random key at the testBoards array
-        self.testBoards[boardKey] = board
+        self.testBoards[board_key] = board
 
-        return boardKey
+        return board_key
 
-    def pop_test_board(self, boardKey):
+    def pop_test_board(self, board_key):
         """ removes and returns the board with the given key
 
         Args:
-            boardKey (string): the key to access the testBoard
+            board_key (string): the key to access the testBoard
 
         Returns:
             Board: the board at the given key
         """
-        return self.testBoards.pop(boardKey)
+        return self.testBoards.pop(board_key)
 
-    def generate_possible_moves(self, forWhite=True, checkForCheck=True):
+    def generate_possible_moves(self, for_white=True, check_for_check=True):
         """ generating all possible moves in the current position
 
         Args:
-            forWhite (bool): for which color to generate the moves for. Defaults to True.
+            for_white (bool): for which color to generate the moves for. Defaults to True.
+            check_for_check (bool): if legal or pseudo_legal moves should be returned. Defaults to True
 
         Returns:
             list: a list of possible moves in UCIMove format
         """
-        coordinateMoves = []
-        # generating the colorBoard as a parameter for the generate_possible_positions method of the pieces
-        colorBoard = self.generate_color_board()
+        coordinate_moves = []
+        # generating the color_board as a parameter for the generate_possible_positions method of the pieces
+        color_board = self.generate_color_board()
         for piece in list(self.board.flat):
             # getting the coordinates of the piece in the flattened array
             coordinates = np.where(self.board == piece)
             coordinates = (coordinates[1][0], coordinates[0][0])
 
             # if piece is the color for which to generate moves for
-            if piece.is_white == forWhite:
+            if piece.is_white == for_white:
                 # generating possible positions
-                newPositions = piece.generate_possible_positions(coordinates, colorBoard)
+                new_positions = piece.generate_possible_positions(coordinates, color_board)
                 # appending every position with the start and end coordinates
-                for newPosition in newPositions:
-                    if len(str(newPosition[1])) > 1:
-                        newPosition = newPosition[0]
-                    coordinateMoves.append((coordinates, newPosition))
+                for new_position in new_positions:
+                    if len(str(new_position[1])) > 1:
+                        new_position = new_position[0]
+                    coordinate_moves.append((coordinates, new_position))
         # converting coordinate moves into UCIMoves
-        moves = self.coordinate_moves_into_uci(coordinateMoves)
+        moves = self.coordinate_moves_into_uci(coordinate_moves)
         evaluations = {}
 
-        filtered_moves = []
-        if checkForCheck:
+        if check_for_check:
             for move in tuple(moves):
                 board = self.pop_test_board(self.test_move(move))
-                test_moves = board.generate_possible_moves(not forWhite, checkForCheck=False)
+                test_moves = board.generate_possible_moves(not for_white, check_for_check=False)
                 max_evaluation = float("-inf")
                 min_evaluation = float("inf")
                 is_check = False
@@ -173,7 +172,7 @@ class Board:
 
                     found_king = False
                     for piece in list(board.board.flat):
-                        if piece.short.upper() == "K" and piece.is_white == forWhite:
+                        if piece.short.upper() == "K" and piece.is_white == for_white:
                             found_king = True
 
                     if not found_king:
@@ -183,13 +182,13 @@ class Board:
                     moves.remove(move)
                     continue
 
-                if forWhite:
+                if for_white:
                     evaluations[move] = max_evaluation
                 else:
                     evaluations[move] = min_evaluation
 
             if len(moves) == len(evaluations):
-                moves.sort(key=lambda move: evaluations.get(move), reverse=forWhite)
+                moves.sort(key=lambda move: evaluations.get(move), reverse=for_white)
         else:
             np.random.shuffle(moves)
 
@@ -201,8 +200,8 @@ class Board:
         Returns:
             int: the material difference
         """
-        materialDifference = np.sum([piece.value for piece in list(self.board.flat)])
-        return materialDifference
+        material_difference = np.sum([piece.value for piece in list(self.board.flat)])
+        return material_difference
 
     def calculate_value_difference(self):
         """ calculates the difference of the values of the pieces between white and black
@@ -210,8 +209,8 @@ class Board:
         Returns:
             int: the material difference
         """
-        materialDifference = np.sum([piece.get_value() for piece in list(self.board.flat)])
-        return materialDifference
+        material_difference = np.sum([piece.get_value() for piece in list(self.board.flat)])
+        return material_difference
 
     @staticmethod
     def generate_coordinates_with_index(index):
@@ -228,46 +227,54 @@ class Board:
         return x, y
 
     def generate_color_board(self):
-        """ converts the current board state into a board with True, False and EmptyField as values that are standing for whitePiece, blackPiece and EmptyField
+        """ converts the current board state into a board with True, False and EmptyField standing for the colors
 
         Returns:
             list: a 2d array with values True for white, False for black and EmptyField for an empty field
         """
-        if self.colorBoard:
-            return self.colorBoard
-        colorBoard = []
+        if self.color_board is not None:
+            return self.color_board
+        color_board = []
         for row in self.board:
-            colorBoard.append([])
+            color_board.append([])
             for piece in row:
-                colorBoard[-1].append(piece.is_white)
+                color_board[-1].append(piece.is_white)
 
         if self.enPassantField != "-":
-            enPassantCoordinate = self.uci_into_coordinate_move(f"{self.enPassantField}h7")[:2][0]
-            colorBoard[enPassantCoordinate[1]][enPassantCoordinate[0]] = "enemy"
+            en_passant_coordinate = self.uci_into_coordinate_move(f"{self.enPassantField}h7")[:2][0]
+            color_board[en_passant_coordinate[1]][en_passant_coordinate[0]] = "enemy"
 
-        self.colorBoard = colorBoard
-        return colorBoard
+        self.color_board = color_board
+        return color_board
 
     def generate_short_board(self):
-        shortBoard = []
+        """ converts the current board state into a board with the shorts of the pieces
+
+        Returns:
+            list: a 2d array with the shorts of the pieces instead of the objects
+        """
+        if self.short_board is not None:
+            return self.short_board
+        short_board = []
         for row in self.board:
-            shortBoard.append([])
+            short_board.append([])
             for piece in row:
-                shortBoard[-1].append(piece.short)
+                short_board[-1].append(piece.is_white)
 
-        return shortBoard
+        self.short_board = short_board
+        return short_board
 
-    def coordinate_moves_into_uci(self, coordinateMoves):
+    def coordinate_moves_into_uci(self, coordinate_moves):
         """ converts the passed array of coordinate moves into an array of UCIMoves
 
         Args:
-            coordinateMoves (list): a list containing tuples with the startField and the targetField as tuples with x and y
+            coordinate_moves (list): a list containing tuples with the startField and the targetField as x, y tuples
 
         Returns:
             list: a list of string which are moves in the UCI Notation
         """
         moves = []
-        for coordinateMove in coordinateMoves:
+        for coordinateMove in coordinate_moves:
             x1 = self.columns[
                 f"{coordinateMove[0][0]}"]  # getting the letter for the column of the startField with the x number
             y1 = coordinateMove[0][1] + 1
@@ -280,24 +287,24 @@ class Board:
             moves.append(move)
         return moves
 
-    def uci_into_coordinate_move(self, UCIMove):
+    def uci_into_coordinate_move(self, uci_move):
         """ converts the passed UCIMove into a coordinate move
 
         Args:
-            UCIMove (string): the UCIMove to convert into an UCIMove
+            uci_move (string): the UCIMove to convert into an UCIMove
 
         Returns:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
-        coordinateMove = []
+        coordinate_move = []
         values = list(self.columns.values())
-        x1 = values.index(UCIMove[0])  # getting the key of the letter in the UCIMove to get the x start coordinate
-        y1 = int(UCIMove[1]) - 1
-        x2 = values.index(UCIMove[2])  # getting the key of the letter in the UCIMove to get the x end coordinate
-        y2 = int(UCIMove[3]) - 1
-        coordinateMove.append((x1, y1))
-        coordinateMove.append((x2, y2))
-        return coordinateMove
+        x1 = values.index(uci_move[0])  # getting the key of the letter in the UCIMove to get the x start coordinate
+        y1 = int(uci_move[1]) - 1
+        x2 = values.index(uci_move[2])  # getting the key of the letter in the UCIMove to get the x end coordinate
+        y2 = int(uci_move[3]) - 1
+        coordinate_move.append((x1, y1))
+        coordinate_move.append((x2, y2))
+        return coordinate_move
 
     def load_board_with_fen(self, fen):
         """ loads the board with the passed fen
@@ -309,9 +316,9 @@ class Board:
 
         fen = fen.split()
 
-        positionFenByRow = fen[0].split("/")
+        position_fen_by_row = fen[0].split("/")
 
-        for rowFen in positionFenByRow:
+        for rowFen in position_fen_by_row:
             board.append([])
             for char in rowFen:
                 # checking for black pieces with fen code
@@ -393,7 +400,8 @@ class Board:
         fen = '/'.join([''.join([piece.short for piece in row]) for row in self.board])
         return fen
 
-    def generate_random_string(self, length):
+    @staticmethod
+    def generate_random_string(length):
         """ generates a random string with the specified length
 
         Args:
@@ -402,9 +410,8 @@ class Board:
         Returns:
             string: a random string of the specified length
         """
-        randomString = ''
+        random_string = ''
         for i in range(0, length):
-            randomInteger = random.randint(0,
-                                           255)  # getting a random integer in the range 0 to 255 which is the range of the ASCII numbers
-            randomString += chr(randomInteger)  # converting the number into a char and appending if to the string
-        return randomString
+            random_integer = random.randint(0, 255)  # getting a random integer in the range 0 to 255
+            random_string += chr(random_integer)  # converting the number into a char and appending if to the string
+        return random_string
