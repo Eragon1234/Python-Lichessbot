@@ -8,6 +8,16 @@ from Game.Pieces.AbstractPiece import AbstractPiece
 class Pawn(AbstractPiece):
     value = 10
     short = 'p'
+    bonus_map = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 1, 0, 0, 0],
+        [0, 0, 0.5, 0, 0.5, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0]
+    ]
 
     def __init__(self, is_white):
         super().__init__(is_white)
@@ -47,6 +57,3 @@ class Pawn(AbstractPiece):
 
         self.positions = positions
         return positions
-
-    def get_value(self):
-        return self.value + ((len(self.positions) / 100) * self.direction_multiplier)

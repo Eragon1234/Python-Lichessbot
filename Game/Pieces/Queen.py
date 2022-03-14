@@ -10,6 +10,16 @@ from Game.Pieces.AbstractPiece import AbstractPiece
 class Queen(AbstractPiece):
     value = 90
     short = 'q'
+    bonus_map = [
+        [-1, 0, 0, 0, 0, 0, 0, -1],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 2, 2, 2, 2, 0, 0],
+        [0, 0, 2, 3, 3, 2, 0, 0],
+        [0, 0, 2, 3, 3, 2, 0, 0],
+        [0, 0, 2, 2, 2, 2, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [-1, 0, 0, 0, 0, 0, 0, -1]
+    ]
 
     def __init__(self, is_white):
         super().__init__(is_white)
@@ -25,6 +35,3 @@ class Queen(AbstractPiece):
 
         self.positions = positions
         return positions
-
-    def get_value(self):
-        return self.value + ((len(self.positions) / 100) * self.direction_multiplier)

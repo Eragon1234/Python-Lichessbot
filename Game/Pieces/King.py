@@ -8,6 +8,16 @@ from Game.Pieces.AbstractPiece import AbstractPiece
 class King(AbstractPiece):
     value = 900
     short = 'k'
+    bonus_map = [
+        [0, 1, 1, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 0, 0, 0, 1, 0]
+    ]
 
     def __init__(self, is_white):
         super().__init__(is_white)
@@ -26,6 +36,3 @@ class King(AbstractPiece):
         self.positions = positions
 
         return positions
-
-    def get_value(self):
-        return self.value + ((len(self.positions) / 100) * self.direction_multiplier)
