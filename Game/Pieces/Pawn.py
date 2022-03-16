@@ -49,11 +49,11 @@ class Pawn(AbstractPiece):
 
         x = current_position[0] + 1
         position = (x, y)
-        self.check_if_position_is_legal(board, positions, *position, [not self.is_white])
+        self.check_if_position_is_legal(board, positions, *position, [not self.is_white, "enemy"])
 
         x = current_position[0] - 1
         position = (x, y)
-        self.check_if_position_is_legal(board, positions, *position, [not self.is_white])
+        self.check_if_position_is_legal(board, positions, *position, [not self.is_white, "enemy"])
 
         self.positions = positions
         return positions
