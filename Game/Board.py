@@ -38,6 +38,12 @@ class Board:
         '7': 'h'
     }
 
+    # an array to keep track of the castle rights of black and white
+    castle = {
+        'white': {'king_side': False, 'queen_side': False},
+        'black': {'king_side': False, 'queen_side': False}
+    }
+
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         # loads the board with the given fen
         self.load_board_with_fen(fen)
@@ -52,7 +58,7 @@ class Board:
         """
         self.color_board = None
         self.short_board = None
-        self.enPassantField = "-"
+        self.en_passant_field = "-"
 
         # appending the move to the array of moves
         self.moves.append(move)
@@ -69,7 +75,7 @@ class Board:
         if moving_piece.short.upper() == "P" and abs(move[0][1] - move[1][1]) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
-            self.enPassantField = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
+            self.en_passant_field = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
 
     def unmove(self, move):
         self.color_board = None
@@ -123,12 +129,12 @@ class Board:
         """
         return self.testBoards.pop(board_key)
 
-    def generate_possible_moves(self, for_white=True, check_for_check=True):
+    def generate_possible_moves(self, for_white=True, return_pseudo_legal_moves=False):
         """ generating all possible moves in the current position
 
         Args:
             for_white (bool): for which color to generate the moves for. Defaults to True.
-            check_for_check (bool): if legal or pseudo_legal moves should be returned. Defaults to True
+            return_pseudo_legal_moves(bool): if moves should be returned including pseudo-legal moves. Defaults to False
 
         Returns:
             list: a list of possible moves in UCIMove format
@@ -154,44 +160,44 @@ class Board:
         moves = self.coordinate_moves_into_uci(coordinate_moves)
         evaluations = {}
 
-        if check_for_check:
-            for move in tuple(moves):
-                board = self.pop_test_board(self.test_move(move))
-                test_moves = board.generate_possible_moves(not for_white, check_for_check=False)
-                max_evaluation = float("-inf")
-                min_evaluation = float("inf")
-                is_check = False
-                for test_move in test_moves:
-                    board = self.pop_test_board(self.test_move(test_move, board))
-                    evaluation = board.calculate_value_difference()
-                    if evaluation > max_evaluation:
-                        max_evaluation = evaluation
-
-                    if evaluation < min_evaluation:
-                        min_evaluation = evaluation
-
-                    found_king = False
-                    for piece in list(board.board.flat):
-                        if piece.short.upper() == "K" and piece.is_white == for_white:
-                            found_king = True
-
-                    if not found_king:
-                        is_check = True
-
-                if is_check:
-                    moves.remove(move)
-                    continue
-
-                if for_white:
-                    evaluations[move] = max_evaluation
-                else:
-                    evaluations[move] = min_evaluation
-
-            if len(moves) == len(evaluations):
-                moves.sort(key=lambda move: evaluations.get(move), reverse=for_white)
-        else:
+        if return_pseudo_legal_moves:
             np.random.shuffle(moves)
+            return moves
 
+        for move in tuple(moves):
+            board = self.pop_test_board(self.test_move(move))
+            test_moves = board.generate_possible_moves(not for_white, True)
+            max_evaluation = float("-inf")
+            min_evaluation = float("inf")
+            is_check = False
+            for test_move in test_moves:
+                board = self.pop_test_board(self.test_move(test_move, board))
+                evaluation = board.calculate_value_difference()
+                if evaluation > max_evaluation:
+                    max_evaluation = evaluation
+
+                if evaluation < min_evaluation:
+                    min_evaluation = evaluation
+
+                found_king = False
+                for piece in list(board.board.flat):
+                    if piece.short.upper() == "K" and piece.is_white == for_white:
+                        found_king = True
+
+                if not found_king:
+                    is_check = True
+
+            if is_check:
+                moves.remove(move)
+                continue
+
+            if for_white:
+                evaluations[move] = max_evaluation
+            else:
+                evaluations[move] = min_evaluation
+
+        if len(moves) == len(evaluations):
+            moves.sort(key=lambda move: evaluations.get(move), reverse=for_white)
         return moves
 
     def calculate_material_difference(self):
@@ -240,8 +246,8 @@ class Board:
             for piece in row:
                 color_board[-1].append(piece.is_white)
 
-        if self.enPassantField != "-":
-            en_passant_coordinate = self.uci_into_coordinate_move(f"{self.enPassantField}h7")[:2][0]
+        if self.en_passant_field != "-":
+            en_passant_coordinate = self.uci_into_coordinate_move(f"{self.en_passant_field}h7")[:2][0]
             color_board[en_passant_coordinate[1]][en_passant_coordinate[0]] = "enemy"
 
         self.color_board = color_board
@@ -363,33 +369,25 @@ class Board:
 
             # setting the castle rights of black and white
             for char in fen[2]:
-                self.whiteCastle = {}
-                self.blackCastle = {}
-
-                self.whiteCastle['KingSide'] = False
-                self.whiteCastle['QueenSide'] = False
-
-                self.blackCastle['KingSide'] = False
-                self.blackCastle['QueenSide'] = False
-
                 if char == 'K':
-                    self.whiteCastle['KingSide'] = True
+                    self.castle['white']['king_side'] = True
                 elif char == 'Q':
-                    self.whiteCastle['QueenSide'] = True
+                    self.castle['white']['queen_side'] = True
                 elif char == 'k':
-                    self.blackCastle['KingSide'] = True
+                    self.castle['black']['king_side'] = True
                 elif char == 'q':
-                    self.blackCastle['QueenSide'] = True
+                    self.castle['black']['queen_side'] = True
 
-            self.enPassantField = fen[3]  # setting the enPassantField with the corresponding value of the fen
-            self.pliesFor50MoveRule = fen[
+            self.en_passant_field = fen[3]  # setting the en_passant_field with the corresponding value of the fen
+            self.number_of_plies_for_50_move_rule = fen[
                 4]  # setting the number of plies since the last pawn move or take for the 50 move rule
-            self.nextMoveNumber = fen[5]  # setting the number of the next move
+            self.next_move_number = fen[5]  # setting the number of the next move
 
         # setting self.board to the board
         board.reverse()
         board = np.array(board)
         self.board = board
+        return board
 
     def generate_fen_for_board(self):
         """ generates the fen for the current board
