@@ -7,4 +7,4 @@ from Game.Board import Board
 board = Board()
 
 generateFenForBoardTimer = Timer(board.generate_fen_for_board)
-print("Time generate_fen_for_board:", generateFenForBoardTimer.timeit(number=10000) / 10000)
+print("Time generate_fen_for_board:", generateFenForBoardTimer.timeit(number=100) / 100)

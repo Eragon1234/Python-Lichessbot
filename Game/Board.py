@@ -142,10 +142,10 @@ class Board:
         coordinate_moves = []
         # generating the color_board as a parameter for the generate_possible_positions method of the pieces
         color_board = self.generate_color_board()
-        for piece in list(self.board.flat):
+        for piece in enumerate(list(self.board.flat)):
             # getting the coordinates of the piece in the flattened array
-            coordinates = np.where(self.board == piece)
-            coordinates = (coordinates[1][0], coordinates[0][0])
+            coordinates = self.generate_coordinates_with_index(piece[0])
+            piece = piece[1]
 
             # if piece is the color for which to generate moves for
             if piece.is_white == for_white:
@@ -158,11 +158,12 @@ class Board:
                     coordinate_moves.append((coordinates, new_position))
         # converting coordinate moves into UCIMoves
         moves = self.coordinate_moves_into_uci(coordinate_moves)
-        evaluations = {}
 
         if return_pseudo_legal_moves:
             np.random.shuffle(moves)
             return moves
+
+        evaluations = {}
 
         for move in tuple(moves):
             board = self.pop_test_board(self.test_move(move))
