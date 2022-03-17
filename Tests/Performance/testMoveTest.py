@@ -7,4 +7,4 @@ from Game.Board import Board
 board = Board()
 
 testMoveTimer = Timer("board.test_move('e2e4')", "from Game.Board import Board; board=Board()", globals=globals())
-print("Time test_move:", testMoveTimer.timeit(number=10000) / 10000)
+print("Time test_move:", testMoveTimer.timeit(number=100) / 100)

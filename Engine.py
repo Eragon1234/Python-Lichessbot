@@ -136,6 +136,6 @@ class Engine:
         if self.positions is not None:
             board = self.board.pop_test_board(self.board.test_move(move))
             short_board = board.generate_short_board()
-            if short_board in self.positions:
+            if short_board in tuple(self.positions):
                 return self.positions.get(short_board)
         return self.get_value_difference_for_move(move)

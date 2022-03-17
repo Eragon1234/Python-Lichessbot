@@ -7,4 +7,4 @@ from Game.Board import Board
 board = Board()
 
 generateColorBoardTimer = Timer(board.generate_color_board)
-print("Time generate_color_board:", generateColorBoardTimer.timeit(number=10000) / 10000)
+print("Time generate_color_board:", generateColorBoardTimer.timeit(number=100) / 100)
