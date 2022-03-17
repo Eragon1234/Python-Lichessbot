@@ -6,13 +6,7 @@ import numpy as np
 from copy import deepcopy
 import random
 
-from Game.Pieces.EmtpyField import EmptyField
-from Game.Pieces.Pawn import Pawn
-from Game.Pieces.Bishop import Bishop
-from Game.Pieces.Knight import Knight
-from Game.Pieces.Rook import Rook
-from Game.Pieces.Queen import Queen
-from Game.Pieces.King import King
+from Game.Pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 
 
 class Board:
