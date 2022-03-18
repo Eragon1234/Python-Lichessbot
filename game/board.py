@@ -155,6 +155,7 @@ class Board:
 
         evaluations = {}
 
+        # TODO: implement can_move_to_field function to check if a piece can capture the king, performance test
         for move in tuple(moves):
             board = self.pop_test_board(self.test_move(move))
             test_moves = board.generate_possible_moves(not for_white, True)

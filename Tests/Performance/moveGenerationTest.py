@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.getcwd())
 
 from timeit import Timer
-from Game.Board import Board
+from game.board import Board
 
 board = Board()
 
