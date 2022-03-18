@@ -4,9 +4,9 @@ import sys
 sys.path.append(os.getcwd())
 
 from timeit import Timer
-from game.board import Board
+from game.pieces import Pawn
 
-board = Board()
+pawn = Pawn()
 
-generateColorBoardTimer = Timer(board.generate_short_board)
+generateColorBoardTimer = Timer(pawn.generate_possible_positions)
 print("Time generate_color_board:", generateColorBoardTimer.timeit(number=100) / 100)

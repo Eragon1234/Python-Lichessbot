@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
 import unittest
@@ -8,7 +9,7 @@ class TestMoveGeneration(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
-        from Game.Board import Board
+        from game.board import Board
         self.board = Board()
 
     def test_correctMovesInStartPosition(self):
