@@ -1,6 +1,7 @@
-import requests
-import json
 import _thread
+import json
+
+import requests
 
 
 class GameController:

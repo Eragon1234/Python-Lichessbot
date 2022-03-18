@@ -1,8 +1,9 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
 
-from Game.Pieces.AbstractPiece import AbstractPiece
+from game.pieces.abstract_piece import AbstractPiece
 
 
 class Knight(AbstractPiece):
@@ -21,7 +22,7 @@ class Knight(AbstractPiece):
 
     def __init__(self, is_white):
         super().__init__(is_white)
-    
+
     def generate_possible_positions(self, current_position, board):
         self.position = current_position
 
@@ -29,11 +30,11 @@ class Knight(AbstractPiece):
         x = current_position[0] - 1
         y = current_position[1] - 2
         self.check_if_position_is_legal(board, positions, x, y)
-        
+
         x = current_position[0] + 1
         y = current_position[1] - 2
         self.check_if_position_is_legal(board, positions, x, y)
-        
+
         x = current_position[0] + 2
         y = current_position[1] + 1
         self.check_if_position_is_legal(board, positions, x, y)
@@ -45,7 +46,7 @@ class Knight(AbstractPiece):
         x = current_position[0] - 1
         y = current_position[1] + 2
         self.check_if_position_is_legal(board, positions, x, y)
-        
+
         x = current_position[0] - 2
         y = current_position[1] + 1
         self.check_if_position_is_legal(board, positions, x, y)
@@ -53,7 +54,7 @@ class Knight(AbstractPiece):
         x = current_position[0] - 2
         y = current_position[1] - 1
         self.check_if_position_is_legal(board, positions, x, y)
-        
+
         x = current_position[0] + 2
         y = current_position[1] - 1
         self.check_if_position_is_legal(board, positions, x, y)
