@@ -1,10 +1,11 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
 
-from Game.Pieces.Bishop import Bishop
-from Game.Pieces.Rook import Rook
-from Game.Pieces.AbstractPiece import AbstractPiece
+from game.pieces.bishop import Bishop
+from game.pieces.rook import Rook
+from game.pieces.abstract_piece import AbstractPiece
 
 
 class Queen(AbstractPiece):

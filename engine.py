@@ -1,6 +1,6 @@
 import numpy as np
 
-from Game.Board import Board
+from game import Board
 
 
 class Engine:

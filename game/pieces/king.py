@@ -1,8 +1,9 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
 
-from Game.Pieces.AbstractPiece import AbstractPiece
+from game.pieces.abstract_piece import AbstractPiece
 
 
 class King(AbstractPiece):
