@@ -11,5 +11,5 @@ board = Board()
 color_board = board.generate_color_board()
 rook = Rook(True)
 
-generatePossiblePositionsTimer = Timer("rook.generate_possible_positions((4,4), color_board)", globals=globals())
-print("Time rook.generate_possible_positions:", generatePossiblePositionsTimer.timeit(number=100) / 100)
+generatePossiblePositionsTimer = Timer("rook.generate_possible_coordinate_moves((4,4), color_board)", globals=globals())
+print("Time rook.generate_possible_coordinate_moves:", generatePossiblePositionsTimer.timeit(number=100) / 100)
