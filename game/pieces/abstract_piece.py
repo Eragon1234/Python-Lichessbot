@@ -24,7 +24,6 @@ class AbstractPiece(abc.ABC):
             self.value = self.value * -1
             self.direction_multiplier = -1
 
-        self.moved = False
         self.target_field_conditions = [
             not self.is_white,
             'EmptyField'

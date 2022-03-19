@@ -62,22 +62,21 @@ class Engine:
         max_move = moves[0]
 
         for move in moves:
-            board_key = self.board.test_move(move, board)
-            short_board = tuple(np.array(self.board.testBoards[board_key].generate_short_board()).flat)
+            with board.test_move(move) as test_board:
+                short_board = tuple(np.array(test_board.generate_short_board()).flat)
 
-            if short_board in positions and not return_move:
-                return positions.get(short_board)
+                if short_board in positions and not return_move:
+                    return positions.get(short_board)
 
-            evaluation = self.min(depth - 1, max_value, beta, board.testBoards[board_key], positions)
-            evaluation = int(evaluation)
-            if evaluation > max_value:
-                max_value = evaluation
-                max_move = move
-                if max_value >= beta:
-                    break
+                evaluation = self.min(depth - 1, max_value, beta, test_board, positions)
+                evaluation = int(evaluation)
+                if evaluation > max_value:
+                    max_value = evaluation
+                    max_move = move
+                    if max_value >= beta:
+                        break
 
-            positions[short_board] = max_value
-            self.board.pop_test_board(board_key)
+                positions[short_board] = max_value
         if return_move:
             self.positions = positions
             return max_move, max_value
@@ -98,22 +97,21 @@ class Engine:
         min_move = moves[0]
 
         for move in moves:
-            board_key = self.board.test_move(move, board)
-            short_board = tuple(np.array(self.board.testBoards[board_key].generate_short_board()).flat)
+            with board.test_move(move) as test_board:
+                short_board = tuple(np.array(test_board.generate_short_board()).flat)
 
-            if short_board in positions and not return_move:
-                return positions.get(short_board)
+                if short_board in positions and not return_move:
+                    return positions.get(short_board)
 
-            evaluation = self.max(depth - 1, alpha, min_value, board.testBoards[board_key], positions)
-            evaluation = int(evaluation)
-            if evaluation < min_value:
-                min_value = evaluation
-                min_move = move
-                if min_value <= alpha:
-                    break
+                evaluation = self.max(depth - 1, alpha, min_value, test_board, positions)
+                evaluation = int(evaluation)
+                if evaluation < min_value:
+                    min_value = evaluation
+                    min_move = move
+                    if min_value <= alpha:
+                        break
 
-            positions[short_board] = min_value
-            self.board.pop_test_board(board_key)
+                positions[short_board] = min_value
         if return_move:
             return min_move, min_value
         return min_value
@@ -121,21 +119,21 @@ class Engine:
     def get_value_difference_for_move(self, move, board=None):
         if board is None:
             board = self.board
-        board = self.board.pop_test_board(self.board.test_move(move, board))
-        evaluation = board.calculate_value_difference()
+        with board.test_move(move) as test_board:
+            evaluation = test_board.calculate_value_difference()
         return evaluation
 
     def get_material_difference_for_move(self, move, board=None):
         if board is None:
             board = self.board
-        board = self.board.pop_test_board(self.board.test_move(move, board))
-        evaluation = board.calculate_material_difference()
+        with board.test_move(move) as test_board:
+            evaluation = test_board.calculate_material_difference()
         return evaluation
 
     def get_sort_value_for_move(self, move):
         if self.positions is not None:
-            board = self.board.pop_test_board(self.board.test_move(move))
-            short_board = board.generate_short_board()
-            if short_board in tuple(self.positions):
-                return self.positions.get(short_board)
+            with self.board.test_move(move) as board:
+                short_board = board.generate_short_board()
+                if short_board in tuple(self.positions):
+                    return self.positions.get(short_board)
         return self.get_value_difference_for_move(move)

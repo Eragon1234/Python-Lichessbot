@@ -1,9 +1,8 @@
 import numpy as np
-from copy import deepcopy
 import random
 
 from .pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
-
+from .test_move import TestMove
 
 class Board:
     """
@@ -34,6 +33,8 @@ class Board:
         'black': {'king_side': False, 'queen_side': False}
     }
 
+    captured_pieces = []
+
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         # loads the board with the given fen
         self.load_board_with_fen(fen)
@@ -60,6 +61,7 @@ class Board:
         # emptying the startField
         self.board[move[0][1], move[0][0]] = EmptyField()
         # setting the targetField to the moving_piece
+        self.captured_pieces.append(self.board[move[1][1], move[1][0]])
         self.board[move[1][1], move[1][0]] = moving_piece
 
         if moving_piece.short.upper() == "P" and abs(move[0][1] - move[1][1]) == 2:
@@ -79,45 +81,10 @@ class Board:
         moved_piece = self.board[move[1][1], move[1][0]]
         # adding the moved piece to the startField
         self.board[move[0][1], move[0][0]] = moved_piece
-        self.board[move[1][1], move[1][0]] = EmptyField()
+        self.board[move[1][1], move[1][0]] = self.captured_pieces.pop()
 
-    def test_move(self, move, board=None):
-        """ creates a copy of the board on which the move is moved
-
-        Args:
-            move (UCIMove): the move to test on a new board
-
-        Returns:
-            string: a key to get the board from the testBoards dictionary
-        """
-        if board is None:
-            board = self
-
-        # creating a deepcopy of the board
-        board = deepcopy(board)
-
-        board.move(move)
-
-        # generate key for access over testBoards array
-        board_key = self.generate_random_string(8)
-        while board_key in self.testBoards.keys():
-            board_key = self.generate_random_string(8)
-
-        # adding the board at the random key at the testBoards array
-        self.testBoards[board_key] = board
-
-        return board_key
-
-    def pop_test_board(self, board_key):
-        """ removes and returns the board with the given key
-
-        Args:
-            board_key (string): the key to access the testBoard
-
-        Returns:
-            Board: the board at the given key
-        """
-        return self.testBoards.pop(board_key)
+    def test_move(self, move):
+        return TestMove(self, move)
 
     def generate_possible_moves(self, for_white=True, return_pseudo_legal_moves=False):
         """ generating all possible moves in the current position
@@ -129,8 +96,64 @@ class Board:
         Returns:
             list: a list of possible moves in UCIMove format
         """
+        coordinate_moves = self.generate_possible_coordinate_moves(for_white)
+        # converting coordinate moves into UCIMoves
+        moves = self.coordinate_moves_into_uci(coordinate_moves)
+
+        if return_pseudo_legal_moves:
+            np.random.shuffle(moves)
+            return moves
+
+        evaluations = {}
+
+        for move in tuple(moves):
+            with self.test_move(move) as board:
+                test_moves = board.generate_possible_moves(not for_white, True)
+                max_evaluation = float("-inf")
+                min_evaluation = float("inf")
+                is_check = False
+                for test_move in test_moves:
+                    with self.test_move(test_move) as test_board:
+                        evaluation = test_board.calculate_value_difference()
+                        if evaluation > max_evaluation:
+                            max_evaluation = evaluation
+
+                        if evaluation < min_evaluation:
+                            min_evaluation = evaluation
+
+                        found_king = False
+                        for piece in list(self.board.flat):
+                            if piece.short.upper() == "K" and piece.is_white == for_white:
+                                found_king = True
+
+                        if not found_king:
+                            is_check = True
+
+                if is_check:
+                    moves.remove(move)
+                    continue
+
+                if for_white:
+                    evaluations[move] = max_evaluation
+                else:
+                    evaluations[move] = min_evaluation
+
+        if len(moves) == len(evaluations):
+            moves.sort(key=lambda move: evaluations.get(move), reverse=for_white)
+
+        return moves
+
+    def generate_possible_coordinate_moves(self, for_white):
+        """ generates the possible coordinate moves for the passed color
+
+        Args:
+            for_white: the color of the pieces to generate the possible moves from
+
+        Returns:
+            returns all possible coordinate moves for the passed color
+        """
         coordinate_moves = []
-        # generating the color_board as a parameter for the generate_possible_positions method of the pieces
+        # generating the color_board as a parameter for the generate_possible_coordinate_moves method of the pieces
         color_board = self.generate_color_board()
         for piece in enumerate(list(self.board.flat)):
             # getting the coordinates of the piece in the flattened array
@@ -146,51 +169,7 @@ class Board:
                     if len(str(new_position[1])) > 1:
                         new_position = new_position[0]
                     coordinate_moves.append((coordinates, new_position))
-        # converting coordinate moves into UCIMoves
-        moves = self.coordinate_moves_into_uci(coordinate_moves)
-
-        if return_pseudo_legal_moves:
-            np.random.shuffle(moves)
-            return moves
-
-        evaluations = {}
-
-        # TODO: implement can_move_to_field function to check if a piece can capture the king, performance test
-        for move in tuple(moves):
-            board = self.pop_test_board(self.test_move(move))
-            test_moves = board.generate_possible_moves(not for_white, True)
-            max_evaluation = float("-inf")
-            min_evaluation = float("inf")
-            is_check = False
-            for test_move in test_moves:
-                board = self.pop_test_board(self.test_move(test_move, board))
-                evaluation = board.calculate_value_difference()
-                if evaluation > max_evaluation:
-                    max_evaluation = evaluation
-
-                if evaluation < min_evaluation:
-                    min_evaluation = evaluation
-
-                found_king = False
-                for piece in list(board.board.flat):
-                    if piece.short.upper() == "K" and piece.is_white == for_white:
-                        found_king = True
-
-                if not found_king:
-                    is_check = True
-
-            if is_check:
-                moves.remove(move)
-                continue
-
-            if for_white:
-                evaluations[move] = max_evaluation
-            else:
-                evaluations[move] = min_evaluation
-
-        if len(moves) == len(evaluations):
-            moves.sort(key=lambda move: evaluations.get(move), reverse=for_white)
-        return moves
+        return coordinate_moves
 
     def calculate_material_difference(self):
         """ calculates the material difference between white and black
