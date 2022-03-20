@@ -1,15 +1,18 @@
-import os
-import sys
-
-sys.path.append(os.getcwd())
-
+import unittest
 from timeit import Timer
-from game.pieces import Bishop
-from game.board import Board
 
-board = Board()
-color_board = board.generate_color_board()
-bishop = Bishop(True)
+from game import Bishop
+from game import Board
 
-generatePossiblePositionsTimer = Timer("bishop.generate_possible_coordinate_moves((4,4), color_board)", globals=globals())
-print("Time bishop.generate_possible_coordinate_moves:", generatePossiblePositionsTimer.timeit(number=100) / 100)
+
+class BishopPossiblePositionsGenerationPerformanceTest(unittest.TestCase):
+
+    def setUp(self):
+        self.bishop = Bishop(True)
+        self.color_board = Board().generate_color_board()
+
+    def test_performance_of_possible_position_generation_of_the_bishop(self):
+        possible_positions_generation_timer = Timer(
+            f"bishop.generate_possible_positions((4,4), {self.color_board})", globals={'bishop': self.bishop})
+        possible_positions_generation_time = possible_positions_generation_timer.timeit(number=100) / 100
+        self.assertLess(possible_positions_generation_time, 0.01)

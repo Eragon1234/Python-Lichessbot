@@ -1,15 +1,18 @@
-import os
-import sys
-
-sys.path.append(os.getcwd())
-
+import unittest
 from timeit import Timer
-from game.pieces import Queen
-from game.board import Board
 
-board = Board()
-color_board = board.generate_color_board()
-queen = Queen(True)
+from game import Queen
+from game import Board
 
-generatePossiblePositionsTimer = Timer("queen.generate_possible_coordinate_moves((4,4), color_board)", globals=globals())
-print("Time queen.generate_possible_coordinate_moves:", generatePossiblePositionsTimer.timeit(number=100) / 100)
+
+class QueenPossiblePositionsGenerationPerformanceTest(unittest.TestCase):
+
+    def setUp(self):
+        self.queen = Queen(True)
+        self.color_board = Board().generate_color_board()
+
+    def test_performance_of_possible_position_generation_of_the_queen(self):
+        possible_positions_generation_timer = Timer(
+            f"queen.generate_possible_positions((4,4), {self.color_board})", globals={'queen': self.queen})
+        possible_positions_generation_time = possible_positions_generation_timer.timeit(number=100) / 100
+        self.assertLess(possible_positions_generation_time, 0.01)
