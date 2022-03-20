@@ -24,6 +24,7 @@ class AbstractPiece(abc.ABC):
             self.value = self.value * -1
             self.direction_multiplier = -1
 
+        self.state_value = self.value
         self.target_field_conditions = [
             not self.is_white,
             'EmptyField'
@@ -49,7 +50,10 @@ class AbstractPiece(abc.ABC):
         pass
 
     def get_value(self):
-        possible_moves_bonus = (len(self.positions) / 100) * self.direction_multiplier
-        position_bonus = self.bonus_map[self.position[1]][self.position[0]]
+        if self.state_value is None:
+            possible_moves_bonus = (len(self.positions) / 100) * self.direction_multiplier
+            position_bonus = self.bonus_map[self.position[1]][self.position[0]]
 
-        return self.value + possible_moves_bonus + position_bonus
+            self.state_value = self.value + possible_moves_bonus + position_bonus
+
+        return self.state_value
