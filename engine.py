@@ -3,6 +3,9 @@ import numpy as np
 from game import Board
 
 
+# TODO: implement exceptions for checkmate and impossible moves
+# TODO: implement removing of all moves to go on in a game after an error
+
 class Engine:
     """
     Class to generate the best possible moves etc.
@@ -23,7 +26,7 @@ class Engine:
         """
         for_white = color == 'white'
 
-        best_move = self.calculate_best_move(for_white, 2)
+        best_move = self.calculate_best_move(for_white, 3)
         print("Evaluation:", best_move[1])
         move = best_move[0]
         print(move)
@@ -53,7 +56,7 @@ class Engine:
         moves.sort(key=lambda move: self.get_sort_value_for_move(move))
 
         if len(moves) == 0:
-            return float("-inf")
+            return -9999
 
         if depth == 0:
             return self.get_value_difference_for_move(moves[0])
@@ -88,7 +91,7 @@ class Engine:
         moves = board.generate_possible_moves(False)
 
         if len(moves) == 0:
-            return float("inf")
+            return 9999
 
         if depth == 0:
             return self.get_value_difference_for_move(moves[0])
