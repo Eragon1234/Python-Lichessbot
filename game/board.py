@@ -4,6 +4,7 @@ import random
 from .pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from .test_move import TestMove
 
+
 class Board:
     """
     a class to handle the current board state, making moves, generating possible Moves etc.
@@ -236,7 +237,7 @@ class Board:
         for row in self.board:
             short_board.append([])
             for piece in row:
-                short_board[-1].append(piece.is_white)
+                short_board[-1].append(piece.short)
 
         self.short_board = short_board
         return short_board

@@ -3,10 +3,12 @@ import json
 
 import requests
 
+# TODO: implements threading instead of _thread with a threading object for the stream_game
+# TODO: replacing event parameter with passing a class with the needed functions and parameters
 
 class GameController:
     """
-    handles the connection to the lichess bot api with an event emmiter
+    handles the connection to the lichess bot api with an event emitter
     """
     # our lichess token for access to the bot api
     token = ''
