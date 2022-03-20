@@ -12,4 +12,4 @@ class ShortBoardGenerationPerformanceTest(unittest.TestCase):
     def test_performance_of_the_short_board_generation(self):
         short_board_generation_timer = Timer(self.board.generate_short_board)
         short_board_generation_time = short_board_generation_timer.timeit(number=100) / 100
-        self.assertLess(short_board_generation_time, 0.1)
+        self.assertLess(short_board_generation_time, 0.01)

@@ -4,7 +4,8 @@ from game import Board
 
 
 # TODO: implement exceptions for checkmate and impossible moves
-# TODO: implement removing of all moves to go on in a game after an error
+# TODO: implement re-moving of all moves to go on in a game after an error
+# TODO: omtimize and refactor saving of things
 
 class Engine:
     """

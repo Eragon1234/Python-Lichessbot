@@ -13,8 +13,10 @@ class Board:
     # an array for moved moves
     moves = []
 
-    # a dictionary for board copies with test moves
-    testBoards = {}
+    # a dictionary to save the possible moves
+    possible_moves = {}
+    # a dictionary for saving value differences
+    value_differences = {}
 
     # the corresponding letter for the indexes of the columns
     columns = {
@@ -35,6 +37,8 @@ class Board:
     }
 
     captured_pieces = []
+
+    en_passant_field = "-"
 
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         # loads the board with the given fen
@@ -65,7 +69,7 @@ class Board:
         self.captured_pieces.append(self.board[move[1][1], move[1][0]])
         self.board[move[1][1], move[1][0]] = moving_piece
 
-        if moving_piece.short.upper() == "P" and abs(move[0][1] - move[1][1]) == 2:
+        if moving_piece.short.capitalize() == "P" and abs(move[0][1] - move[1][1]) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.en_passant_field = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
@@ -97,12 +101,15 @@ class Board:
         Returns:
             list: a list of possible moves in UCIMove format
         """
+        short_board = tuple(np.array(self.generate_short_board()).flat)
+        if self.possible_moves.get(short_board):
+            return self.possible_moves.get(short_board)
+
         coordinate_moves = self.generate_possible_coordinate_moves(for_white)
         # converting coordinate moves into UCIMoves
         moves = self.coordinate_moves_into_uci(coordinate_moves)
 
         if return_pseudo_legal_moves:
-            np.random.shuffle(moves)
             return moves
 
         evaluations = {}
@@ -123,8 +130,8 @@ class Board:
                             min_evaluation = evaluation
 
                         found_king = False
-                        for piece in list(self.board.flat):
-                            if piece.short.upper() == "K" and piece.is_white == for_white:
+                        for piece in tuple(self.board.flat):
+                            if piece.short.capitalize() == "K" and piece.is_white == for_white:
                                 found_king = True
 
                         if not found_king:
@@ -142,6 +149,8 @@ class Board:
         if len(moves) == len(evaluations):
             moves.sort(key=lambda move: evaluations.get(move), reverse=for_white)
 
+        self.possible_moves[short_board] = moves
+
         return moves
 
     def generate_possible_coordinate_moves(self, for_white):
@@ -156,7 +165,7 @@ class Board:
         coordinate_moves = []
         # generating the color_board as a parameter for the generate_possible_coordinate_moves method of the pieces
         color_board = self.generate_color_board()
-        for piece in enumerate(list(self.board.flat)):
+        for piece in enumerate(tuple(self.board.flat)):
             # getting the coordinates of the piece in the flattened array
             coordinates = self.generate_coordinates_with_index(piece[0])
             piece = piece[1]
@@ -178,7 +187,8 @@ class Board:
         Returns:
             int: the material difference
         """
-        material_difference = np.sum([piece.value for piece in list(self.board.flat)])
+
+        material_difference = np.sum([piece.value for piece in tuple(self.board.flat)])
         return material_difference
 
     def calculate_value_difference(self):
@@ -187,7 +197,11 @@ class Board:
         Returns:
             int: the material difference
         """
-        material_difference = np.sum([piece.get_value() for piece in list(self.board.flat)])
+        short_board = tuple(np.array(self.generate_short_board()).flat)
+        if self.value_differences.get(short_board):
+            return self.value_differences.get(short_board)
+        material_difference = np.sum([piece.get_value() for piece in tuple(self.board.flat)])
+        self.value_differences[short_board] = material_difference
         return material_difference
 
     @staticmethod
@@ -275,7 +289,7 @@ class Board:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
         coordinate_move = []
-        values = list(self.columns.values())
+        values = tuple(self.columns.values())
         x1 = values.index(uci_move[0])  # getting the key of the letter in the UCIMove to get the x start coordinate
         y1 = int(uci_move[1]) - 1
         x2 = values.index(uci_move[2])  # getting the key of the letter in the UCIMove to get the x end coordinate
