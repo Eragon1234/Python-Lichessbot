@@ -45,6 +45,7 @@ class Board:
         self.load_board_with_fen(fen)
         self.color_board = None
         self.short_board = None
+        self.flat_short_board = None
 
     def move(self, move):
         """ makes a move on the board
@@ -54,6 +55,7 @@ class Board:
         """
         self.color_board = None
         self.short_board = None
+        self.flat_short_board = None
         self.en_passant_field = "-"
 
         # appending the move to the array of moves
@@ -61,15 +63,19 @@ class Board:
 
         # converting the UCIMove into a coordinate move
         move = self.uci_into_coordinate_move(move)
+
+        start_field_coordinates = (move[0][1], move[0][0])
+        target_field_coordinates = (move[1][1], move[1][0])
+
         # getting the moving piece
-        moving_piece = self.board[move[0][1], move[0][0]]
+        moving_piece = self.board[start_field_coordinates]
         # emptying the startField
-        self.board[move[0][1], move[0][0]] = EmptyField()
+        self.board[start_field_coordinates] = EmptyField()
         # setting the targetField to the moving_piece
         self.captured_pieces.append(self.board[move[1][1], move[1][0]])
-        self.board[move[1][1], move[1][0]] = moving_piece
+        self.board[target_field_coordinates] = moving_piece
 
-        if moving_piece.short.capitalize() == "P" and abs(move[0][1] - move[1][1]) == 2:
+        if moving_piece.lower_short == "p" and abs(move[0][1] - move[1][1]) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.en_passant_field = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
@@ -77,16 +83,21 @@ class Board:
     def unmove(self, move):
         self.color_board = None
         self.short_board = None
+        self.flat_short_board = None
 
         # removing the move to the array of moves
         self.moves.remove(move)
         # converting the UCIMove into a coordinate move
         move = self.uci_into_coordinate_move(move)
+
+        start_field_coordinates = (move[1][1], move[1][0])
+        target_field_coordinates = (move[0][1], move[0][0])
         # getting the moved piece
-        moved_piece = self.board[move[1][1], move[1][0]]
+        moved_piece = self.board[start_field_coordinates]
+        captured_piece = self.captured_pieces.pop()
         # adding the moved piece to the startField
-        self.board[move[0][1], move[0][0]] = moved_piece
-        self.board[move[1][1], move[1][0]] = self.captured_pieces.pop()
+        self.board[target_field_coordinates] = moved_piece
+        self.board[start_field_coordinates] = captured_piece
 
     def test_move(self, move):
         return TestMove(self, move)
@@ -101,7 +112,7 @@ class Board:
         Returns:
             list: a list of possible moves in UCIMove format
         """
-        short_board = tuple(np.array(self.generate_short_board()).flat)
+        short_board = self.generate_flat_short_board()
         if self.possible_moves.get(short_board):
             return self.possible_moves.get(short_board)
 
@@ -131,7 +142,7 @@ class Board:
 
                         found_king = False
                         for piece in tuple(self.board.flat):
-                            if piece.short.capitalize() == "K" and piece.is_white == for_white:
+                            if piece.lower_short == "k" and piece.is_white == for_white:
                                 found_king = True
 
                         if not found_king:
@@ -197,9 +208,10 @@ class Board:
         Returns:
             int: the material difference
         """
-        short_board = tuple(np.array(self.generate_short_board()).flat)
+        short_board = self.generate_flat_short_board()
         if self.value_differences.get(short_board):
             return self.value_differences.get(short_board)
+
         material_difference = np.sum([piece.get_value() for piece in tuple(self.board.flat)])
         self.value_differences[short_board] = material_difference
         return material_difference
@@ -217,6 +229,13 @@ class Board:
         x = index % 8
         y = index // 8
         return x, y
+
+    @staticmethod
+    def generate_index_with_coordinates(coordinates):
+        x = coordinates[0]
+        y = coordinates[1]
+        index = (x + y * 8)
+        return index
 
     def generate_color_board(self):
         """ converts the current board state into a board with True, False and EmptyField standing for the colors
@@ -255,6 +274,16 @@ class Board:
 
         self.short_board = short_board
         return short_board
+
+    def generate_flat_short_board(self):
+        """ converts the current board state into a board with the shorts of the pieces
+
+        Returns:
+            tuple: a 1d tuple containing the shorts of the pieces
+        """
+        if self.flat_short_board is None:
+            self.flat_short_board = tuple([piece.short for piece in tuple(self.board.flat)])
+        return self.flat_short_board
 
     def coordinate_moves_into_uci(self, coordinate_moves):
         """ converts the passed array of coordinate moves into an array of UCIMoves
