@@ -46,6 +46,7 @@ class Board:
         self.color_board = None
         self.short_board = None
         self.flat_short_board = None
+        self.columns_values = tuple(self.columns.values())
 
     def move(self, move):
         """ makes a move on the board
@@ -113,7 +114,7 @@ class Board:
             list: a list of possible moves in UCIMove format
         """
         short_board = self.generate_flat_short_board()
-        if self.possible_moves.get(short_board):
+        if short_board in self.possible_moves:
             return self.possible_moves.get(short_board)
 
         coordinate_moves = self.generate_possible_coordinate_moves(for_white)
@@ -124,7 +125,6 @@ class Board:
             return moves
 
         evaluations = {}
-
         for move in tuple(moves):
             with self.test_move(move) as board:
                 test_moves = board.generate_possible_moves(not for_white, True)
@@ -199,7 +199,7 @@ class Board:
             int: the material difference
         """
 
-        material_difference = np.sum([piece.value for piece in tuple(self.board.flat)])
+        material_difference = sum([piece.value for piece in tuple(self.board.flat) if piece.short != 'e'])
         return material_difference
 
     def calculate_value_difference(self):
@@ -209,10 +209,10 @@ class Board:
             int: the material difference
         """
         short_board = self.generate_flat_short_board()
-        if self.value_differences.get(short_board):
+        if short_board in self.value_differences:
             return self.value_differences.get(short_board)
 
-        material_difference = np.sum([piece.get_value() for piece in tuple(self.board.flat)])
+        material_difference = sum([piece.get_value() for piece in tuple(self.board.flat) if piece.short != 'e'])
         self.value_differences[short_board] = material_difference
         return material_difference
 
@@ -317,14 +317,11 @@ class Board:
         Returns:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
-        coordinate_move = []
-        values = tuple(self.columns.values())
-        x1 = values.index(uci_move[0])  # getting the key of the letter in the UCIMove to get the x start coordinate
+        x1 = self.columns_values.index(uci_move[0])
         y1 = int(uci_move[1]) - 1
-        x2 = values.index(uci_move[2])  # getting the key of the letter in the UCIMove to get the x end coordinate
+        x2 = self.columns_values.index(uci_move[2])
         y2 = int(uci_move[3]) - 1
-        coordinate_move.append((x1, y1))
-        coordinate_move.append((x2, y2))
+        coordinate_move = ((x1, y1), (x2, y2))
         return coordinate_move
 
     def load_board_with_fen(self, fen):
