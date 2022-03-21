@@ -144,6 +144,6 @@ class Engine:
         if self.positions is not None:
             with self.board.test_move(move) as board:
                 short_board = board.generate_flat_short_board()
-                if self.positions.get(short_board):
+                if short_board in self.positions:
                     return self.positions.get(short_board)
         return self.get_value_difference_for_move(move)
