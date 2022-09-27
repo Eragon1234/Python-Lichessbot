@@ -4,6 +4,8 @@ import numpy as np
 
 class AbstractPiece(abc.ABC):
     position = (0, 0)
+    short = 'e'
+    value = 0
     positions = []
     bonus_map = [
         [0, 0, 0, 0, 0, 0, 0, 0],

@@ -1,3 +1,6 @@
+# TODO: add comments
+# TODO: add annotations
+
 # importing the GameController for handling the connection to the Lichess API
 from game_controller import GameController
 

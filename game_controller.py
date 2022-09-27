@@ -1,11 +1,11 @@
-import _thread
+from multiprocessing import Process
 import json
 
 import requests
 
 
-# TODO: implements threading instead of _thread with a threading object for the stream_game
-# TODO: replacing event parameter with passing a class with the needed functions and parameters
+# TODO: replacing event parameter with passing an event object with the needed functions and parameters
+# TODO: allow playing multiple games at once
 
 class GameController:
     """
@@ -61,7 +61,7 @@ class GameController:
 
                     # throwing the gameStart event with the game_id, the opponent and the function to start streaming
                     # the game
-                    _thread.start_new_thread(self.emit, ('game_start', game_id, opponent, self.stream_game))
+                    self.emit('game_start', game_id, opponent, self.stream_game)
 
     def on(self, event, fn):
         """ adds functions to be called on the mentioned incoming events
@@ -92,7 +92,7 @@ class GameController:
         if event in self.events.keys():
             # calling every function in the array at the key event with the passed parameters
             for event in self.events[event]:
-                event(*params)
+                Process(target=event, args=params).start()
 
     def move(self, game_id, move):
         """ moves the passed move
@@ -103,7 +103,7 @@ class GameController:
         """
         self.s.post(f'https://lichess.org/api/bot/game/{game_id}/move/{move}')
 
-    def accept_challenge(self, challenge_id, *params):
+    def accept_challenge(self, challenge_id, *args):
         """ accepts the challenge with the passed challengeId
 
         Args:
@@ -111,7 +111,7 @@ class GameController:
         """
         self.s.post(f'https://lichess.org/api/challenge/{challenge_id}/accept')
 
-    def stream_game(self, game_id, *params):
+    def stream_game(self, game_id, *args):
         """ subscribing to the stream of events for the game with the passed gameId
 
         Args:
@@ -158,12 +158,7 @@ class GameController:
                     if len(moves) >= 1 and len(moves[-1]) >= 4:
                         # sending the opponents_move event with the move as an argument
                         move = moves[-1]
-                        print("opponents turn")
-                        print("opponent moved:", move)
                         self.emit('opponents_move', move)
-                        print("---------------------------------------------------------------------------------------")
 
                     # sending the my_move event with the gameId, the moves and the move function as arguments
-                    print("my_move")
                     self.emit('my_move', game_id, self.color, moves, self.move)
-                    print("-------------------------------------------------------------------------------------------")
