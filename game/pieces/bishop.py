@@ -61,7 +61,6 @@ class Bishop(AbstractPiece):
         while 7 >= x >= 1 and 6 >= y >= -1:
             x -= 1
             y += 1
-            (x, y)
             position = (x, y)
             target_field = self.check_if_position_is_legal(board, positions, *position)
             if (not self.is_white) == target_field:

@@ -8,8 +8,7 @@ class EmptyField(AbstractPiece):
     value = 0
 
     def __init__(self):
-        # TODO: implements super().__init__()
-        pass
+        super().__init__(self.is_white)
 
     def generate_possible_positions(self, current_position, board):
         return []

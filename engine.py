@@ -26,19 +26,25 @@ class Engine:
             moves (string): moves since the start position
             move_fn (fn): function to make the move
         """
+        print("my_move")
         for_white = color == 'white'
 
         best_move = self.calculate_best_move(for_white, 4)
-        print("Evaluation:", best_move[1])
-        move = best_move[0]
-        print(move)
-        self.board.move(move)
-        move_fn(game_id, move)
+        if isinstance(best_move, tuple):
+            print("Evaluation:", best_move[1])
+            best_move = best_move[0]
+        print(best_move)
+        self.board.move(best_move)
+        move_fn(game_id, best_move)
         print("moved")
+        print("-------------------------------------------------------------------------------------------")
 
     def opponents_move(self, move):
+        print("opponents turn")
+        print("opponent moved:", move)
         self.board.move(move)
         print("opponent moved")
+        print("---------------------------------------------------------------------------------------")
 
     def calculate_best_move(self, for_white, depth, board=None):
         if board is None:
