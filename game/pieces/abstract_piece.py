@@ -18,7 +18,7 @@ class AbstractPiece(abc.ABC):
         [0, 0, 0, 0, 0, 0, 0, 0]
     ]
 
-    def __init__(self, is_white):
+    def __init__(self, is_white: bool):
         self.lower_short = self.short
         self.is_white = is_white
         if self.is_white:
@@ -35,7 +35,8 @@ class AbstractPiece(abc.ABC):
 
         self.bonus_map = np.array(self.bonus_map)
 
-    def check_if_position_is_legal(self, board, positions, x, y, target_field_conditions=False):
+    def check_if_position_is_legal(self, board: list[list[str]], positions: list[tuple[int, int]], x: int, y: int,
+                                   target_field_conditions: bool = False) -> bool:
         if not target_field_conditions:
             target_field_conditions = self.target_field_conditions
         if 0 <= x <= 7 and 0 <= y <= 7:
@@ -47,12 +48,12 @@ class AbstractPiece(abc.ABC):
                     return condition
 
     @staticmethod
-    def filter_positions(positions):
+    def filter_positions(positions: list[tuple]) -> list[tuple[int, int]]:
         return list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
 
     @abc.abstractmethod
-    def generate_possible_positions(self, current_position, board):
+    def generate_possible_positions(self, current_position: tuple[int, int], board: list[list[str]]):
         pass
 
-    def get_value(self):
+    def get_value(self) -> int:
         return self.value
