@@ -1,4 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
+from game.pieces.types import Position, Board, Positions
 
 
 class Bishop(AbstractPiece):
@@ -18,7 +19,7 @@ class Bishop(AbstractPiece):
     def __init__(self, is_white: bool):
         super().__init__(is_white)
 
-    def generate_possible_positions(self, current_position: tuple[int, int], board: list[list[str]]) -> list[tuple[int, int]]:
+    def generate_possible_positions(self, current_position: Position, board: Board) -> Positions:
         self.position = current_position
 
         positions = []
