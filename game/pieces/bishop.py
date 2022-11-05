@@ -15,10 +15,10 @@ class Bishop(AbstractPiece):
         [0, 0, 0, 0, 0, 0, 0, 0]
     ]
 
-    def __init__(self, is_white):
+    def __init__(self, is_white: bool):
         super().__init__(is_white)
 
-    def generate_possible_positions(self, current_position, board):
+    def generate_possible_positions(self, current_position: tuple[int, int], board: list[list[str]]) -> list[tuple[int, int]]:
         self.position = current_position
 
         positions = []
