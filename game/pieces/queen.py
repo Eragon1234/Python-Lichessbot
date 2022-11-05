@@ -1,6 +1,7 @@
 from game.pieces.bishop import Bishop
 from game.pieces.rook import Rook
 from game.pieces.abstract_piece import AbstractPiece
+from game.pieces.types import Position, Board, Positions
 
 
 class Queen(AbstractPiece):
@@ -17,10 +18,10 @@ class Queen(AbstractPiece):
         [-5, 0, 0, 0, 0, 0, 0, -5]
     ]
 
-    def __init__(self, is_white):
+    def __init__(self, is_white: bool):
         super().__init__(is_white)
 
-    def generate_possible_positions(self, current_position, board):
+    def generate_possible_positions(self, current_position: Position, board: Board) -> Positions:
         self.position = current_position
 
         bishop = Bishop(self.is_white)
