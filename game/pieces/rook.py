@@ -1,4 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
+from game.pieces.types import Position, Board, Positions
 
 
 class Rook(AbstractPiece):
@@ -15,10 +16,10 @@ class Rook(AbstractPiece):
         [0, 0, 5, 7, 7, 0, 3, 0]
     ]
 
-    def __init__(self, is_white):
+    def __init__(self, is_white: bool):
         super().__init__(is_white)
 
-    def generate_possible_positions(self, current_position, board):
+    def generate_possible_positions(self, current_position: Position, board: Board) -> Positions:
         self.position = current_position
 
         positions = []
