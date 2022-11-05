@@ -1,4 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
+from game.pieces.types import Position, Board
 
 
 class Pawn(AbstractPiece):
@@ -15,13 +16,13 @@ class Pawn(AbstractPiece):
         [0, 0, 0, 0, 0, 0, 0, 0]
     ]
 
-    def __init__(self, is_white):
+    def __init__(self, is_white: bool):
         super().__init__(is_white)
         self.target_field_conditions = [
             'EmptyField'
         ]
 
-    def generate_possible_positions(self, current_position, board):
+    def generate_possible_positions(self, current_position: Position, board: Board):
         self.position = current_position
 
         positions = []
