@@ -1,6 +1,8 @@
 import abc
 import numpy as np
 
+from game.pieces.types import Board, Positions, Position
+
 
 class AbstractPiece(abc.ABC):
     position = (0, 0)
@@ -35,7 +37,7 @@ class AbstractPiece(abc.ABC):
 
         self.bonus_map = np.array(self.bonus_map)
 
-    def check_if_position_is_legal(self, board: list[list[str]], positions: list[tuple[int, int]], x: int, y: int,
+    def check_if_position_is_legal(self, board: Board, positions: Positions, x: int, y: int,
                                    target_field_conditions: bool = False) -> bool:
         if not target_field_conditions:
             target_field_conditions = self.target_field_conditions
@@ -48,11 +50,11 @@ class AbstractPiece(abc.ABC):
                     return condition
 
     @staticmethod
-    def filter_positions(positions: list[tuple]) -> list[tuple[int, int]]:
+    def filter_positions(positions: Positions) -> Positions:
         return list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
 
     @abc.abstractmethod
-    def generate_possible_positions(self, current_position: tuple[int, int], board: list[list[str]]):
+    def generate_possible_positions(self, current_position: Position, board: Board):
         pass
 
     def get_value(self) -> int:
