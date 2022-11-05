@@ -1,5 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import Position, Board
+from game.pieces.types import Position, Board, Positions
 
 
 class Pawn(AbstractPiece):
@@ -22,7 +22,7 @@ class Pawn(AbstractPiece):
             'EmptyField'
         ]
 
-    def generate_possible_positions(self, current_position: Position, board: Board):
+    def generate_possible_positions(self, current_position: Position, board: Board) -> Positions:
         self.position = current_position
 
         positions = []
