@@ -20,7 +20,7 @@ class AbstractPiece(abc.ABC):
         [0, 0, 0, 0, 0, 0, 0, 0]
     ]
 
-    def __init__(self, is_white: bool):
+    def __init__(self, is_white: bool | str):
         self.lower_short = self.short
         self.is_white = is_white
         if self.is_white:
