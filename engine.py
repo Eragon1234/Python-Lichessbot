@@ -1,13 +1,6 @@
 from game import Board
 
 
-# TODO: implement exceptions for checkmate and impossible moves
-# TODO: implement re-moving of all moves to go on in a game after an error
-# TODO: optimize and refactor saving of things
-# TODO: implement depth depended caching
-# TODO: optimize position evaluation and change bonus_map to multiplicator instead of bonus points
-
-
 class Engine:
     """
     Class to generate the best possible moves etc.
