@@ -1,5 +1,4 @@
 import abc
-import numpy as np
 
 from game.pieces.types import Board, Positions, Position
 
@@ -34,8 +33,6 @@ class AbstractPiece(abc.ABC):
             not self.is_white,
             'EmptyField'
         ]
-
-        self.bonus_map = np.array(self.bonus_map)
 
     def check_if_position_is_legal(self, board: Board, positions: Positions, x: int, y: int,
                                    target_field_conditions: bool = False) -> bool:
