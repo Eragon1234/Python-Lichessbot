@@ -4,9 +4,6 @@ import json
 import requests
 
 
-# TODO: replacing event parameter with passing an event object with the needed functions and parameters
-# TODO: allow playing multiple games at once
-
 class GameController:
     """
     handles the connection to the lichess bot api with an event emitter
