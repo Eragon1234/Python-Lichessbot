@@ -212,7 +212,7 @@ class Board:
         if short_board in self.value_differences:
             return self.value_differences.get(short_board)
 
-        material_difference = sum([piece.get_value() for piece in tuple(self.board.flat) if piece.short != 'e'])
+        material_difference = sum([piece.get_value() for piece in tuple(self.board.flat)])
         self.value_differences[short_board] = material_difference
         return material_difference
 
