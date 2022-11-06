@@ -13,6 +13,3 @@ class EmptyField(AbstractPiece):
 
     def generate_possible_positions(self, current_position: Position, board: Board) -> list:
         return []
-
-    def get_value(self) -> int:
-        return self.value

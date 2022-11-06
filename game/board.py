@@ -212,7 +212,7 @@ class Board:
         if short_board in self.value_differences:
             return self.value_differences.get(short_board)
 
-        material_difference = sum([piece.get_value() for piece in tuple(self.board.flat)])
+        material_difference = sum([piece.value for piece in tuple(self.board.flat)])
         self.value_differences[short_board] = material_difference
         return material_difference
 
@@ -282,7 +282,7 @@ class Board:
             tuple: a 1d tuple containing the shorts of the pieces
         """
         if self.flat_short_board is None:
-            self.flat_short_board = tuple([piece.short for piece in tuple(self.board.flat)])
+            self.flat_short_board = tuple([piece.short for piece in self.board.flat])
         return self.flat_short_board
 
     def coordinate_moves_into_uci(self, coordinate_moves):

@@ -53,6 +53,3 @@ class AbstractPiece(abc.ABC):
     @abc.abstractmethod
     def generate_possible_positions(self, current_position: Position, board: Board):
         pass
-
-    def get_value(self) -> int:
-        return self.value
