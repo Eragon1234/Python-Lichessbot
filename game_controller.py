@@ -35,30 +35,32 @@ class GameController:
 
         # handling every incoming event
         for line in res.iter_lines():
-            if line:
-                # parsing the json response
-                event = json.loads(line)
+            if not line:
+                continue
 
-                # checking if the event type is challenge
-                if event['type'] == 'challenge':
-                    # getting the challenge_id and the challenger
-                    challenge_id = event['challenge']['id']
+            # parsing the json response
+            event = json.loads(line)
 
-                    # throwing the challenge event with the challenge_id, the challenger and the function to accept
-                    # the challenge as params
-                    self.emit('challenge', challenge_id, self.accept_challenge)
+            # checking if the event type is challenge
+            if event['type'] == 'challenge':
+                # getting the challenge_id and the challenger
+                challenge_id = event['challenge']['id']
 
-                # checking if the event type is gameStart
-                elif event['type'] == 'gameStart':
+                # throwing the challenge event with the challenge_id, the challenger and the function to accept
+                # the challenge as params
+                self.emit('challenge', challenge_id, self.accept_challenge)
 
-                    # getting the game_id, the color the engine is playing and data about the opponent
-                    game_id = event['game']['gameId']
-                    self.color = event['game']['color']
-                    opponent = event['game']['opponent']
+            # checking if the event type is gameStart
+            elif event['type'] == 'gameStart':
 
-                    # throwing the gameStart event with the game_id, the opponent and the function to start streaming
-                    # the game
-                    self.emit('game_start', game_id, opponent, self.stream_game)
+                # getting the game_id, the color the engine is playing and data about the opponent
+                game_id = event['game']['gameId']
+                self.color = event['game']['color']
+                opponent = event['game']['opponent']
+
+                # throwing the gameStart event with the game_id, the opponent and the function to start streaming
+                # the game
+                self.emit('game_start', game_id, opponent, self.stream_game)
 
     def on(self, event, fn):
         """ adds functions to be called on the mentioned incoming events
