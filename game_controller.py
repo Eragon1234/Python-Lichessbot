@@ -12,7 +12,7 @@ class GameController:
     token = 'lip_2KigTbBKsXIeBFcnCnWk'
 
     # our dictionary for storing the event functions
-    events = {}
+    events: dict[str, list[callable]] = {}
 
     # the color to be played by the bot
     color = 'white'
@@ -68,14 +68,12 @@ class GameController:
             fn (function): the function to be assigned to the passed event
         """
 
-        # if event already exists append function
-        if event in self.events.keys():
-            self.events[event].append(fn)
-
-        # else create a new array for the functions with the event name as the key
-        else:
+        # if event doesn't already exist create empty array at key event
+        if event not in self.events.keys():
             self.events[event] = []
-            self.events[event].append(fn)
+
+        # append event to event array
+        self.events[event].append(fn)
 
     def emit(self, event, *params):
         """ calls the assigned functions to the passed event with the given parameters
@@ -86,10 +84,12 @@ class GameController:
         """
 
         # checking if event exists
-        if event in self.events.keys():
-            # calling every function in the array at the key event with the passed parameters
-            for event in self.events[event]:
-                Process(target=event, args=params).start()
+        if event not in self.events.keys():
+            return
+
+        # calling every function in the array at the key event with the passed parameters
+        for event in self.events[event]:
+            Process(target=event, args=params).start()
 
     def move(self, game_id, move):
         """ moves the passed move
