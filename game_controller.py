@@ -8,6 +8,10 @@ class GameController:
     """
     handles the connection to the lichess bot api with an event emitter
     """
+
+    # the base url for all api requests
+    base_url = "https://lichess.org/api"
+
     # our lichess token for access to the bot api
     token = ''
 
@@ -31,7 +35,7 @@ class GameController:
         """
 
         # starting a stream of events from lichess
-        res = self.s.get('https://lichess.org/api/stream/event', stream=True)
+        res = self.s.get(f'{self.base_url}/stream/event', stream=True)
 
         # handling every incoming event
         for line in res.iter_lines():
@@ -100,7 +104,7 @@ class GameController:
             game_id (string): the gameId for the game in which the move should be played
             move (UCIMove): the move to play in UCI notation
         """
-        self.s.post(f'https://lichess.org/api/bot/game/{game_id}/move/{move}')
+        self.s.post(f'{self.base_url}/bot/game/{game_id}/move/{move}')
 
     def accept_challenge(self, challenge_id, *args):
         """ accepts the challenge with the passed challengeId
@@ -108,7 +112,7 @@ class GameController:
         Args:
             challenge_id (string): the challengeId of the challenge to be accepted
         """
-        self.s.post(f'https://lichess.org/api/challenge/{challenge_id}/accept')
+        self.s.post(f'{self.base_url}/challenge/{challenge_id}/accept')
 
     def stream_game(self, game_id, *args):
         """ subscribing to the stream of events for the game with the passed gameId
@@ -118,7 +122,7 @@ class GameController:
         """
 
         # subscribing to the stream
-        res = self.s.get(f'https://lichess.org/api/bot/game/stream/{game_id}', stream=True)
+        res = self.s.get(f'{self.base_url}/bot/game/stream/{game_id}', stream=True)
         # handling every incoming event
         for line in res.iter_lines():
             if line:
