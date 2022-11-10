@@ -1,4 +1,3 @@
-from multiprocessing import Process
 import json
 
 import requests
@@ -95,7 +94,7 @@ class GameController:
 
         # calling every function in the array at the key event with the passed parameters
         for event in self.events[event]:
-            Process(target=event, args=params).start()
+            event(*params)
 
     def move(self, game_id, move):
         """ moves the passed move
