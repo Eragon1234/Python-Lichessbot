@@ -1,4 +1,5 @@
 import json
+import typing
 
 import requests
 
@@ -65,12 +66,12 @@ class GameController:
                 # the game
                 self.emit('game_start', game_id, opponent, self.stream_game)
 
-    def on(self, event, fn):
+    def on(self, event: str, fn: typing.Callable[[str, ...], None]):
         """ adds functions to be called on the mentioned incoming events
 
         Args:
-            event (string): the event to be handled
-            fn (function): the function to be assigned to the passed event
+            event (str): the event to be handled
+            fn (callable): the function to be assigned to the passed event
         """
 
         # if event doesn't already exist create empty array at key event
@@ -80,11 +81,11 @@ class GameController:
         # append event to event array
         self.events[event].append(fn)
 
-    def emit(self, event, *params):
+    def emit(self, event: str, *params):
         """ calls the assigned functions to the passed event with the given parameters
 
         Args:
-            event (string): the event for whom the assigned functions to be called
+            event (str): the event for whom the assigned functions to be called
             *params: the parameters to be passed to the assigned functions
         """
 
@@ -96,28 +97,28 @@ class GameController:
         for event in self.events[event]:
             event(*params)
 
-    def move(self, game_id, move):
+    def move(self, game_id: str, move: str):
         """ moves the passed move
 
         Args:
-            game_id (string): the gameId for the game in which the move should be played
-            move (UCIMove): the move to play in UCI notation
+            game_id (str): the gameId for the game in which the move should be played
+            move (str): the move to play in UCI notation
         """
         self.s.post(f'{self.base_url}/bot/game/{game_id}/move/{move}')
 
-    def accept_challenge(self, challenge_id, *args):
+    def accept_challenge(self, challenge_id: str, *args):
         """ accepts the challenge with the passed challengeId
 
         Args:
-            challenge_id (string): the challengeId of the challenge to be accepted
+            challenge_id (str): the challengeId of the challenge to be accepted
         """
         self.s.post(f'{self.base_url}/challenge/{challenge_id}/accept')
 
-    def stream_game(self, game_id, *args):
+    def stream_game(self, game_id: str, *args):
         """ subscribing to the stream of events for the game with the passed gameId
 
         Args:
-            game_id (string): the gameId of the game to be subscribed to
+            game_id (str): the gameId of the game to be subscribed to
         """
 
         # subscribing to the stream
