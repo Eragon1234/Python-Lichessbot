@@ -1,3 +1,5 @@
+import typing
+
 from game import Board
 
 
@@ -10,13 +12,13 @@ class Engine:
         self.board = Board(fen)
         self.positions = None
 
-    def move(self, game_id, color, moves, move_fn):
+    def move(self, game_id: str, color: str, moves: str, move_fn: typing.Callable[[str, str], None]):
         """ handles the calculations for the best possible moves
 
         Args:
-            game_id (string): the id of the game to move in
-            color (string): the color for whom to generate the best moves
-            moves (string): moves since the start position
+            game_id (str): the id of the game to move in
+            color (str): the color for whom to generate the best moves
+            moves (str): moves since the start position
             move_fn (fn): function to make the move
         """
         print("my_move")
@@ -39,7 +41,7 @@ class Engine:
         print("opponent moved")
         print("---------------------------------------------------------------------------------------")
 
-    def calculate_best_move(self, for_white, depth, board=None):
+    def calculate_best_move(self, for_white: bool, depth: int, board: Board = None):
         if board is None:
             board = self.board
 
@@ -50,7 +52,8 @@ class Engine:
 
         return move
 
-    def max(self, depth, alpha, beta, board, positions=None, return_move=False):
+    def max(self, depth: int, alpha: float, beta: float, board: Board,
+            positions: dict[str, float] = None, return_move: bool = False):
         if positions is None:
             positions = {}
         self.positions = positions
@@ -88,7 +91,8 @@ class Engine:
             return max_move, max_value
         return max_value
 
-    def min(self, depth, alpha, beta, board, positions=None, return_move=False):
+    def min(self, depth: int, alpha: float, beta: float, board: Board, positions: dict[str, float] = None,
+            return_move: bool = False):
         if positions is None:
             positions = {}
         self.positions = positions
@@ -125,21 +129,21 @@ class Engine:
             return min_move, min_value
         return min_value
 
-    def get_value_difference_for_move(self, move, board=None):
+    def get_value_difference_for_move(self, move: str, board: Board = None):
         if board is None:
             board = self.board
         with board.test_move(move) as test_board:
             evaluation = test_board.calculate_value_difference()
         return evaluation
 
-    def get_material_difference_for_move(self, move, board=None):
+    def get_material_difference_for_move(self, move: str, board: Board = None):
         if board is None:
             board = self.board
         with board.test_move(move) as test_board:
             evaluation = test_board.calculate_material_difference()
         return evaluation
 
-    def get_sort_value_for_move(self, move):
+    def get_sort_value_for_move(self, move: str):
         if self.positions is not None:
             with self.board.test_move(move) as board:
                 short_board = board.generate_flat_short_board()
