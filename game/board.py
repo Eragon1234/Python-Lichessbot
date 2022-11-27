@@ -57,7 +57,6 @@ class Board:
         self.color_board = None
         self.short_board = None
         self.flat_short_board = None
-        self.columns_values = tuple(self.columns.values())
 
     def move(self, move):
         """ makes a move on the board
