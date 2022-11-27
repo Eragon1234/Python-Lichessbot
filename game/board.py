@@ -30,6 +30,17 @@ class Board:
         '7': 'h'
     }
 
+    rows = {
+        'a': 0,
+        'b': 1,
+        'c': 2,
+        'd': 3,
+        'e': 4,
+        'f': 5,
+        'g': 6,
+        'h': 7
+    }
+
     # an array to keep track of the castle rights of black and white
     castle = {
         'white': {'king_side': False, 'queen_side': False},
@@ -317,9 +328,9 @@ class Board:
         Returns:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
-        x1 = self.columns_values.index(uci_move[0])
+        x1 = self.rows.get(uci_move[0])
         y1 = int(uci_move[1]) - 1
-        x2 = self.columns_values.index(uci_move[2])
+        x2 = self.rows.get(uci_move[2])
         y2 = int(uci_move[3]) - 1
         coordinate_move = ((x1, y1), (x2, y2))
         return coordinate_move
