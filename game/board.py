@@ -71,7 +71,7 @@ class Board:
         # getting the moving piece
         moving_piece = self.board[start_field_coordinates]
         # emptying the startField
-        self.board[start_field_coordinates] = EmptyField()
+        self.board[start_field_coordinates] = EmptyField.get_self()
         # setting the targetField to the moving_piece
         self.captured_pieces.append(self.board[move[1][1], move[1][0]])
         self.board[target_field_coordinates] = moving_piece
@@ -370,7 +370,7 @@ class Board:
                 # checking for numbers to move n pieces further
                 elif char.isdigit():
                     for i in range(0, int(char)):
-                        board[-1].append(EmptyField())
+                        board[-1].append(EmptyField.get_self())
 
         if len(fen) == 6:
             # looking if it's white or blacks turn
