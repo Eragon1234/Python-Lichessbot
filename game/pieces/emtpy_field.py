@@ -3,6 +3,7 @@ from game.pieces.types import Position, Board
 
 
 class EmptyField(AbstractPiece):
+    self = None
     is_white = "EmptyField"
     short = 'e'
     lower_short = 'e'
@@ -13,3 +14,9 @@ class EmptyField(AbstractPiece):
 
     def generate_possible_positions(self, current_position: Position, board: Board) -> list:
         return []
+
+    @classmethod
+    def get_self(cls):
+        if cls.self is None:
+            cls.self = cls()
+        return cls.self
