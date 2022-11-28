@@ -1,5 +1,8 @@
+from game import Board
+
+
 class TestMove:
-    def __init__(self, board, move):
+    def __init__(self, board: Board, move: str):
         self.board = board
         self.move = move
 
@@ -7,5 +10,5 @@ class TestMove:
         self.board.move(self.move)
         return self.board
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self):
         self.board.unmove(self.move)
