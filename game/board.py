@@ -1,5 +1,6 @@
-import numpy as np
 import random
+
+import numpy as np
 
 from .pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from .test_move import TestMove
@@ -11,7 +12,7 @@ class Board:
     """
 
     # an array for moved moves
-    moves = []
+    moves: [str] = []
 
     # a dictionary to save the possible moves
     possible_moves = {}
@@ -51,14 +52,14 @@ class Board:
 
     en_passant_field = "-"
 
-    def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
+    def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         # loads the board with the given fen
         self.load_board_with_fen(fen)
         self.color_board = None
         self.short_board = None
         self.flat_short_board = None
 
-    def move(self, move):
+    def move(self, move: str):
         """ makes a move on the board
 
         Args:
@@ -91,7 +92,7 @@ class Board:
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.en_passant_field = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
 
-    def unmove(self, move):
+    def unmove(self, move: str):
         self.color_board = None
         self.short_board = None
         self.flat_short_board = None
@@ -110,10 +111,10 @@ class Board:
         self.board[target_field_coordinates] = moved_piece
         self.board[start_field_coordinates] = captured_piece
 
-    def test_move(self, move):
+    def test_move(self, move: str):
         return TestMove(self, move)
 
-    def generate_possible_moves(self, for_white=True, return_pseudo_legal_moves=False):
+    def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False):
         """ generating all possible moves in the current position
 
         Args:
@@ -174,7 +175,7 @@ class Board:
 
         return moves
 
-    def generate_possible_coordinate_moves(self, for_white):
+    def generate_possible_coordinate_moves(self, for_white: bool | str):
         """ generates the possible coordinate moves for the passed color
 
         Args:
@@ -227,7 +228,7 @@ class Board:
         return material_difference
 
     @staticmethod
-    def generate_coordinates_with_index(index):
+    def generate_coordinates_with_index(index: int):
         """ calculates the coordinates of a piece on the given index in 1d array with the length 64
 
         Args:
@@ -241,7 +242,7 @@ class Board:
         return x, y
 
     @staticmethod
-    def generate_index_with_coordinates(coordinates):
+    def generate_index_with_coordinates(coordinates: tuple[int, int]):
         x = coordinates[0]
         y = coordinates[1]
         index = (x + y * 8)
@@ -295,7 +296,7 @@ class Board:
             self.flat_short_board = tuple([piece.short for piece in self.board.flat])
         return self.flat_short_board
 
-    def coordinate_moves_into_uci(self, coordinate_moves):
+    def coordinate_moves_into_uci(self, coordinate_moves: tuple(tuple(int, int), tuple(int, int))):
         """ converts the passed array of coordinate moves into an array of UCIMoves
 
         Args:
@@ -318,7 +319,7 @@ class Board:
             moves.append(move)
         return moves
 
-    def uci_into_coordinate_move(self, uci_move):
+    def uci_into_coordinate_move(self, uci_move: str):
         """ converts the passed UCIMove into a coordinate move
 
         Args:
@@ -334,7 +335,7 @@ class Board:
         coordinate_move = ((x1, y1), (x2, y2))
         return coordinate_move
 
-    def load_board_with_fen(self, fen):
+    def load_board_with_fen(self, fen: str):
         """ loads the board with the passed fen
 
         Args:
@@ -421,7 +422,7 @@ class Board:
         return fen
 
     @staticmethod
-    def generate_random_string(length):
+    def generate_random_string(length: int):
         """ generates a random string with the specified length
 
         Args:
