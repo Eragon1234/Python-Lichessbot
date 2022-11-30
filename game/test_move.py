@@ -7,5 +7,5 @@ class TestMove:
         self.board.move(self.move)
         return self.board
 
-    def __exit__(self):
+    def __exit__(self, *args):
         self.board.unmove(self.move)
