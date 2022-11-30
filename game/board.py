@@ -296,7 +296,7 @@ class Board:
             self.flat_short_board = tuple([piece.short for piece in self.board.flat])
         return self.flat_short_board
 
-    def coordinate_moves_into_uci(self, coordinate_moves: tuple(tuple(int, int), tuple(int, int))):
+    def coordinate_moves_into_uci(self, coordinate_moves: tuple[tuple[int, int], tuple[int, int]]):
         """ converts the passed array of coordinate moves into an array of UCIMoves
 
         Args:
