@@ -1,8 +1,10 @@
 import random
 
 import numpy as np
+from numpy import ndarray
 
 from .pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
+from .pieces.abstract_piece import AbstractPiece
 from .test_move import TestMove
 
 
@@ -59,7 +61,7 @@ class Board:
         self.short_board = None
         self.flat_short_board = None
 
-    def move(self, move: str):
+    def move(self, move: str) -> None:
         """ makes a move on the board
 
         Args:
@@ -92,7 +94,7 @@ class Board:
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.en_passant_field = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
 
-    def unmove(self, move: str):
+    def unmove(self, move: str) -> None:
         self.color_board = None
         self.short_board = None
         self.flat_short_board = None
@@ -111,10 +113,10 @@ class Board:
         self.board[target_field_coordinates] = moved_piece
         self.board[start_field_coordinates] = captured_piece
 
-    def test_move(self, move: str):
+    def test_move(self, move: str) -> TestMove:
         return TestMove(self, move)
 
-    def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False):
+    def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False) -> list[str]:
         """ generating all possible moves in the current position
 
         Args:
@@ -175,7 +177,7 @@ class Board:
 
         return moves
 
-    def generate_possible_coordinate_moves(self, for_white: bool | str):
+    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[tuple[tuple[int, int], tuple[int, int]]]:
         """ generates the possible coordinate moves for the passed color
 
         Args:
@@ -203,7 +205,7 @@ class Board:
                     coordinate_moves.append((coordinates, new_position))
         return coordinate_moves
 
-    def calculate_material_difference(self):
+    def calculate_material_difference(self) -> int:
         """ calculates the material difference between white and black
 
         Returns:
@@ -213,7 +215,7 @@ class Board:
         material_difference = sum([piece.value for piece in tuple(self.board.flat) if piece.short != 'e'])
         return material_difference
 
-    def calculate_value_difference(self):
+    def calculate_value_difference(self) -> int:
         """ calculates the difference of the values of the pieces between white and black
 
         Returns:
@@ -228,7 +230,7 @@ class Board:
         return material_difference
 
     @staticmethod
-    def generate_coordinates_with_index(index: int):
+    def generate_coordinates_with_index(index: int) -> tuple[int, int]:
         """ calculates the coordinates of a piece on the given index in 1d array with the length 64
 
         Args:
@@ -242,13 +244,13 @@ class Board:
         return x, y
 
     @staticmethod
-    def generate_index_with_coordinates(coordinates: tuple[int, int]):
+    def generate_index_with_coordinates(coordinates: tuple[int, int]) -> int:
         x = coordinates[0]
         y = coordinates[1]
         index = (x + y * 8)
         return index
 
-    def generate_color_board(self):
+    def generate_color_board(self) -> list[list[bool | str]]:
         """ converts the current board state into a board with True, False and EmptyField standing for the colors
 
         Returns:
@@ -269,7 +271,7 @@ class Board:
         self.color_board = color_board
         return color_board
 
-    def generate_short_board(self):
+    def generate_short_board(self) -> list[list[str]]:
         """ converts the current board state into a board with the shorts of the pieces
 
         Returns:
@@ -286,7 +288,7 @@ class Board:
         self.short_board = short_board
         return short_board
 
-    def generate_flat_short_board(self):
+    def generate_flat_short_board(self) -> tuple[str]:
         """ converts the current board state into a board with the shorts of the pieces
 
         Returns:
@@ -296,7 +298,7 @@ class Board:
             self.flat_short_board = tuple([piece.short for piece in self.board.flat])
         return self.flat_short_board
 
-    def coordinate_moves_into_uci(self, coordinate_moves: tuple[tuple[int, int], tuple[int, int]]):
+    def coordinate_moves_into_uci(self, coordinate_moves: tuple[tuple[int, int], tuple[int, int]]) -> list[str]:
         """ converts the passed array of coordinate moves into an array of UCIMoves
 
         Args:
@@ -319,7 +321,7 @@ class Board:
             moves.append(move)
         return moves
 
-    def uci_into_coordinate_move(self, uci_move: str):
+    def uci_into_coordinate_move(self, uci_move: str) -> tuple[tuple[int, int], tuple[int, int]]:
         """ converts the passed UCIMove into a coordinate move
 
         Args:
@@ -335,7 +337,7 @@ class Board:
         coordinate_move = ((x1, y1), (x2, y2))
         return coordinate_move
 
-    def load_board_with_fen(self, fen: str):
+    def load_board_with_fen(self, fen: str) -> ndarray:
         """ loads the board with the passed fen
 
         Args:
@@ -412,7 +414,7 @@ class Board:
         self.board = board
         return board
 
-    def generate_fen_for_board(self):
+    def generate_fen_for_board(self) -> str:
         """ generates the fen for the current board
 
         Returns:
@@ -422,7 +424,7 @@ class Board:
         return fen
 
     @staticmethod
-    def generate_random_string(length: int):
+    def generate_random_string(length: int) -> str:
         """ generates a random string with the specified length
 
         Args:
