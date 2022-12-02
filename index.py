@@ -7,7 +7,7 @@ from engine import Engine
 # initializing our GameController
 game = GameController()
 
-# justa accepting challenges and streaming games without further processing
+# just accepting challenges and streaming games without further processing
 game.on('challenge', game.accept_challenge)
 game.on('game_start', game.stream_game)
 
