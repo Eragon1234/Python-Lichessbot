@@ -1,5 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import Board, Position, Positions
+from game.pieces.types import BoardArray, Position, Positions
 
 
 class Knight(AbstractPiece):
@@ -19,7 +19,7 @@ class Knight(AbstractPiece):
     def __init__(self, is_white: bool):
         super().__init__(is_white)
 
-    def generate_possible_positions(self, current_position: Position, board: Board) -> Positions:
+    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
         self.position = current_position
 
         positions = []

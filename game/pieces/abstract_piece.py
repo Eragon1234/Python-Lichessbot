@@ -1,6 +1,6 @@
 import abc
 
-from game.pieces.types import Board, Positions, Position
+from game.pieces.types import BoardArray, Positions, Position
 
 
 class AbstractPiece(abc.ABC):
@@ -34,7 +34,7 @@ class AbstractPiece(abc.ABC):
             'EmptyField'
         ]
 
-    def check_if_position_is_legal(self, board: Board, positions: Positions, x: int, y: int,
+    def check_if_position_is_legal(self, board: BoardArray, positions: Positions, x: int, y: int,
                                    target_field_conditions: bool = False) -> bool:
         if not target_field_conditions:
             target_field_conditions = self.target_field_conditions
@@ -51,5 +51,5 @@ class AbstractPiece(abc.ABC):
         return list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
 
     @abc.abstractmethod
-    def generate_possible_positions(self, current_position: Position, board: Board):
+    def generate_possible_positions(self, current_position: Position, board: BoardArray):
         pass

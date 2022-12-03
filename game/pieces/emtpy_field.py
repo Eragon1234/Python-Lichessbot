@@ -1,5 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import Position, Board
+from game.pieces.types import Position, BoardArray
 
 
 class EmptyField(AbstractPiece):
@@ -12,7 +12,7 @@ class EmptyField(AbstractPiece):
     def __init__(self):
         super().__init__(self.is_white)
 
-    def generate_possible_positions(self, current_position: Position, board: Board) -> list:
+    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list:
         return []
 
     @classmethod
