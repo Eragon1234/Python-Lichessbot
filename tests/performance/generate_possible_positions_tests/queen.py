@@ -1,8 +1,8 @@
 import unittest
 from timeit import Timer
 
-from game import Queen
 from game import Board
+from game import Queen
 
 
 class QueenPossiblePositionsGenerationPerformanceTest(unittest.TestCase):

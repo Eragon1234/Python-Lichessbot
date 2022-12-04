@@ -1,8 +1,8 @@
 import unittest
 from timeit import Timer
 
-from game import Rook
 from game import Board
+from game import Rook
 
 
 class RookPossiblePositionsGenerationPerformanceTest(unittest.TestCase):

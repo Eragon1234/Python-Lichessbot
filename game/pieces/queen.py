@@ -1,6 +1,6 @@
+from game.pieces.abstract_piece import AbstractPiece
 from game.pieces.bishop import Bishop
 from game.pieces.rook import Rook
-from game.pieces.abstract_piece import AbstractPiece
 from game.pieces.types import Position, BoardArray, Positions
 
 

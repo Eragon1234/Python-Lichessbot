@@ -1,8 +1,8 @@
 import unittest
 from timeit import Timer
 
-from game import Pawn
 from game import Board
+from game import Pawn
 
 
 class PawnPossiblePositionsGenerationPerformanceTest(unittest.TestCase):
