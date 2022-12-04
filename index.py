@@ -1,8 +1,7 @@
 # importing the GameController for handling the connection to the Lichess API
-from game_controller import GameController
-
 # importing our Engine
 from engine import Engine
+from game_controller import GameController
 
 # initializing our GameController
 game = GameController()

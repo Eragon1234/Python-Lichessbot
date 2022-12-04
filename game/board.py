@@ -4,7 +4,6 @@ import numpy as np
 from numpy import ndarray
 
 from .pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
-from .pieces.abstract_piece import AbstractPiece
 from .test_move import TestMove
 
 
@@ -177,7 +176,8 @@ class Board:
 
         return moves
 
-    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[tuple[tuple[int, int], tuple[int, int]]]:
+    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[
+        tuple[tuple[int, int], tuple[int, int]]]:
         """ generates the possible coordinate moves for the passed color
 
         Args:
