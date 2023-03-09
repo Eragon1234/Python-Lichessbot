@@ -32,14 +32,14 @@ class Engine:
         self.board.move(best_move)
         move_fn(game_id, best_move)
         print("moved")
-        print("-------------------------------------------------------------------------------------------")
+        print("-" * 100)
 
     def opponents_move(self, move):
         print("opponents turn")
         print("opponent moved:", move)
         self.board.move(move)
         print("opponent moved")
-        print("---------------------------------------------------------------------------------------")
+        print("-" * 100)
 
     def calculate_best_move(self, for_white: bool, depth: int, board: Board = None):
         if board is None:
