@@ -136,19 +136,13 @@ class GameController:
                 moves = event['state']['moves']
 
                 # setting the my_move property to true if I'm white else to black
-                if self.color == 'white':
-                    my_move = True
-                else:
-                    my_move = False
+                my_move = self.color == 'white'
             else:
                 # getting the moves from the response
                 moves = event['moves']
 
                 # checking if it's whites Move by counting the number of plies
-                if (moves.count(" ") % 2) == 1:
-                    my_move = True
-                else:
-                    my_move = False
+                my_move = (moves.count(" ") % 2) == 1
 
                 # inverting my_move if I'm black
                 if self.color == 'black':
