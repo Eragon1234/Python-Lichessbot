@@ -382,7 +382,7 @@ class Board:
 
                 # checking for numbers to move n pieces further
                 elif char.isdigit():
-                    for i in range(0, int(char)):
+                    for _ in range(int(char)):
                         board[-1].append(EmptyField.get_self())
 
         if len(fen) == 6:
@@ -434,7 +434,7 @@ class Board:
             string: a random string of the specified length
         """
         random_string = ''
-        for i in range(length):
+        for _ in range(length):
             random_integer = random.randint(0, 255)  # getting a random integer in the range 0 to 255
             random_string += chr(random_integer)  # converting the number into a char and appending if to the string
         return random_string

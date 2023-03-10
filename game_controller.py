@@ -94,8 +94,8 @@ class GameController:
             return
 
         # calling every function in the array at the key event with the passed parameters
-        for event in self.events[event]:
-            event(*params)
+        for e in self.events[event]:
+            e(*params)
 
     def move(self, game_id: str, move: str):
         """ moves the passed move
