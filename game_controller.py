@@ -75,7 +75,7 @@ class GameController:
         """
 
         # if event doesn't already exist create empty array at key event
-        if event not in self.events.keys():
+        if event not in self.events:
             self.events[event] = []
 
         # append event to event array
@@ -90,7 +90,7 @@ class GameController:
         """
 
         # checking if event exists
-        if event not in self.events.keys():
+        if event not in self.events:
             return
 
         # calling every function in the array at the key event with the passed parameters
