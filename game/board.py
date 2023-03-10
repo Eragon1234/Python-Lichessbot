@@ -211,7 +211,6 @@ class Board:
         Returns:
             int: the material difference
         """
-
         material_difference = sum([piece.value for piece in tuple(self.board.flat) if piece.short != 'e'])
         return material_difference
 
