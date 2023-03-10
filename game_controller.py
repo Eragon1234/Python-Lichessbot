@@ -33,7 +33,6 @@ class GameController:
         """
         subscribes to the lichess api to watch for events as challenge, gameStart etc. and emits the belonging events
         """
-
         # starting a stream of events from lichess
         res = self.s.get(f'{self.base_url}/stream/event', stream=True)
 
@@ -73,7 +72,6 @@ class GameController:
             event (str): the event to be handled
             fn (callable): the function to be assigned to the passed event
         """
-
         # if event doesn't already exist create empty array at key event
         if event not in self.events:
             self.events[event] = []
@@ -88,7 +86,6 @@ class GameController:
             event (str): the event for whom the assigned functions to be called
             *params: the parameters to be passed to the assigned functions
         """
-
         # checking if event exists
         if event not in self.events:
             return
@@ -120,7 +117,6 @@ class GameController:
         Args:
             game_id (str): the gameId of the game to be subscribed to
         """
-
         # subscribing to the stream
         res = self.s.get(f'{self.base_url}/bot/game/stream/{game_id}', stream=True)
         # handling every incoming event
