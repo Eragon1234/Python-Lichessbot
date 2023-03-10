@@ -5,9 +5,7 @@ import requests
 
 
 class GameController:
-    """
-    handles the connection to the lichess bot api with an event emitter
-    """
+    """handles the connection to the lichess bot api with an event emitter"""
 
     # the base url for all api requests
     base_url = "https://lichess.org/api"
@@ -30,9 +28,7 @@ class GameController:
         self.s = s
 
     def watch(self):
-        """
-        subscribes to the lichess api to watch for events as challenge, gameStart etc. and emits the belonging events
-        """
+        """subscribes to the lichess api to watch for events as challenge, gameStart etc. and emits the belonging events"""
         # starting a stream of events from lichess
         res = self.s.get(f'{self.base_url}/stream/event', stream=True)
 

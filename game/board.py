@@ -8,9 +8,7 @@ from .test_move import TestMove
 
 
 class Board:
-    """
-    a class to handle the current board state, making moves, generating possible Moves etc.
-    """
+    """a class to handle the current board state, making moves, generating possible Moves etc."""
 
     # an array for moved moves
     moves: [str] = []
