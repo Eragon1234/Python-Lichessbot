@@ -58,7 +58,7 @@ class Engine:
             positions = {}
         self.positions = positions
         moves = board.generate_possible_moves(True)
-        moves.sort(key=lambda move: self.get_sort_value_for_move(move))
+        moves.sort(key=self.get_sort_value_for_move)
 
         if depth == 0:
             if len(moves) == 0:
