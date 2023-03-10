@@ -170,7 +170,7 @@ class Board:
                     evaluations[move] = min_evaluation
 
         if len(moves) == len(evaluations):
-            moves.sort(key=lambda move: evaluations.get(move), reverse=for_white)
+            moves.sort(key=evaluations.get, reverse=for_white)
 
         self.possible_moves[short_board] = moves
 
