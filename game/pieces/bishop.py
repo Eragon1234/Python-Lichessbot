@@ -33,7 +33,7 @@ class Bishop(AbstractPiece):
             target_field = self.check_if_position_is_legal(board, positions, *position)
             if (not self.is_white) == target_field:
                 break
-            elif target_field is None:
+            if target_field is None:
                 break
         x = current_position[0]
         y = current_position[1]
@@ -44,7 +44,7 @@ class Bishop(AbstractPiece):
             target_field = self.check_if_position_is_legal(board, positions, *position)
             if (not self.is_white) == target_field:
                 break
-            elif target_field is None:
+            if target_field is None:
                 break
         x = current_position[0]
         y = current_position[1]
@@ -55,7 +55,7 @@ class Bishop(AbstractPiece):
             target_field = self.check_if_position_is_legal(board, positions, *position)
             if (not self.is_white) == target_field:
                 break
-            elif target_field is None:
+            if target_field is None:
                 break
         x = current_position[0]
         y = current_position[1]
@@ -66,7 +66,7 @@ class Bishop(AbstractPiece):
             target_field = self.check_if_position_is_legal(board, positions, *position)
             if (not self.is_white) == target_field:
                 break
-            elif target_field is None:
+            if target_field is None:
                 break
 
         positions = self.filter_positions(positions)
