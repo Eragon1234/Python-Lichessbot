@@ -3,8 +3,8 @@ import random
 import numpy as np
 from numpy import ndarray
 
-from .pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
-from .test_move import TestMove
+from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
+from game.test_move import TestMove
 
 
 class Board:
