@@ -48,7 +48,7 @@ class AbstractPiece(abc.ABC):
 
     @staticmethod
     def filter_positions(positions: Positions) -> Positions:
-        return list(filter(lambda position: 0 <= position[0] <= 7 and 0 <= position[1] <= 7, positions))
+        return [position for position in positions if 0 <= position[0] <= 7 and 0 <= position[1] <= 7]
 
     @abc.abstractmethod
     def generate_possible_positions(self, current_position: Position, board: BoardArray):
