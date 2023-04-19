@@ -4,7 +4,7 @@ from game import Board
 
 
 class Engine:
-    """Class to generate the best possible moves etc."""
+    """Class to generate the best possible moves, etc."""
 
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = Board(fen)

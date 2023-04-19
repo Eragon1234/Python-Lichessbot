@@ -28,7 +28,8 @@ class GameController:
         self.s = s
 
     def watch(self):
-        """subscribes to the lichess api to watch for events as challenge, gameStart etc. and emits the belonging events"""
+        """subscribes to the lichess api to watch for events as a challenge, gameStart etc. and emits the belonging
+        events"""
         # starting a stream of events from lichess
         res = self.s.get(f'{self.base_url}/stream/event', stream=True)
 
@@ -68,11 +69,11 @@ class GameController:
             event (str): the event to be handled
             fn (callable): the function to be assigned to the passed event
         """
-        # if event doesn't already exist create empty array at key event
+        # if the event doesn't already exist create an empty array at key event
         if event not in self.events:
             self.events[event] = []
 
-        # append event to event array
+        # append event to an event array
         self.events[event].append(fn)
 
     def emit(self, event: str, *params):
@@ -144,7 +145,7 @@ class GameController:
             if my_move:
                 # parsing the moves as an array
                 moves = moves.split(" ")
-                # checking if last move is from my opponent
+                # checking if the last move is from my opponent
 
                 if len(moves) >= 1 and len(moves[-1]) >= 4:
                     # sending the opponents_move event with the move as an argument

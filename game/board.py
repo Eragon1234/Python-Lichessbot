@@ -8,7 +8,7 @@ from game.test_move import TestMove
 
 
 class Board:
-    """a class to handle the current board state, making moves, generating possible Moves etc."""
+    """a class to handle the current board state, making moves, generating possible moves, etc."""
 
     # an array for moved moves
     moves: [str] = []
@@ -41,7 +41,7 @@ class Board:
         'h': 7
     }
 
-    # an array to keep track of the castle rights of black and white
+    # an array to track the castle rights of black and white
     castle = {
         'white': {'king_side': False, 'queen_side': False},
         'black': {'king_side': False, 'queen_side': False}
@@ -114,11 +114,10 @@ class Board:
         return TestMove(self, move)
 
     def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False) -> list[str]:
-        """ generating all possible moves in the current position
+        """ Generating all possible moves in the current position
 
-        Args:
-            for_white (bool): for which color to generate the moves for. Defaults to True.
-            return_pseudo_legal_moves(bool): if moves should be returned including pseudo-legal moves. Defaults to False
+        Args: for_white (bool): for which color to generate the moves for. Defaults to True.
+        return_pseudo_legal_moves (bool): if moves should be returned, including pseudo-legal moves. Defaults to False
 
         Returns:
             list: a list of possible moves in UCIMove format
@@ -175,7 +174,7 @@ class Board:
         return moves
 
     def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[
-        tuple[tuple[int, int], tuple[int, int]]]:
+            tuple[tuple[int, int], tuple[int, int]]]:
         """ generates the possible coordinate moves for the passed color
 
         Args:
@@ -192,7 +191,7 @@ class Board:
             coordinates = self.generate_coordinates_with_index(piece[0])
             piece = piece[1]
 
-            # if piece is the color for which to generate moves for
+            # if the piece is the color for which to generate moves for
             if piece.is_white == for_white:
                 # generating possible positions
                 new_positions = piece.generate_possible_positions(coordinates, color_board)
@@ -213,7 +212,7 @@ class Board:
         return material_difference
 
     def calculate_value_difference(self) -> int:
-        """ calculates the difference of the values of the pieces between white and black
+        """ calculates the difference of the values for the pieces between white and black
 
         Returns:
             int: the material difference
@@ -228,7 +227,7 @@ class Board:
 
     @staticmethod
     def generate_coordinates_with_index(index: int) -> tuple[int, int]:
-        """ calculates the coordinates of a piece on the given index in 1d array with the length 64
+        """ calculates the coordinates of a piece on the given index in 1d array with length 64
 
         Args:
             index (int): the index in the 1d array
@@ -302,7 +301,7 @@ class Board:
             coordinate_moves (list): a list containing tuples with the startField and the targetField as x, y tuples
 
         Returns:
-            list: a list of string which are moves in the UCI Notation
+            list: a list of strings which are moves in the UCI Notation
         """
         moves = []
         for coordinateMove in coordinate_moves:
