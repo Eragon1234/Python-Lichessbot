@@ -1,4 +1,5 @@
 import json
+import os
 import typing
 
 import requests
@@ -11,7 +12,7 @@ class GameController:
     base_url = "https://lichess.org/api"
 
     # our lichess token for access to the bot api
-    token = ''
+    token = os.environ.get('LICHESS_TOKEN')
 
     # our dictionary for storing the event functions
     events: dict[str, list[callable]] = {}
@@ -20,6 +21,9 @@ class GameController:
     color = 'white'
 
     def __init__(self):
+        if self.token is None:
+            raise Exception('No token provided')
+
         # creating a requests session to always send the Authorization header as the lichess token at every request
         s = requests.Session()
         s.headers.update({
