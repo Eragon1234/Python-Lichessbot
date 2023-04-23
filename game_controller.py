@@ -123,7 +123,7 @@ class GameController:
         # handling every incoming event
         for line in res.iter_lines():
             if not line:
-                return
+                continue
 
             # parsing the json response
             event = json.loads(line)
@@ -131,27 +131,23 @@ class GameController:
             if 'state' in event.keys():
                 # getting the moves from the response
                 moves = event['state']['moves']
-
-                # setting the my_move property to true if I'm white else to black
-                my_move = self.color == 'white'
             else:
                 # getting the moves from the response
                 moves = event['moves']
 
-                # checking if it's whites Move by counting the number of plies
-                my_move = (moves.count(" ") % 2) == 1
+            moves = moves.split(" ")
 
-                # inverting my_move if I'm black
-                if self.color == 'black':
-                    my_move = not my_move
+            # checking if it's whites Move by counting the number of plies
+            my_move = (len(moves) % 2) == 0 or moves[0] == ''
+
+            # inverting my_move if I'm black
+            if self.color == 'black':
+                my_move = not my_move
 
             # checking if it's my_move
             if my_move:
-                # parsing the moves as an array
-                moves = moves.split(" ")
                 # checking if the last move is from my opponent
-
-                if len(moves) >= 1 and len(moves[-1]) >= 4:
+                if len(moves) >= 1 and moves[-1] != '':
                     # sending the opponents_move event with the move as an argument
                     move = moves[-1]
                     self.emit('opponents_move', move)
