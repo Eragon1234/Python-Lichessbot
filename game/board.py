@@ -348,33 +348,20 @@ class Board:
         for rowFen in position_fen_by_row:
             board.append([])
             for char in rowFen:
-                # checking for black pieces with fen code
+                white = not char.islower()
+                char = char.lower()
                 if char == 'p':
-                    board[-1].append(Pawn(False))
+                    board[-1].append(Pawn(white))
                 elif char == 'b':
-                    board[-1].append(Bishop(False))
+                    board[-1].append(Bishop(white))
                 elif char == 'n':
-                    board[-1].append(Knight(False))
+                    board[-1].append(Knight(white))
                 elif char == 'r':
-                    board[-1].append(Rook(False))
+                    board[-1].append(Rook(white))
                 elif char == 'q':
-                    board[-1].append(Queen(False))
+                    board[-1].append(Queen(white))
                 elif char == 'k':
-                    board[-1].append(King(False))
-
-                # checking for white pieces with fen code
-                elif char == 'P':
-                    board[-1].append(Pawn(True))
-                elif char == 'B':
-                    board[-1].append(Bishop(True))
-                elif char == 'N':
-                    board[-1].append(Knight(True))
-                elif char == 'R':
-                    board[-1].append(Rook(True))
-                elif char == 'Q':
-                    board[-1].append(Queen(True))
-                elif char == 'K':
-                    board[-1].append(King(True))
+                    board[-1].append(King(white))
 
                 # checking for numbers to move n pieces further
                 elif char.isdigit():
