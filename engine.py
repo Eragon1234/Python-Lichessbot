@@ -127,21 +127,21 @@ class Engine:
             return min_move, min_value
         return min_value
 
-    def get_value_difference_for_move(self, move: str, board: Board = None):
+    def get_value_difference_for_move(self, move: str, board: Board = None) -> int:
         if board is None:
             board = self.board
         with board.test_move(move) as test_board:
             evaluation = test_board.calculate_value_difference()
         return evaluation
 
-    def get_material_difference_for_move(self, move: str, board: Board = None):
+    def get_material_difference_for_move(self, move: str, board: Board = None) -> int:
         if board is None:
             board = self.board
         with board.test_move(move) as test_board:
             evaluation = test_board.calculate_material_difference()
         return evaluation
 
-    def get_sort_value_for_move(self, move: str):
+    def get_sort_value_for_move(self, move: str) -> int:
         if self.positions is not None:
             with self.board.test_move(move) as board:
                 short_board = board.generate_flat_short_board()

@@ -387,8 +387,7 @@ class Board:
                     self.castle['black']['queen_side'] = True
 
             self.en_passant_field = fen[3]  # setting the en_passant_field with the corresponding value of the fen
-            self.number_of_plies_for_50_move_rule = fen[
-                4]  # setting the number of plies since the last queen move or take for the 50 move rule
+            self.number_of_plies_for_50_move_rule = fen[4]  # setting the current num of plies for 50 move rule
             self.next_move_number = fen[5]  # setting the number of the next move
 
         # setting self.board to the board

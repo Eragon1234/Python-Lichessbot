@@ -1,5 +1,8 @@
+from game import Board
+
+
 class TestMove:
-    def __init__(self, board, move: str):
+    def __init__(self, board: Board, move: str):
         self.board = board
         self.move = move
 
