@@ -31,7 +31,7 @@ class GameController:
         })
         self.s = s
 
-    def watch(self):
+    def watch(self) -> None:
         """subscribes to the lichess api to watch for events as a challenge, gameStart etc. and emits the belonging
         events"""
         # starting a stream of events from lichess
@@ -66,7 +66,7 @@ class GameController:
                 # the game
                 self.emit('game_start', game_id, opponent, self.stream_game)
 
-    def on(self, event: str, fn: typing.Callable[[str, ...], None]):
+    def on(self, event: str, fn: typing.Callable[[str, ...], None]) -> None:
         """ adds functions to be called on the mentioned incoming events
 
         Args:
@@ -80,7 +80,7 @@ class GameController:
         # append event to an event array
         self.events[event].append(fn)
 
-    def emit(self, event: str, *params):
+    def emit(self, event: str, *params) -> None:
         """ calls the assigned functions to the passed event with the given parameters
 
         Args:
@@ -95,7 +95,7 @@ class GameController:
         for e in self.events[event]:
             e(*params)
 
-    def move(self, game_id: str, move: str):
+    def move(self, game_id: str, move: str) -> None:
         """ moves the passed move
 
         Args:
@@ -104,7 +104,7 @@ class GameController:
         """
         self.s.post(f'{self.base_url}/bot/game/{game_id}/move/{move}')
 
-    def accept_challenge(self, challenge_id: str, *args):
+    def accept_challenge(self, challenge_id: str, *args) -> None:
         """ accepts the challenge with the passed challengeId
 
         Args:
@@ -112,7 +112,7 @@ class GameController:
         """
         self.s.post(f'{self.base_url}/challenge/{challenge_id}/accept')
 
-    def stream_game(self, game_id: str, *args):
+    def stream_game(self, game_id: str, *args) -> None:
         """ subscribing to the stream of events for the game with the passed gameId
 
         Args:

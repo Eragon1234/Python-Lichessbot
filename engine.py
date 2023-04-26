@@ -1,4 +1,5 @@
 import typing
+from typing import Tuple
 
 from game import Board
 
@@ -10,7 +11,7 @@ class Engine:
         self.board = Board(fen)
         self.positions = None
 
-    def move(self, game_id: str, color: str, moves: str, move_fn: typing.Callable[[str, str], None]):
+    def move(self, game_id: str, color: str, moves: str, move_fn: typing.Callable[[str, str], None]) -> None:
         """ handles the calculations for the best possible moves
 
         Args:
@@ -32,14 +33,14 @@ class Engine:
         print("moved")
         print("-" * 100)
 
-    def opponents_move(self, move):
+    def opponents_move(self, move) -> None:
         print("opponents turn")
         print("opponent moved:", move)
         self.board.move(move)
         print("opponent moved")
         print("-" * 100)
 
-    def calculate_best_move(self, for_white: bool, depth: int, board: Board = None):
+    def calculate_best_move(self, for_white: bool, depth: int, board: Board = None) -> str:
         if board is None:
             board = self.board
 
@@ -51,7 +52,8 @@ class Engine:
         return move
 
     def max(self, depth: int, alpha: float, beta: float, board: Board,
-            positions: dict[str, float] = None, return_move: bool = False):
+            positions: dict[str, float] = None, return_move: bool = False) -> float | tuple[
+            str, float]:
         if positions is None:
             positions = {}
         self.positions = positions
@@ -90,7 +92,7 @@ class Engine:
         return max_value
 
     def min(self, depth: int, alpha: float, beta: float, board: Board, positions: dict[str, float] = None,
-            return_move: bool = False):
+            return_move: bool = False) -> float | tuple[str, float]:
         if positions is None:
             positions = {}
         self.positions = positions
