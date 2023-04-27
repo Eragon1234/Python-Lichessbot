@@ -45,6 +45,7 @@ class AbstractPiece(abc.ABC):
                 if target_field == condition:
                     positions.append(position)
                     return condition
+        return False
 
     @staticmethod
     def filter_positions(positions: Positions) -> Positions:
