@@ -4,6 +4,8 @@ import typing
 
 import requests
 
+from color import Color
+
 
 class GameController:
     """handles the connection to the lichess bot api with an event emitter"""
@@ -18,7 +20,7 @@ class GameController:
     events: dict[str, list[callable]] = {}
 
     # the color to be played by the bot
-    color = 'white'
+    color = Color.White
 
     def __init__(self):
         if self.token is None:
@@ -59,7 +61,7 @@ class GameController:
 
                 # getting the game_id, the color the engine is playing and data about the opponent
                 game_id = event['game']['gameId']
-                self.color = event['game']['color']
+                self.color = Color(event['game']['color'])
                 opponent = event['game']['opponent']
 
                 # throwing the gameStart event with the game_id, the opponent and the function to start streaming
@@ -141,7 +143,7 @@ class GameController:
             my_move = (len(moves) % 2) == 0 or moves[0] == ''
 
             # inverting my_move if I'm black
-            if self.color == 'black':
+            if self.color is Color.Black:
                 my_move = not my_move
 
             # checking if it's my_move
@@ -153,4 +155,4 @@ class GameController:
                     self.emit('opponents_move', move)
 
                 # sending the my_move event with the gameId, the moves and the move function as arguments
-                self.emit('my_move', game_id, self.color, moves, self.move)
+                self.emit('my_move', game_id, self.color.value, moves, self.move)
