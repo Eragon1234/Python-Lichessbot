@@ -1,8 +1,18 @@
-from game import Board
+import abc
+
+
+class TestMoveInterface(abc.ABC):
+    @abc.abstractmethod
+    def move(self, move: str):
+        pass
+
+    @abc.abstractmethod
+    def unmove(self, move: str):
+        pass
 
 
 class TestMove:
-    def __init__(self, board: Board, move: str):
+    def __init__(self, board: TestMoveInterface, move: str):
         self.board = board
         self.move = move
 
