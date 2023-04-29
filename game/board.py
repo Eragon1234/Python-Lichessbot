@@ -4,10 +4,10 @@ import numpy as np
 from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
-from game.test_move import TestMove
+from game.test_move import TestMove, TestMoveInterface
 
 
-class Board:
+class Board(TestMoveInterface):
     """a class to handle the current board state, making moves, generating possible moves, etc."""
 
     # an array for moved moves
