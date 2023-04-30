@@ -4,7 +4,7 @@ import typing
 
 import requests
 
-from color import Color
+from playercolor import PlayerColor
 
 
 class GameController:
@@ -20,7 +20,7 @@ class GameController:
     events: dict[str, list[callable]] = {}
 
     # the color to be played by the bot
-    color = Color.White
+    color = PlayerColor.White
 
     def __init__(self):
         if self.token is None:
@@ -61,7 +61,7 @@ class GameController:
 
                 # getting the game_id, the color the engine is playing and data about the opponent
                 game_id = event['game']['gameId']
-                self.color = Color(event['game']['color'])
+                self.color = PlayerColor(event['game']['color'])
                 opponent = event['game']['opponent']
 
                 # throwing the gameStart event with the game_id, the opponent and the function to start streaming
@@ -143,7 +143,7 @@ class GameController:
             my_move = (len(moves) % 2) == 0 or moves[0] == ''
 
             # inverting my_move if I'm black
-            if self.color is Color.Black:
+            if self.color is PlayerColor.Black:
                 my_move = not my_move
 
             # checking if it's my_move

@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class Color(Enum):
+class PlayerColor(Enum):
     White = 'white'
     Black = 'black'

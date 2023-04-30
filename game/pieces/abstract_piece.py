@@ -52,5 +52,5 @@ class AbstractPiece(abc.ABC):
         return [position for position in positions if 0 <= position[0] <= 7 and 0 <= position[1] <= 7]
 
     @abc.abstractmethod
-    def generate_possible_positions(self, current_position: Position, board: BoardArray):
+    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
         pass
