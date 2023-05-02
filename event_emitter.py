@@ -2,7 +2,9 @@ from typing import Any, Callable
 
 
 class EventEmitter:
-    handlers = {}
+
+    def __init__(self):
+        self.handlers = {}
 
     def on(self, event: str, handler: Callable[[*Any], None]):
         if event not in self.handlers:

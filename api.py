@@ -9,19 +9,12 @@ class LichessBotApiClient:
     """
     LichessBotApi is a class for handling the connection to the lichess bot api
     """
-    token = os.environ.get('LICHESS_TOKEN')
     base_url = "https://lichess.org/api"
-    s: requests.Session = None
 
-    def __init__(self):
-        if self.token is None:
-            raise Exception('No token provided')
-
-        s = requests.Session()
-        s.headers.update({
-            'Authorization': f'Bearer {self.token}'
-        })
-        self.s = s
+    def __init__(self, token: str):
+        self.token = token
+        self.s = requests.Session()
+        self.s.headers.update({'Authorization': f'Bearer {self.token}'})
 
     def accept_challenge(self, challenge_id: str) -> None:
         """accepts a challenge with the given challenge_id"""

@@ -1,10 +1,12 @@
-# importing the GameController for handling the connection to the Lichess API
-# importing our Engine
+import os
+
 from engine import Engine
 from game_controller import GameController
 
+lichess_token = os.getenv("LICHESS_TOKEN")
+
 # initializing our GameController
-game = GameController()
+game = GameController(lichess_token)
 
 # just accepting challenges and streaming games without further processing
 game.on('challenge', game.accept_challenge)

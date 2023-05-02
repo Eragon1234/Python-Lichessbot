@@ -8,10 +8,10 @@ from playercolor import PlayerColor
 class GameController:
     """handles the connection to the lichess bot api with an event emitter"""
 
-    # the color to be played by the bot
-    color = PlayerColor.White
-    emitter = EventEmitter()
-    client = LichessBotApiClient()
+    def __init__(self, token: str):
+        self.client = LichessBotApiClient(token)
+        self.emitter = EventEmitter()
+        self.color = None
 
     def watch(self) -> None:
         """subscribes to the lichess api to watch for events as a challenge, gameStart etc. and emits the belonging
