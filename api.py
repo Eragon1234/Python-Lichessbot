@@ -24,28 +24,20 @@ class LichessBotApiClient:
         """makes a move in the game with the given game_id"""
         self.s.post(f'{self.base_url}/bot/game/{game_id}/move/{move}')
 
-    def stream_events(self) -> Generator[dict, None, None]:
-        """streams events from the lichess api"""
-        res = self.s.get(f'{self.base_url}/stream/event', stream=True)
+    def _stream(self, url: str) -> Generator[...]:
+        res = self.s.get(url, stream=True)
 
         for line in res.iter_lines():
             if not line:
                 continue
 
             # parsing the json response
-            event = json.loads(line)
+            yield json.loads(line)
 
-            yield event
+    def stream_events(self) -> Generator[dict, None, None]:
+        """streams events from the lichess api"""
+        return self._stream(f'{self.base_url}/stream/event')
 
     def stream_game(self, game_id: str, *args) -> Generator[dict, None, None]:
         """streams a game with the given game_id"""
-        res = self.s.get(f'{self.base_url}/bot/game/stream/{game_id}', stream=True)
-
-        for line in res.iter_lines():
-            if not line:
-                continue
-
-            # parsing the json response
-            event = json.loads(line)
-
-            yield event
+        return self._stream(f'{self.base_url}/bot/game/stream/{game_id}')
