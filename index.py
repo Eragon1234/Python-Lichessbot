@@ -1,7 +1,15 @@
+import logging
 import os
 
 from engine import Engine
+from formatter import MyFormatter
 from game_controller import GameController
+
+logging.basicConfig(level=logging.INFO)
+streamHandler = logging.StreamHandler()
+streamHandler.setFormatter(MyFormatter())
+logging.getLogger().handlers.clear()
+logging.getLogger().addHandler(streamHandler)
 
 lichess_token = os.getenv("LICHESS_TOKEN")
 

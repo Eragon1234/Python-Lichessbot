@@ -1,5 +1,5 @@
+import logging
 import typing
-from typing import Tuple
 
 from game import Board
 
@@ -20,25 +20,24 @@ class Engine:
             moves (str): moves since the start position
             move_fn (fn): function to make the move
         """
-        print("my_move")
+        logging.info("my_move")
+
         for_white = color == 'white'
 
         best_move = self.calculate_best_move(for_white, 4)
         if isinstance(best_move, tuple):
-            print("Evaluation:", best_move[1])
+            logging.info("Evaluation: %s", best_move[1])
             best_move = best_move[0]
-        print(best_move)
+        logging.info(best_move)
         self.board.move(best_move)
         move_fn(game_id, best_move)
-        print("moved")
-        print("-" * 100)
+        logging.info("moved\n")
 
     def opponents_move(self, move) -> None:
-        print("opponents turn")
-        print("opponent moved:", move)
+        logging.info("opponents turn")
+        logging.info("opponent moved: %s", move)
         self.board.move(move)
-        print("opponent moved")
-        print("-" * 100)
+        logging.info("opponent moved\n")
 
     def calculate_best_move(self, for_white: bool, depth: int, board: Board = None) -> str:
         if board is None:
