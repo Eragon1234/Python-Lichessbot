@@ -1,5 +1,4 @@
 import json
-import os
 from collections.abc import Generator
 
 import requests
