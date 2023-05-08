@@ -11,6 +11,9 @@ class LichessBotApiClient:
     base_url = "https://lichess.org/api"
 
     def __init__(self, token: str):
+        if token is None:
+            raise ValueError("LichessBotApiClient token cannot be None")
+
         self.token = token
         self.s = requests.Session()
         self.s.headers.update({'Authorization': f'Bearer {self.token}'})
