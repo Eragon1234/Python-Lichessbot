@@ -1,6 +1,14 @@
 import logging
 
 
+def init_logging():
+    logging.basicConfig(level=logging.INFO)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(MyFormatter())
+    logging.getLogger().handlers.clear()
+    logging.getLogger().addHandler(stream_handler)
+
+
 class MyFormatter(logging.Formatter):
     grey = "\x1b[38;20m"
     yellow = "\x1b[33;20m"
