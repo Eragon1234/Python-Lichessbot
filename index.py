@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 
 import log
 from engine import Engine
@@ -12,7 +13,7 @@ def main():
     lichess_token = os.getenv("LICHESS_TOKEN")
     if lichess_token is None:
         logging.error("No lichess token found. Please set the environment variable LICHESS_TOKEN to your lichess token.")
-        exit(1)
+        sys.exit(1)
 
     # initializing our GameController
     game = GameController(lichess_token)
