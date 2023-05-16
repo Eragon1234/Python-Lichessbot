@@ -20,8 +20,6 @@ class Knight(AbstractPiece):
         super().__init__(is_white)
 
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        self.position = current_position
-
         positions = []
         x = current_position[0] - 1
         y = current_position[1] - 2

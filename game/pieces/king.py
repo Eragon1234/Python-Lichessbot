@@ -20,8 +20,6 @@ class King(AbstractPiece):
         super().__init__(is_white)
 
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        self.position = current_position
-
         positions = []
         for x in range(current_position[0] - 1, current_position[0] + 2):
             for y in range(current_position[1] - 1, current_position[1] + 2):

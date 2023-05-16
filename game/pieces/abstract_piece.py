@@ -4,7 +4,6 @@ from game.pieces.types import BoardArray, Positions, Position
 
 
 class AbstractPiece(abc.ABC):
-    position = (0, 0)
     short = 'e'
     value = 0
     positions = []

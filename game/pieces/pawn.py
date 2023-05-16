@@ -23,8 +23,6 @@ class Pawn(AbstractPiece):
         ]
 
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        self.position = current_position
-
         positions = []
 
         x = current_position[0]

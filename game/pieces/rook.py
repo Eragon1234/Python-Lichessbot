@@ -20,8 +20,6 @@ class Rook(AbstractPiece):
         super().__init__(is_white)
 
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        self.position = current_position
-
         positions = []
         for x in range(current_position[0] + 1, 8):
             position = (x, current_position[1])
