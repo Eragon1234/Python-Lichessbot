@@ -1,5 +1,7 @@
 import logging
 
+from ansi import ANSI
+
 
 def init_logging():
     logging.basicConfig(level=logging.INFO)
@@ -10,19 +12,14 @@ def init_logging():
 
 
 class MyFormatter(logging.Formatter):
-    grey = "\x1b[38;20m"
-    yellow = "\x1b[33;20m"
-    red = "\x1b[31;20m"
-    bold_red = "\x1b[31;1m"
-    reset = "\x1b[0m"
     default_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
 
     FORMATS = {
-        logging.DEBUG: grey + "%(asctime)s - (%(filename)s:%(lineno)d): %(message)s" + reset,
-        logging.INFO: grey + "%(message)s" + reset,
-        logging.WARNING: yellow + default_format + reset,
-        logging.ERROR: red + default_format + reset,
-        logging.CRITICAL: bold_red + default_format + reset
+        logging.DEBUG: ANSI.FG.GREY + "%(asctime)s - (%(filename)s:%(lineno)d): %(message)s" + ANSI.FG.RESET,
+        logging.INFO: ANSI.FG.GREY + "%(message)s" + ANSI.FG.RESET,
+        logging.WARNING: ANSI.FG.YELLOW + default_format + ANSI.FG.RESET,
+        logging.ERROR: ANSI.FG.RED + default_format + ANSI.FG.RESET,
+        logging.CRITICAL: ANSI.FG.BOLD_RED + default_format + ANSI.FG.RESET,
     }
 
     def format(self, record: logging.LogRecord):
