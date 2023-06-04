@@ -28,8 +28,8 @@ class Pawn(AbstractPiece):
         x = current_position[0]
         y = current_position[1] + (1 * self.direction_multiplier)
         position = (x, y)
-        target_field = self.check_if_position_is_legal(board, positions, *position)
-        if target_field is not None:
+        self.check_if_position_is_legal(board, positions, *position)
+        if len(positions) != 0:
             y = current_position[1] + (2 * self.direction_multiplier)
             en_passant_position = (x, y)
             if 0 <= x <= 7 and 0 <= y <= 7:

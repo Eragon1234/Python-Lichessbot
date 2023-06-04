@@ -1,4 +1,5 @@
 import abc
+from typing import Tuple, List
 
 from game.pieces.types import BoardArray, Positions, Position
 
@@ -17,6 +18,8 @@ class AbstractPiece(abc.ABC):
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0]
     ]
+
+    possible_move_groups: List[List[Tuple[int, int]]] = []
 
     def __init__(self, is_white: bool | str):
         self.lower_short = self.short
@@ -43,13 +46,21 @@ class AbstractPiece(abc.ABC):
             for condition in target_field_conditions:
                 if target_field == condition:
                     positions.append(position)
-                    return condition
+                    return True
         return False
 
     @staticmethod
     def filter_positions(positions: Positions) -> Positions:
         return [position for position in positions if 0 <= position[0] <= 7 and 0 <= position[1] <= 7]
 
-    @abc.abstractmethod
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        pass
+        possible_positions = []
+        for move_groups in self.possible_move_groups:
+            for move in move_groups:
+                x = current_position[0] + move[0]
+                y = current_position[1] + move[1]
+                if not self.check_if_position_is_legal(board, possible_positions, x, y):
+                    break
+                if board[y][x] == (not self.is_white) and board[y][x] != 'EmptyField':
+                    break
+        return possible_positions

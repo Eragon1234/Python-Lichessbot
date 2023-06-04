@@ -1,5 +1,4 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import BoardArray, Position, Positions
 
 
 class Knight(AbstractPiece):
@@ -16,45 +15,16 @@ class Knight(AbstractPiece):
         [-5, -5, -5, -5, -5, -5, -5, -5]
     ]
 
+    possible_move_groups = [
+        [(-2, -1)],
+        [(-2, 1)],
+        [(-1, -2)],
+        [(-1, 2)],
+        [(1, -2)],
+        [(1, 2)],
+        [(2, -1)],
+        [(2, 1)]
+    ]
+
     def __init__(self, is_white: bool):
         super().__init__(is_white)
-
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        positions = []
-        x = current_position[0] - 1
-        y = current_position[1] - 2
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        x = current_position[0] + 1
-        y = current_position[1] - 2
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        x = current_position[0] + 2
-        y = current_position[1] + 1
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        x = current_position[0] + 1
-        y = current_position[1] + 2
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        x = current_position[0] - 1
-        y = current_position[1] + 2
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        x = current_position[0] - 2
-        y = current_position[1] + 1
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        x = current_position[0] - 2
-        y = current_position[1] - 1
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        x = current_position[0] + 2
-        y = current_position[1] - 1
-        self.check_if_position_is_legal(board, positions, x, y)
-
-        positions = self.filter_positions(positions)
-
-        self.positions = positions
-
-        return positions

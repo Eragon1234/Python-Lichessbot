@@ -1,5 +1,4 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import Position, BoardArray, Positions
 
 
 class King(AbstractPiece):
@@ -16,18 +15,11 @@ class King(AbstractPiece):
         [0, 10, 10, 0, 0, 0, 10, 0]
     ]
 
+    possible_move_groups = [
+        [(-1, -1)], [(-1, 0)], [(-1, 1)],  # up
+        [(0, -1)], [(0, 1)],  # left and right
+        [(1, -1)], [(1, 0)], [(1, 1)]  # down
+    ]
+
     def __init__(self, is_white: bool):
         super().__init__(is_white)
-
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        positions = []
-        for x in range(current_position[0] - 1, current_position[0] + 2):
-            for y in range(current_position[1] - 1, current_position[1] + 2):
-                position = (x, y)
-                self.check_if_position_is_legal(board, positions, *position)
-
-        positions = self.filter_positions(positions)
-
-        self.positions = positions
-
-        return positions

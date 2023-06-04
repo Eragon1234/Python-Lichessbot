@@ -1,7 +1,6 @@
 from game.pieces.abstract_piece import AbstractPiece
 from game.pieces.bishop import Bishop
 from game.pieces.rook import Rook
-from game.pieces.types import Position, BoardArray, Positions
 
 
 class Queen(AbstractPiece):
@@ -18,15 +17,7 @@ class Queen(AbstractPiece):
         [-5, 0, 0, 0, 0, 0, 0, -5]
     ]
 
+    possible_move_groups = Bishop.possible_move_groups + Rook.possible_move_groups
+
     def __init__(self, is_white: bool):
         super().__init__(is_white)
-
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        bishop = Bishop(self.is_white)
-        rook = Rook(self.is_white)
-        rook_positions = rook.generate_possible_positions(current_position, board)
-        bishop_positions = bishop.generate_possible_positions(current_position, board)
-        positions = rook_positions + bishop_positions
-
-        self.positions = positions
-        return positions

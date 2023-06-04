@@ -1,5 +1,4 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import Position, BoardArray, Positions
 
 
 class Rook(AbstractPiece):
@@ -16,40 +15,12 @@ class Rook(AbstractPiece):
         [0, 0, 5, 7, 7, 0, 3, 0]
     ]
 
+    possible_move_groups = [
+        [(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0)],
+        [(-1, 0), (-2, 0), (-3, 0), (-4, 0), (-5, 0), (-6, 0), (-7, 0)],
+        [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7)],
+        [(0, -1), (0, -2), (0, -3), (0, -4), (0, -5), (0, -6), (0, -7)]
+    ]
+
     def __init__(self, is_white: bool):
         super().__init__(is_white)
-
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
-        positions = []
-        for x in range(current_position[0] + 1, 8):
-            position = (x, current_position[1])
-            target_field = self.check_if_position_is_legal(board, positions, *position)
-            if (not self.is_white) == target_field:
-                break
-            if target_field is None:
-                break
-        for x in range(current_position[0] - 1, -1, -1):
-            position = (x, current_position[1])
-            target_field = self.check_if_position_is_legal(board, positions, *position)
-            if (not self.is_white) == target_field:
-                break
-            if target_field is None:
-                break
-        for y in range(current_position[1] + 1, 8):
-            position = (current_position[0], y)
-            target_field = self.check_if_position_is_legal(board, positions, *position)
-            if (not self.is_white) == target_field:
-                break
-            if target_field is None:
-                break
-        for y in range(current_position[1] - 1, -1, -1):
-            position = (current_position[0], y)
-            target_field = self.check_if_position_is_legal(board, positions, *position)
-            if (not self.is_white) == target_field:
-                break
-            if target_field is None:
-                break
-        positions = self.filter_positions(positions)
-
-        self.positions = positions
-        return positions
