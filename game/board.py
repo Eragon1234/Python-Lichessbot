@@ -42,10 +42,7 @@ class Board(TestMoveInterface):
     }
 
     # an array to track the castle rights of black and white
-    castle = {
-        'white': {'king_side': False, 'queen_side': False},
-        'black': {'king_side': False, 'queen_side': False}
-    }
+    castle_rights: set[str] = set()
 
     captured_pieces = []
 
@@ -370,21 +367,11 @@ class Board(TestMoveInterface):
 
         if len(fen) == 6:
             # looking if it's white or blacks turn
-            if fen[1] == 'w':
-                self.whitesMove = True
-            else:
-                self.whitesMove = False
+            self.whitesMove = fen[1] == 'w'
 
             # setting the castle rights of black and white
             for char in fen[2]:
-                if char == 'K':
-                    self.castle['white']['king_side'] = True
-                elif char == 'Q':
-                    self.castle['white']['queen_side'] = True
-                elif char == 'k':
-                    self.castle['black']['king_side'] = True
-                elif char == 'q':
-                    self.castle['black']['queen_side'] = True
+                self.castle_rights.add(char)
 
             self.en_passant_field = fen[3]  # setting the en_passant_field with the corresponding value of the fen
             self.number_of_plies_for_50_move_rule = fen[4]  # setting the current num of plies for 50 move rule
