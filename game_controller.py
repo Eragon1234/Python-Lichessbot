@@ -13,7 +13,7 @@ class GameController:
         self.emitter = EventEmitter()
         self.color = None
 
-    def watch(self) -> None:
+    def watch(self) -> typing.NoReturn:
         """subscribes to the lichess api to watch for events as a challenge, gameStart etc. and emits the belonging
         events"""
         for event in self.client.stream_events():
