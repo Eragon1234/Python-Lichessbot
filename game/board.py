@@ -89,6 +89,7 @@ class Board(TestMoveInterface):
             self.en_passant_field = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
 
     def unmove(self, move: str) -> None:
+        """undoes a move on the board"""
         self.color_board = None
         self.short_board = None
         self.flat_short_board = None
@@ -108,6 +109,7 @@ class Board(TestMoveInterface):
         self.board[start_field_coordinates] = captured_piece
 
     def test_move(self, move: str) -> TestMove:
+        """returns an object that can be used to test a move with the context manager"""
         return TestMove(self, move)
 
     def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False) -> list[str]:
