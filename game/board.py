@@ -19,27 +19,7 @@ class Board(TestMoveInterface):
     value_differences = {}
 
     # the corresponding letter for the indexes of the columns
-    columns = {
-        '0': 'a',
-        '1': 'b',
-        '2': 'c',
-        '3': 'd',
-        '4': 'e',
-        '5': 'f',
-        '6': 'g',
-        '7': 'h'
-    }
-
-    rows = {
-        'a': 0,
-        'b': 1,
-        'c': 2,
-        'd': 3,
-        'e': 4,
-        'f': 5,
-        'g': 6,
-        'h': 7
-    }
+    index_to_letter = ord('a') - 0
 
     # an array to track the castle rights of black and white
     castle_rights: set[str] = set()
@@ -293,6 +273,24 @@ class Board(TestMoveInterface):
             self.flat_short_board = tuple(piece.short for piece in self.board.flat)
         return self.flat_short_board
 
+    def coordinate_move_into_uci(self, coordinate_move: tuple[tuple[int, int], tuple[int, int]]) -> str:
+        """ converts the passed coordinate move into an UCI move
+
+        Args:
+            coordinate_move (tuple): a tuple containing the startField and the targetField as x, y tuples
+
+        Returns:
+            list: a list containing the startField and the targetField as x, y tuples
+        """
+        x1 = chr(coordinate_move[0][0] + self.index_to_letter)
+        y1 = coordinate_move[0][1] + 1
+        x2 = chr(coordinate_move[1][0] + self.index_to_letter)
+        y2 = coordinate_move[1][1] + 1
+
+        # combining these values to a string
+        move = f"{x1}{y1}{x2}{y2}"
+        return move
+
     def coordinate_moves_into_uci(self, coordinate_moves: list[tuple[tuple[int, int], tuple[int, int]]]) -> list[str]:
         """ converts the passed array of coordinate moves into an array of UCIMoves
 
@@ -304,16 +302,7 @@ class Board(TestMoveInterface):
         """
         moves = []
         for coordinateMove in coordinate_moves:
-            x1 = self.columns[
-                f"{coordinateMove[0][0]}"]  # getting the letter for the column of the startField with the x number
-            y1 = coordinateMove[0][1] + 1
-            x2 = self.columns[
-                f"{coordinateMove[1][0]}"]  # getting the letter for the column of the endField with the x number
-            y2 = coordinateMove[1][1] + 1
-
-            # combining these values to a string
-            move = f"{x1}{y1}{x2}{y2}"
-            moves.append(move)
+            moves.append(self.coordinate_move_into_uci(coordinateMove))
         return moves
 
     def uci_into_coordinate_move(self, uci_move: str) -> tuple[tuple[int, int], tuple[int, int]]:
@@ -325,9 +314,9 @@ class Board(TestMoveInterface):
         Returns:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
-        x1 = self.rows.get(uci_move[0])
+        x1 = ord(uci_move[0]) - self.index_to_letter
         y1 = int(uci_move[1]) - 1
-        x2 = self.rows.get(uci_move[2])
+        x2 = ord(uci_move[2]) - self.index_to_letter
         y2 = int(uci_move[3]) - 1
         coordinate_move = ((x1, y1), (x2, y2))
         return coordinate_move
