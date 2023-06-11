@@ -1,4 +1,5 @@
 import abc
+from typing import TypeVar, Generic
 
 
 class TestMoveInterface(abc.ABC):
@@ -11,12 +12,15 @@ class TestMoveInterface(abc.ABC):
         pass
 
 
-class TestMove:
-    def __init__(self, board: TestMoveInterface, move: str):
+T = TypeVar("T", bound=TestMoveInterface)
+
+
+class TestMove(Generic[T]):
+    def __init__(self, board: T, move: str):
         self.board = board
         self.move = move
 
-    def __enter__(self):
+    def __enter__(self) -> T:
         self.board.move(self.move)
         return self.board
 

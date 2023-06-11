@@ -88,9 +88,9 @@ class Board(TestMoveInterface):
         self.board[target_field_coordinates] = moved_piece
         self.board[start_field_coordinates] = captured_piece
 
-    def test_move(self, move: str) -> TestMove:
+    def test_move(self, move: str) -> TestMove["Board"]:
         """returns an object that can be used to test a move with the context manager"""
-        return TestMove(self, move)
+        return TestMove[Board](self, move)
 
     def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False) -> list[str]:
         """ Generating all possible moves in the current position
