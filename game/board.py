@@ -7,7 +7,7 @@ from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from game.test_move import TestMove, TestMoveInterface
 
 
-class Board(TestMoveInterface):
+class Board:
     """a class to handle the current board state, making moves, generating possible moves, etc."""
 
     # an array for moved moves

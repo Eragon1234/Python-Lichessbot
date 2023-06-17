@@ -1,13 +1,10 @@
-import abc
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Protocol
 
 
-class TestMoveInterface(abc.ABC):
-    @abc.abstractmethod
+class TestMoveInterface(Protocol):
     def move(self, move: str):
         pass
 
-    @abc.abstractmethod
     def unmove(self, move: str):
         pass
 
