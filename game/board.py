@@ -4,6 +4,7 @@ import numpy as np
 from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
+from game.pieces.abstract_piece import AbstractPiece
 from game.test_move import TestMove, TestMoveInterface
 
 
@@ -112,41 +113,25 @@ class Board:
         if return_pseudo_legal_moves:
             return moves
 
-        evaluations = {}
-        for move in tuple(moves):
+        remove_moves = []
+
+        for move in moves:
             with self.test_move(move) as board:
-                test_moves = board.generate_possible_moves(not for_white, True)
-                max_evaluation = float("-inf")
-                min_evaluation = float("inf")
+                coordinate_moves = board.generate_possible_coordinate_moves(not for_white)
                 is_check = False
-                for test_move in test_moves:
-                    with self.test_move(test_move) as test_board:
-                        evaluation = test_board.calculate_value_difference()
-                        if evaluation > max_evaluation:
-                            max_evaluation = evaluation
+                for coordinate_move in coordinate_moves:
+                    x, y = coordinate_move[1]
+                    attacked_field: AbstractPiece = board.board[y, x]
 
-                        if evaluation < min_evaluation:
-                            min_evaluation = evaluation
-
-                        found_king = False
-                        for piece in tuple(self.board.flat):
-                            if piece.lower_short == "k" and piece.is_white == for_white:
-                                found_king = True
-
-                        if not found_king:
-                            is_check = True
+                    if attacked_field.lower_short == "k" and attacked_field.is_white == for_white:
+                        is_check = True
+                        break
 
                 if is_check:
-                    moves.remove(move)
-                    continue
+                    remove_moves.append(move)
 
-                if for_white:
-                    evaluations[move] = max_evaluation
-                else:
-                    evaluations[move] = min_evaluation
-
-        if len(moves) == len(evaluations):
-            moves.sort(key=evaluations.get, reverse=for_white)
+        for move in remove_moves:
+            moves.remove(move)
 
         self.possible_moves[short_board] = moves
 
@@ -371,7 +356,7 @@ class Board:
         # setting self.board to the board
         board.reverse()
         board = np.array(board)
-        self.board = board
+        self.board: ndarray[ndarray[AbstractPiece]] = board
         return board
 
     def generate_fen_for_board(self) -> str:
