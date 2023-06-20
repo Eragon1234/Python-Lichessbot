@@ -150,20 +150,18 @@ class Board:
         coordinate_moves = []
         # generating the color_board as a parameter for the generate_possible_coordinate_moves method of the pieces
         color_board = self.generate_color_board()
-        for piece in enumerate(tuple(self.board.flat)):
-            # getting the coordinates of the piece in the flattened array
-            coordinates = self.generate_coordinates_with_index(piece[0])
-            piece = piece[1]
+        for y, row in enumerate(self.board):
+            for x, piece in enumerate(row):
+                # getting the coordinates of the piece in the flattened array
+                coordinates = (x, y)
 
-            # if the piece is the color for which to generate moves for
-            if piece.is_white == for_white:
-                # generating possible positions
-                new_positions = piece.generate_possible_positions(coordinates, color_board)
-                # appending every position with the start and end coordinates
-                for new_position in new_positions:
-                    if len(str(new_position[1])) > 1:
-                        new_position = new_position[0]
-                    coordinate_moves.append((coordinates, new_position))
+                # if the piece is the color for which to generate moves for
+                if piece.is_white == for_white:
+                    # generating possible positions
+                    new_positions = [(coordinates, new_position)
+                                     for new_position in piece.generate_possible_positions(coordinates, color_board)]
+                    # append the new positions to the coordinate_moves
+                    coordinate_moves.extend(new_positions)
         return coordinate_moves
 
     def calculate_material_difference(self) -> int:

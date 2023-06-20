@@ -36,9 +36,9 @@ class Pawn(AbstractPiece):
                 field_is_empty = board[y][x] == 'EmptyField'
                 if field_is_empty:
                     if self.is_white and current_position[1] == 1:
-                        positions.append((en_passant_position, ("enPassant", position)))
+                        positions.append(en_passant_position)
                     elif (not self.is_white) and current_position[1] == 6:
-                        positions.append((en_passant_position, ("enPassant", position)))
+                        positions.append(en_passant_position)
 
         y = current_position[1] + (1 * self.direction_multiplier)
 
