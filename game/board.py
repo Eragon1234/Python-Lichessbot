@@ -218,11 +218,9 @@ class Board:
         """
         if self.color_board is not None:
             return self.color_board
-        color_board = []
-        for row in self.board:
-            color_board.append([])
-            for piece in row:
-                color_board[-1].append(piece.is_white)
+
+        # create a 2d array with the colors of the pieces
+        color_board = [[piece.is_white for piece in row] for row in self.board]
 
         if self.en_passant_field != "-":
             en_passant_coordinate = self.uci_into_coordinate_move(f"{self.en_passant_field}h7")[:2][0]
