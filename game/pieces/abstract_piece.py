@@ -37,9 +37,10 @@ class AbstractPiece(abc.ABC):
         ]
 
     def check_if_position_is_legal(self, board: BoardArray, positions: Positions, x: int, y: int,
-                                   target_field_conditions: bool = False) -> bool:
-        if not target_field_conditions:
+                                   target_field_conditions: list[bool | str] = None) -> bool:
+        if target_field_conditions is None:
             target_field_conditions = self.target_field_conditions
+
         if 0 <= x <= 7 and 0 <= y <= 7:
             position = (x, y)
             target_field = board[y][x]
