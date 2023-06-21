@@ -363,19 +363,3 @@ class Board:
         """
         fen = '/'.join([''.join([piece.short for piece in row]) for row in self.board])
         return fen
-
-    @staticmethod
-    def generate_random_string(length: int) -> str:
-        """ generates a random string with the specified length
-
-        Args:
-            length (int): the length the random string should be
-
-        Returns:
-            string: a random string of the specified length
-        """
-        random_string = ''
-        for _ in range(length):
-            random_integer = random.randint(0, 255)  # getting a random integer in the range 0 to 255
-            random_string += chr(random_integer)  # converting the number into a char and appending if to the string
-        return random_string
