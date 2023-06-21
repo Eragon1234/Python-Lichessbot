@@ -59,13 +59,11 @@ class Engine:
         moves = board.generate_possible_moves(True)
         moves.sort(key=self.get_sort_value_for_move)
 
-        if depth == 0:
-            if len(moves) == 0:
-                return -9999
-            return self.get_value_difference_for_move(moves[0])
-
         if len(moves) == 0:
             return -9999
+
+        if depth == 0:
+            return self.get_value_difference_for_move(moves[0])
 
         max_value = alpha
         max_move = moves[0]
@@ -97,13 +95,11 @@ class Engine:
         self.positions = positions
         moves = board.generate_possible_moves(False)
 
-        if depth == 0:
-            if len(moves) == 0:
-                return 9999
-            return self.get_value_difference_for_move(moves[0])
-
         if len(moves) == 0:
             return 9999
+
+        if depth == 0:
+            return self.get_value_difference_for_move(moves[0])
 
         min_value = beta
         min_move = moves[0]
