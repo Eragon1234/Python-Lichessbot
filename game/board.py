@@ -3,7 +3,6 @@ from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from game.pieces.abstract_piece import AbstractPiece
-from game.test_move import TestMove
 
 
 class Board:
@@ -87,9 +86,23 @@ class Board:
         self.board[target_field_coordinates] = moved_piece
         self.board[start_field_coordinates] = captured_piece
 
-    def test_move(self, move: str) -> TestMove["Board"]:
+    class TestMove:
+        """a class to test a move with the context manager"""
+
+        def __init__(self, board: "Board", move: str):
+            self.board = board
+            self.move = move
+
+        def __enter__(self) -> "Board":
+            self.board.move(self.move)
+            return self.board
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            self.board.unmove(self.move)
+
+    def test_move(self, move: str) -> TestMove:
         """returns an object that can be used to test a move with the context manager"""
-        return TestMove[Board](self, move)
+        return self.TestMove(self, move)
 
     def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False) -> list[str]:
         """ Generating all possible moves in the current position
@@ -136,7 +149,7 @@ class Board:
         return moves
 
     def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[
-            tuple[tuple[int, int], tuple[int, int]]]:
+        tuple[tuple[int, int], tuple[int, int]]]:
         """ generates the possible coordinate moves for the passed color
 
         Args:
