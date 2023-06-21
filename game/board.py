@@ -1,11 +1,9 @@
-import random
-
 import numpy as np
 from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from game.pieces.abstract_piece import AbstractPiece
-from game.test_move import TestMove, TestMoveInterface
+from game.test_move import TestMove
 
 
 class Board:
