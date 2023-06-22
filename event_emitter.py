@@ -2,6 +2,7 @@ from typing import Callable
 
 
 class EventEmitter:
+    """A simple event emitter."""
 
     def __init__(self):
         self.handlers = {}
