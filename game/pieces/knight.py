@@ -16,14 +16,7 @@ class Knight(AbstractPiece):
     ]
 
     possible_move_groups = [
-        [(-2, -1)],
-        [(-2, 1)],
-        [(-1, -2)],
-        [(-1, 2)],
-        [(1, -2)],
-        [(1, 2)],
-        [(2, -1)],
-        [(2, 1)]
+        [(i, j)] for i in [-2, -1, 1, 2] for j in [-2, -1, 1, 2] if abs(i) != abs(j)
     ]
 
     def __init__(self, is_white: bool):

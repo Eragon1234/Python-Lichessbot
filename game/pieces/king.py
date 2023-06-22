@@ -16,9 +16,7 @@ class King(AbstractPiece):
     ]
 
     possible_move_groups = [
-        [(-1, -1)], [(-1, 0)], [(-1, 1)],  # up
-        [(0, -1)], [(0, 1)],  # left and right
-        [(1, -1)], [(1, 0)], [(1, 1)]  # down
+        [(i, j)] for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0
     ]
 
     def __init__(self, is_white: bool):
