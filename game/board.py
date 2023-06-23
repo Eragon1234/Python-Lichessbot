@@ -198,27 +198,6 @@ class Board:
         self.value_differences[short_board] = material_difference
         return material_difference
 
-    @staticmethod
-    def generate_coordinates_with_index(index: int) -> tuple[int, int]:
-        """ calculates the coordinates of a piece on the given index in 1d array with length 64
-
-        Args:
-            index (int): the index in the 1d array
-
-        Returns:
-            tuple: the x and y coordinates of the piece
-        """
-        x = index % 8
-        y = index // 8
-        return x, y
-
-    @staticmethod
-    def generate_index_with_coordinates(coordinates: tuple[int, int]) -> int:
-        x = coordinates[0]
-        y = coordinates[1]
-        index = (x + y * 8)
-        return index
-
     def generate_color_board(self) -> list[list[bool | str]]:
         """ converts the current board state into a board with True, False and EmptyField standing for the colors
 

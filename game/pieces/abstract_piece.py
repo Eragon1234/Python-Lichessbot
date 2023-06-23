@@ -50,10 +50,6 @@ class AbstractPiece(abc.ABC):
                     return True
         return False
 
-    @staticmethod
-    def filter_positions(positions: Positions) -> Positions:
-        return [position for position in positions if 0 <= position[0] <= 7 and 0 <= position[1] <= 7]
-
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
         possible_positions = []
         for move_groups in self.possible_move_groups:
