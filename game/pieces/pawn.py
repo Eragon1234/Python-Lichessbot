@@ -26,29 +26,17 @@ class Pawn(AbstractPiece):
         positions = []
 
         x = current_position[0]
-        y = current_position[1] + (1 * self.direction_multiplier)
-        position = (x, y)
-        self.check_if_position_is_legal(board, positions, *position)
-        if len(positions) != 0:
-            y = current_position[1] + (2 * self.direction_multiplier)
-            en_passant_position = (x, y)
-            if 0 <= x <= 7 and 0 <= y <= 7:
-                field_is_empty = board[y][x] == 'EmptyField'
-                if field_is_empty:
-                    if self.is_white and current_position[1] == 1:
-                        positions.append(en_passant_position)
-                    elif (not self.is_white) and current_position[1] == 6:
-                        positions.append(en_passant_position)
+        y = current_position[1]
 
-        y = current_position[1] + (1 * self.direction_multiplier)
+        legal_move = self.check_if_position_is_legal(board, positions, x, y + 1 * self.direction_multiplier)
+        if legal_move:
+            if self.is_white and y == 1:
+                self.check_if_position_is_legal(board, positions, x, y + 2 * self.direction_multiplier)
+            elif not self.is_white and y == 6:
+                self.check_if_position_is_legal(board, positions, x, y + 2 * self.direction_multiplier)
 
-        x = current_position[0] + 1
-        position = (x, y)
-        self.check_if_position_is_legal(board, positions, *position, [not self.is_white, "enemy"])
+        self.check_if_position_is_legal(board, positions, x + 1, y + 1 * self.direction_multiplier,
+                                        [not self.is_white, "enemy"])
 
-        x = current_position[0] - 1
-        position = (x, y)
-        self.check_if_position_is_legal(board, positions, *position, [not self.is_white, "enemy"])
-
-        self.positions = positions
-        return positions
+        self.check_if_position_is_legal(board, positions, x - 1, y + 1 * self.direction_multiplier,
+                                        [not self.is_white, "enemy"])
