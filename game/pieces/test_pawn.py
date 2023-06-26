@@ -12,7 +12,7 @@ class TestPawn(TestCase):
                 self.expected = expected
                 self.board: List[List[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
 
-            def with_piece(self, color: bool, x: int, y: int):
+            def with_piece(self, color: bool | str, x: int, y: int):
                 self.board[y][x] = color
                 return self
 
@@ -36,6 +36,10 @@ class TestPawn(TestCase):
             "field left front occupied by own piece": Case((4, 4), [
                 (4, 5)
             ]).with_piece(True, 3, 5),
+            "possible enpassant": Case((4, 4), [
+                (4, 5),
+                (3, 5)
+            ]).with_piece("enemy", 3, 5).with_piece(False, 3, 4)
         }
 
         pawn = Pawn(True)
