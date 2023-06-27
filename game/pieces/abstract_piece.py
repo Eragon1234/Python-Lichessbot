@@ -7,7 +7,6 @@ from game.pieces.types import BoardArray, Positions, Position
 class AbstractPiece(abc.ABC):
     short = 'e'
     value = 0
-    positions = []
     bonus_map = [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
