@@ -17,7 +17,7 @@ class GameController:
         """subscribes to the lichess api to watch for events as a challenge, gameStart etc. and emits the belonging
         events"""
         for event in self.client.stream_events():
-            # checking if the event type is challenge
+            # checking if the event type is a challenge
             if event['type'] == 'challenge':
                 # getting the challenge_id and the challenger
                 challenge_id = event['challenge']['id']
@@ -48,7 +48,7 @@ class GameController:
         self.emitter.on(event, fn)
 
     def stream_game(self, game_id: str, *args) -> None:
-        """ subscribing to the stream of events for the game with the passed gameId
+        """ Subscribing to the stream of events for the game with the passed gameId
 
         Args:
             game_id (str): the gameId of the game to be subscribed to
@@ -83,7 +83,7 @@ class GameController:
                 self.emitter.emit('my_move', game_id, self.color.value, moves, self.client.move)
 
     def accept_challenge(self, challenge_id: str, *args) -> None:
-        """accepts the challenge with the passed challenge_id
+        """Accepts the challenge with the passed challenge_id
 
         Args:
             challenge_id (str): the id of the challenge to be accepted
