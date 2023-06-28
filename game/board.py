@@ -42,7 +42,6 @@ class Board:
         self.color_board = None
         self.short_board = None
         self.flat_short_board = None
-        self.en_passant_field = "-"
 
         # appending the move to the array of moves
         self.moves.append(move)
@@ -50,8 +49,8 @@ class Board:
         # converting the UCIMove into a coordinate move
         move = self.uci_into_coordinate_move(move)
 
-        start_field_coordinates = (move[0][1], move[0][0])
-        target_field_coordinates = (move[1][1], move[1][0])
+        start_field_coordinates = move[0][1], move[0][0]
+        target_field_coordinates = move[1][1], move[1][0]
 
         # getting the moving piece
         moving_piece = self.board[start_field_coordinates]
@@ -60,6 +59,12 @@ class Board:
         # setting the targetField to the moving_piece
         self.captured_pieces.append(self.board[move[1][1], move[1][0]])
         self.board[target_field_coordinates] = moving_piece
+
+        took_en_passant = target_field_coordinates == self.uci_into_coordinate_move(self.en_passant_field)[0][::-1]
+        if took_en_passant:
+            self.board[move[1][1] + 1, move[1][0]] = EmptyField.get_self()
+
+        self.en_passant_field = "-"
 
         if moving_piece.lower_short == "p" and abs(move[0][1] - move[1][1]) == 2:
             new_x = move[0][0]
