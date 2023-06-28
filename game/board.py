@@ -84,6 +84,11 @@ class Board:
 
         start_field_coordinates = (move[1][1], move[1][0])
         target_field_coordinates = (move[0][1], move[0][0])
+
+        took_en_passant = target_field_coordinates == self.uci_into_coordinate_move(self.en_passant_field)[0][::-1]
+        if took_en_passant:
+            self.board[move[1][1] + 1, move[1][0]] = self.captured_pieces.pop()
+
         # getting the moved piece
         moved_piece = self.board[start_field_coordinates]
         captured_piece = self.captured_pieces.pop()
