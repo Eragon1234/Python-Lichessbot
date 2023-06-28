@@ -33,6 +33,8 @@ class Board:
         self.short_board = None
         self.flat_short_board = None
 
+        self.en_passant_takes = []
+
     def move(self, move: str) -> None:
         """ makes a move on the board
 
@@ -60,10 +62,19 @@ class Board:
         self.captured_pieces.append(self.board[move[1][1], move[1][0]])
         self.board[target_field_coordinates] = moving_piece
 
-        took_en_passant = target_field_coordinates == self.uci_into_coordinate_move(self.en_passant_field)[0][::-1]
-        if took_en_passant:
-            self.board[move[1][1] + 1, move[1][0]] = EmptyField.get_self()
+        en_passant_taken_piece = None
+        if self.en_passant_field != "-" and moving_piece.lower_short == "p":
+            took_en_passant = target_field_coordinates == self.uci_into_coordinate_move(self.en_passant_field + "a3")[
+                                                              0][::-1]
+            if took_en_passant:
+                if self.whites_move():
+                    en_passant_taken_piece = self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]]
+                    self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = EmptyField.get_self()
+                else:
+                    en_passant_taken_piece = self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]]
+                    self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = EmptyField.get_self()
 
+        self.en_passant_takes.append(en_passant_taken_piece)
         self.en_passant_field = "-"
 
         if moving_piece.lower_short == "p" and abs(move[0][1] - move[1][1]) == 2:
@@ -85,16 +96,22 @@ class Board:
         start_field_coordinates = (move[1][1], move[1][0])
         target_field_coordinates = (move[0][1], move[0][0])
 
-        took_en_passant = target_field_coordinates == self.uci_into_coordinate_move(self.en_passant_field)[0][::-1]
-        if took_en_passant:
-            self.board[move[1][1] + 1, move[1][0]] = self.captured_pieces.pop()
-
         # getting the moved piece
         moved_piece = self.board[start_field_coordinates]
         captured_piece = self.captured_pieces.pop()
         # adding the moved piece to the startField
         self.board[target_field_coordinates] = moved_piece
         self.board[start_field_coordinates] = captured_piece
+
+        en_passant_taken_piece = self.en_passant_takes.pop()
+        if en_passant_taken_piece is not None:
+            if self.whites_move():
+                self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = en_passant_taken_piece
+            else:
+                self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = en_passant_taken_piece
+
+    def whites_move(self):
+        return len(self.moves) % 2 == 0
 
     class TestMove:
         """a class to test a move with the context manager"""
