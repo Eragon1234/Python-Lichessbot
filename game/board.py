@@ -64,8 +64,7 @@ class Board:
 
         en_passant_taken_piece = None
         if self.en_passant_field != "-" and moving_piece.lower_short == "p":
-            took_en_passant = target_field_coordinates == self.uci_into_coordinate_move(self.en_passant_field + "a3")[
-                                                              0][::-1]
+            took_en_passant = target_field_coordinates == self.coordinate_string_into_coordinate(self.en_passant_field)
             if took_en_passant:
                 if self.whites_move():
                     en_passant_taken_piece = self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]]
@@ -80,7 +79,7 @@ class Board:
         if moving_piece.lower_short == "p" and abs(move[0][1] - move[1][1]) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
-            self.en_passant_field = self.coordinate_moves_into_uci([((new_x, new_y), (0, 0))])[0][:2]
+            self.en_passant_field = self.coordinate_into_coordinate_string((new_x, new_y))
 
     def unmove(self, move: str) -> None:
         """undoes a move on the board"""
@@ -271,6 +270,32 @@ class Board:
             self.flat_short_board = tuple(piece.short for piece in self.board.flat)
         return self.flat_short_board
 
+    def coordinate_string_into_coordinate(self, coordinate_string: str) -> tuple[int, int]:
+        """ converts a coordinate string into a coordinate tuple
+
+        Args:
+            coordinate_string (str): a string containing the coordinates
+
+        Returns:
+            tuple: a tuple containing the coordinates
+        """
+        x = ord(coordinate_string[0]) - self.index_to_letter
+        y = int(coordinate_string[1]) - 1
+        return x, y
+
+    def coordinate_into_coordinate_string(self, coordinate: tuple[int, int]) -> str:
+        """ converts a coordinate tuple into a coordinate string
+
+        Args:
+            coordinate (tuple): a tuple containing the coordinates
+
+        Returns:
+            str: a string containing the coordinates
+        """
+        x = chr(coordinate[0] + self.index_to_letter)
+        y = coordinate[1] + 1
+        return f"{x}{y}"
+
     def coordinate_move_into_uci(self, coordinate_move: tuple[tuple[int, int], tuple[int, int]]) -> str:
         """ converts the passed coordinate move into an UCI move
 
@@ -280,14 +305,9 @@ class Board:
         Returns:
             list: a list containing the startField and the targetField as x, y tuples
         """
-        x1 = chr(coordinate_move[0][0] + self.index_to_letter)
-        y1 = coordinate_move[0][1] + 1
-        x2 = chr(coordinate_move[1][0] + self.index_to_letter)
-        y2 = coordinate_move[1][1] + 1
-
-        # combining these values to a string
-        move = f"{x1}{y1}{x2}{y2}"
-        return move
+        start_field = self.coordinate_into_coordinate_string(coordinate_move[0])
+        target_field = self.coordinate_into_coordinate_string(coordinate_move[1])
+        return f"{start_field}{target_field}"
 
     def coordinate_moves_into_uci(self, coordinate_moves: list[tuple[tuple[int, int], tuple[int, int]]]) -> list[str]:
         """ converts the passed array of coordinate moves into an array of UCIMoves
@@ -312,12 +332,9 @@ class Board:
         Returns:
             tuple: the coordinate move corresponding to the passed UCIMove
         """
-        x1 = ord(uci_move[0]) - self.index_to_letter
-        y1 = int(uci_move[1]) - 1
-        x2 = ord(uci_move[2]) - self.index_to_letter
-        y2 = int(uci_move[3]) - 1
-        coordinate_move = ((x1, y1), (x2, y2))
-        return coordinate_move
+        start_field = self.coordinate_string_into_coordinate(uci_move[:2])
+        target_field = self.coordinate_string_into_coordinate(uci_move[2:])
+        return start_field, target_field
 
     def load_board_with_fen(self, fen: str) -> ndarray:
         """ loads the board with the passed fen
