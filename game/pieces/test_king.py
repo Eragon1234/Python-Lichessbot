@@ -1,4 +1,3 @@
-from typing import List, Tuple, Dict
 from unittest import TestCase
 
 from game import King
@@ -7,16 +6,16 @@ from game import King
 class TestKing(TestCase):
     def test_generate_possible_positions(self):
         class Case:
-            def __init__(self, position: Tuple[int, int], expected: List[Tuple[int, int]]):
+            def __init__(self, position: tuple[int, int], expected: list[tuple[int, int]]):
                 self.position = position
                 self.expected = expected
-                self.board: List[List[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
+                self.board: list[list[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
 
             def with_piece(self, color: bool, x: int, y: int):
                 self.board[y][x] = color
                 return self
 
-        test_cases: Dict[str, Case] = {
+        test_cases: dict[str, Case] = {
             "king in the corner": Case((0, 0), [
                 (1, 0),
                 (0, 1), (1, 1)

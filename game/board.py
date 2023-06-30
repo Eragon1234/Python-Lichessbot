@@ -9,7 +9,7 @@ class Board:
     """a class to handle the current board state, making moves, generating possible moves, etc."""
 
     # an array for moved moves
-    moves: [str] = []
+    moves: list[str] = []
 
     # a dictionary to save the possible moves
     possible_moves = {}

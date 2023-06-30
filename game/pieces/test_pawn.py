@@ -1,4 +1,3 @@
-from typing import Dict, Tuple, List
 from unittest import TestCase
 
 from game import Pawn
@@ -7,16 +6,16 @@ from game import Pawn
 class TestPawn(TestCase):
     def test_generate_possible_positions(self):
         class Case:
-            def __init__(self, position: Tuple[int, int], expected: List[Tuple[int, int]]):
+            def __init__(self, position: tuple[int, int], expected: list[tuple[int, int]]):
                 self.position = position
                 self.expected = expected
-                self.board: List[List[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
+                self.board: list[list[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
 
             def with_piece(self, color: bool | str, x: int, y: int):
                 self.board[y][x] = color
                 return self
 
-        test_cases: Dict[str, Case] = {
+        test_cases: dict[str, Case] = {
             "empty board": Case((4, 4), [
                 (4, 5)
             ]),
