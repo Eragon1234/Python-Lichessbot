@@ -10,22 +10,18 @@ from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, uci
 class Board:
     """a class to handle the current board state, making moves, generating possible moves, etc."""
 
-    # an array for moved moves
-    moves: list[str] = []
-
     # a dictionary to save the possible moves
     possible_moves = {}
     # a dictionary for saving value differences
     value_differences = {}
 
-    # an array to track the castle rights of black and white
-    castle_rights: set[str] = set()
-
-    captured_pieces = []
-
-    en_passant_field = "-"
-
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
+        self.moves: list[str] = []
+        self.castle_rights: set[str] = set()
+
+        self.captured_pieces: list[AbstractPiece] = []
+        self.en_passant_field = "-"
+
         # loads the board with the given fen
         self.load_board_with_fen(fen)
         self.color_board = None
