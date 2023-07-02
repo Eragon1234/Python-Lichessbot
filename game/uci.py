@@ -1,21 +1,21 @@
 index_to_letter = ord("a")
 
 
-def coordinate_string_into_coordinate(coordinate_string: str) -> tuple[int, int]:
+def uci_string_into_coordinate(uci_string: str) -> tuple[int, int]:
     """ converts a coordinate string into a coordinate tuple
 
     Args:
-        coordinate_string (str): a string containing the coordinates
+        uci_string (str): a string containing the coordinates
 
     Returns:
         tuple: a tuple containing the coordinates
     """
-    x = ord(coordinate_string[0]) - index_to_letter
-    y = int(coordinate_string[1]) - 1
+    x = ord(uci_string[0]) - index_to_letter
+    y = int(uci_string[1]) - 1
     return x, y
 
 
-def coordinate_into_coordinate_string(coordinate: tuple[int, int]) -> str:
+def coordinate_into_uci_string(coordinate: tuple[int, int]) -> str:
     """ converts a coordinate tuple into a coordinate string
 
     Args:
@@ -38,13 +38,12 @@ def coordinate_move_into_uci(coordinate_move: tuple[tuple[int, int], tuple[int, 
     Returns:
         list: a list containing the startField and the targetField as x, y tuples
     """
-    start_field = coordinate_into_coordinate_string(coordinate_move[0])
-    target_field = coordinate_into_coordinate_string(coordinate_move[1])
+    start_field = coordinate_into_uci_string(coordinate_move[0])
+    target_field = coordinate_into_uci_string(coordinate_move[1])
     return f"{start_field}{target_field}"
 
 
-def coordinate_moves_into_uci(coordinate_moves: list[tuple[tuple[int, int], tuple[int, int]]]) -> list[
-    str]:
+def coordinate_moves_into_uci(coordinate_moves: list[tuple[tuple[int, int], tuple[int, int]]]) -> list[str]:
     """ converts the passed array of coordinate moves into an array of UCIMoves
 
     Args:
@@ -68,6 +67,6 @@ def uci_into_coordinate_move(uci_move: str) -> tuple[tuple[int, int], tuple[int,
     Returns:
         tuple: the coordinate move corresponding to the passed UCIMove
     """
-    start_field = coordinate_string_into_coordinate(uci_move[:2])
-    target_field = coordinate_string_into_coordinate(uci_move[2:])
+    start_field = uci_string_into_coordinate(uci_move[:2])
+    target_field = uci_string_into_coordinate(uci_move[2:])
     return start_field, target_field

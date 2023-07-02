@@ -3,7 +3,7 @@ from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from game.pieces.abstract_piece import AbstractPiece
-from game.uci import coordinate_string_into_coordinate, coordinate_into_coordinate_string, coordinate_moves_into_uci, \
+from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, coordinate_moves_into_uci, \
     uci_into_coordinate_move
 
 
@@ -63,7 +63,7 @@ class Board:
 
         en_passant_taken_piece = None
         if self.en_passant_field != "-" and moving_piece.lower_short == "p":
-            took_en_passant = target_field_coordinates == coordinate_string_into_coordinate(self.en_passant_field)
+            took_en_passant = target_field_coordinates == uci_string_into_coordinate(self.en_passant_field)
             if took_en_passant:
                 if self.whites_move():
                     en_passant_taken_piece = self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]]
@@ -78,7 +78,7 @@ class Board:
         if moving_piece.lower_short == "p" and abs(move[0][1] - move[1][1]) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
-            self.en_passant_field = coordinate_into_coordinate_string((new_x, new_y))
+            self.en_passant_field = coordinate_into_uci_string((new_x, new_y))
 
     def unmove(self, move: str) -> None:
         """undoes a move on the board"""
