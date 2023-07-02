@@ -1,0 +1,8 @@
+UP = "\033[1A"
+DOWN = "\033[1B"
+RIGHT = "\033[1C"
+LEFT = "\033[1D"
+SAVE = "\033[s"
+RESTORE = "\033[u"
+HIDE = "\033[?25l"
+SHOW = "\033[?25h"

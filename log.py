@@ -1,6 +1,6 @@
 import logging
 
-from ansi import ANSI
+import ansi.fg
 
 
 def init_logging():
@@ -15,11 +15,11 @@ class MyFormatter(logging.Formatter):
     default_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
 
     FORMATS = {
-        logging.DEBUG: ANSI.FG.GREY + "%(asctime)s - (%(filename)s:%(lineno)d): %(message)s" + ANSI.FG.RESET,
-        logging.INFO: ANSI.FG.GREY + "%(message)s" + ANSI.FG.RESET,
-        logging.WARNING: ANSI.FG.YELLOW + default_format + ANSI.FG.RESET,
-        logging.ERROR: ANSI.FG.RED + default_format + ANSI.FG.RESET,
-        logging.CRITICAL: ANSI.FG.BOLD_RED + default_format + ANSI.FG.RESET,
+        logging.DEBUG: ansi.fg.GREY + "%(asctime)s - (%(filename)s:%(lineno)d): %(message)s" + ansi.fg.RESET,
+        logging.INFO: ansi.fg.GREY + "%(message)s" + ansi.fg.RESET,
+        logging.WARNING: ansi.fg.YELLOW + default_format + ansi.fg.RESET,
+        logging.ERROR: ansi.fg.RED + default_format + ansi.fg.RESET,
+        logging.CRITICAL: ansi.fg.BOLD_RED + default_format + ansi.fg.RESET,
     }
 
     def format(self, record: logging.LogRecord):

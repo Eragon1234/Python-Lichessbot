@@ -1,0 +1,7 @@
+BOLD = "\033[1m"
+DIM = "\033[2m"
+UNDERLINE = "\033[4m"
+BLINK = "\033[5m"
+REVERSE = "\033[7m"
+HIDDEN = "\033[8m"
+RESET = "\033[0m"

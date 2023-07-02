@@ -1,0 +1,4 @@
+ALL = "\033[0m"
+FOREGROUND = "\033[39m"
+BACKGROUND = "\033[49m"
+STYLE = "\033[0m"
