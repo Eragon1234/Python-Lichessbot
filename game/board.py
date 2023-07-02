@@ -3,8 +3,8 @@ from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from game.pieces.abstract_piece import AbstractPiece
-from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, coordinate_moves_into_uci, \
-    uci_into_coordinate_move
+from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, uci_into_coordinate_move, \
+    coordinate_move_into_uci
 
 
 class Board:
@@ -144,7 +144,7 @@ class Board:
 
         coordinate_moves = self.generate_possible_coordinate_moves(for_white)
         # converting coordinate moves into UCIMoves
-        moves = coordinate_moves_into_uci(coordinate_moves)
+        moves = [coordinate_move_into_uci(move) for move in coordinate_moves]
 
         if return_pseudo_legal_moves:
             return moves

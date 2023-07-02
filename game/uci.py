@@ -43,21 +43,6 @@ def coordinate_move_into_uci(coordinate_move: tuple[tuple[int, int], tuple[int, 
     return f"{start_field}{target_field}"
 
 
-def coordinate_moves_into_uci(coordinate_moves: list[tuple[tuple[int, int], tuple[int, int]]]) -> list[str]:
-    """ converts the passed array of coordinate moves into an array of UCIMoves
-
-    Args:
-        coordinate_moves (list): a list containing tuples with the startField and the targetField as x, y tuples
-
-    Returns:
-        list: a list of strings which are moves in the UCI Notation
-    """
-    moves = []
-    for coordinateMove in coordinate_moves:
-        moves.append(coordinate_move_into_uci(coordinateMove))
-    return moves
-
-
 def uci_into_coordinate_move(uci_move: str) -> tuple[tuple[int, int], tuple[int, int]]:
     """ converts the passed UCIMove into a coordinate move
 
