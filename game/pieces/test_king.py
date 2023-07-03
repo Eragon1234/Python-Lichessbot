@@ -1,12 +1,13 @@
 from unittest import TestCase
 
 from game import King
+from game.types import Position, Positions
 
 
 class TestKing(TestCase):
     def test_generate_possible_positions(self):
         class Case:
-            def __init__(self, position: tuple[int, int], expected: list[tuple[int, int]]):
+            def __init__(self, position: Position, expected: Positions):
                 self.position = position
                 self.expected = expected
                 self.board: list[list[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]

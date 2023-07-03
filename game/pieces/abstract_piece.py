@@ -1,6 +1,6 @@
 import abc
 
-from game.types import BoardArray, Positions, Position
+from game.types import BoardArray, Positions, Position, Coordinate
 
 
 class AbstractPiece(abc.ABC):
@@ -17,7 +17,7 @@ class AbstractPiece(abc.ABC):
         [0, 0, 0, 0, 0, 0, 0, 0]
     ]
 
-    possible_move_groups: list[list[tuple[int, int]]] = []
+    possible_move_groups: list[list[Coordinate]] = []
 
     def __init__(self, is_white: bool | str):
         self.lower_short = self.short

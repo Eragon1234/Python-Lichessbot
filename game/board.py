@@ -3,6 +3,7 @@ from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from game.pieces.abstract_piece import AbstractPiece
+from game.types import Coordinate, Moves
 from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, uci_into_coordinate_move, \
     coordinate_move_into_uci
 
@@ -169,7 +170,7 @@ class Board:
 
         return moves
 
-    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[tuple[tuple[int, int], tuple[int, int]]]:
+    def generate_possible_coordinate_moves(self, for_white: bool | str) -> Moves:
         """ generates the possible coordinate moves for the passed color
 
         Args:

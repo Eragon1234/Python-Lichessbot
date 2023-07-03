@@ -1,7 +1,9 @@
+from game.types import Coordinate, Move
+
 index_to_letter = ord("a")
 
 
-def uci_string_into_coordinate(uci_string: str) -> tuple[int, int]:
+def uci_string_into_coordinate(uci_string: str) -> Coordinate:
     """ converts a coordinate string into a coordinate tuple
 
     Args:
@@ -15,7 +17,7 @@ def uci_string_into_coordinate(uci_string: str) -> tuple[int, int]:
     return x, y
 
 
-def coordinate_into_uci_string(coordinate: tuple[int, int]) -> str:
+def coordinate_into_uci_string(coordinate: Coordinate) -> str:
     """ converts a coordinate tuple into a coordinate string
 
     Args:
@@ -29,7 +31,7 @@ def coordinate_into_uci_string(coordinate: tuple[int, int]) -> str:
     return f"{x}{y}"
 
 
-def coordinate_move_into_uci(coordinate_move: tuple[tuple[int, int], tuple[int, int]]) -> str:
+def coordinate_move_into_uci(coordinate_move: Move) -> str:
     """ converts the passed coordinate move into an UCI move
 
     Args:
@@ -43,7 +45,7 @@ def coordinate_move_into_uci(coordinate_move: tuple[tuple[int, int], tuple[int, 
     return f"{start_field}{target_field}"
 
 
-def uci_into_coordinate_move(uci_move: str) -> tuple[tuple[int, int], tuple[int, int]]:
+def uci_into_coordinate_move(uci_move: str) -> Move:
     """ converts the passed UCIMove into a coordinate move
 
     Args:
