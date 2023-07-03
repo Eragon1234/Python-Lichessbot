@@ -1,6 +1,6 @@
 import abc
 
-from game.pieces.types import BoardArray, Positions, Position
+from game.types import BoardArray, Positions, Position
 
 
 class AbstractPiece(abc.ABC):

@@ -169,8 +169,7 @@ class Board:
 
         return moves
 
-    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[
-        tuple[tuple[int, int], tuple[int, int]]]:
+    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[tuple[tuple[int, int], tuple[int, int]]]:
         """ generates the possible coordinate moves for the passed color
 
         Args:

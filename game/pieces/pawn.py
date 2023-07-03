@@ -1,5 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import Position, BoardArray, Positions
+from game.types import Position, BoardArray, Positions
 
 
 class Pawn(AbstractPiece):

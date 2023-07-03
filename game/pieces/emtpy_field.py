@@ -1,5 +1,5 @@
 from game.pieces.abstract_piece import AbstractPiece
-from game.pieces.types import Position, BoardArray
+from game.types import Position, BoardArray
 
 
 class EmptyField(AbstractPiece):
