@@ -3,7 +3,7 @@ from numpy import ndarray
 
 from game.pieces import EmptyField, Pawn, Bishop, Knight, Rook, Queen, King
 from game.pieces.abstract_piece import AbstractPiece
-from game.types import Coordinate, Moves
+from game.types import Moves
 from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, uci_into_coordinate_move, \
     coordinate_move_into_uci
 
