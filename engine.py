@@ -11,11 +11,10 @@ class Engine:
         self.board = Board(fen)
         self.positions = None
 
-    def move(self, game_id: str, color: str, moves: str, move_fn: typing.Callable[[str, str], None]) -> None:
+    def move(self, color: str, moves: str, move_fn: typing.Callable[[str], ...]) -> None:
         """ Calculates the best move and moves it
 
         Args:
-            game_id (str): the id of the game to move in
             color (str): the color for whom to generate the best moves
             moves (str): moves since the start position
             move_fn (fn): function to make the move
@@ -30,7 +29,7 @@ class Engine:
             best_move = best_move[0]
         logging.info(best_move)
         self.board.move(best_move)
-        move_fn(game_id, best_move)
+        move_fn(best_move)
         logging.info("moved\n")
 
     def opponents_move(self, move) -> None:

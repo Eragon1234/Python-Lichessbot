@@ -1,4 +1,5 @@
 import typing
+from functools import partial
 
 from api import LichessBotApiClient
 from event_emitter import EventEmitter
@@ -80,7 +81,8 @@ class GameController:
                     self.emitter.emit('opponents_move', move)
 
                 # sending the my_move event with the gameId, the moves and the move function as arguments
-                self.emitter.emit('my_move', game_id, self.color.value, moves, self.client.move)
+                move_callback = partial(self.client.move, game_id)
+                self.emitter.emit('my_move', self.color.value, moves, move_callback)
 
     def accept_challenge(self, challenge_id: str, *args) -> None:
         """Accepts the challenge with the passed challenge_id
