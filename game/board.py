@@ -280,25 +280,29 @@ class Board:
         for rowFen in position_fen_by_row:
             board.append([])
             for char in rowFen:
+                if char.isdigit():
+                    n = int(char)
+                    for _ in range(n):
+                        board[-1].append(EmptyField.get_self())
+                    continue
+
                 white = not char.islower()
                 char = char.lower()
+                piece = None
                 if char == 'p':
-                    board[-1].append(Pawn(white))
+                    piece = Pawn(white)
                 elif char == 'b':
-                    board[-1].append(Bishop(white))
+                    piece = Bishop(white)
                 elif char == 'n':
-                    board[-1].append(Knight(white))
+                    piece = Knight(white)
                 elif char == 'r':
-                    board[-1].append(Rook(white))
+                    piece = Rook(white)
                 elif char == 'q':
-                    board[-1].append(Queen(white))
+                    piece = Queen(white)
                 elif char == 'k':
-                    board[-1].append(King(white))
+                    piece = King(white)
 
-                # checking for numbers to move n pieces further
-                elif char.isdigit():
-                    for _ in range(int(char)):
-                        board[-1].append(EmptyField.get_self())
+                board[-1].append(piece)
 
         if len(fen) == 6:
             # looking if it's white or blacks turn
