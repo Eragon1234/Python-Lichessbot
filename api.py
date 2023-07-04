@@ -5,16 +5,15 @@ import requests
 
 
 class LichessBotApiClient:
-    """
-    LichessBotApi is a class for handling the connection to the lichess bot api
-    """
+    """LichessBotApi is a class for handling the connection to the lichess bot api"""
     base_url = "https://lichess.org/api"
 
-    def __init__(self, token: str):
-        if token is None:
+    def __init__(self, lichess_token: str):
+        """Initializes the LichessBotApiClient with the given lichess api token"""
+        if lichess_token is None:
             raise ValueError("LichessBotApiClient token cannot be None")
 
-        self.token = token
+        self.token = lichess_token
         self.s = requests.Session()
         self.s.headers.update({'Authorization': f'Bearer {self.token}'})
 
@@ -27,6 +26,7 @@ class LichessBotApiClient:
         self.s.post(f'{self.base_url}/bot/game/{game_id}/move/{move}')
 
     def _stream(self, url: str) -> Generator[...]:
+        """Streams the given url with a generator that yields the response parsed as json"""
         res = self.s.get(url, stream=True)
 
         for line in res.iter_lines():
