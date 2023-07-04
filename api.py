@@ -5,7 +5,8 @@ import requests
 
 
 class LichessBotApiClient:
-    """LichessBotApi is a class for handling the connection to the lichess bot api"""
+    """LichessBotApi handles the connection to the lichess bot api"""
+
     base_url = "https://lichess.org/api"
 
     def __init__(self, lichess_token: str):
@@ -26,7 +27,7 @@ class LichessBotApiClient:
         self.s.post(f'{self.base_url}/bot/game/{game_id}/move/{move}')
 
     def _stream(self, url: str) -> Generator[...]:
-        """Streams the given url with a generator that yields the response parsed as json"""
+        """Streams the url and yields the response parsed as json"""
         res = self.s.get(url, stream=True)
 
         for line in res.iter_lines():

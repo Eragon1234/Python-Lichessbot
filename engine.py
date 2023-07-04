@@ -12,7 +12,7 @@ class Engine:
         self.positions = None
 
     def move(self, game_id: str, color: str, moves: str, move_fn: typing.Callable[[str, str], None]) -> None:
-        """ handles the calculations for the best possible moves
+        """ Calculates the best move and moves it
 
         Args:
             game_id (str): the id of the game to move in
