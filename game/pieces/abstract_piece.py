@@ -29,23 +29,22 @@ class AbstractPiece(abc.ABC):
             self.value = self.value * -1
             self.direction_multiplier = -1
 
-        self.target_field_conditions = [
+        self.target_field_conditions = {
             not self.is_white,
             'EmptyField'
-        ]
+        }
 
     def check_if_position_is_legal(self, board: BoardArray, positions: Positions, x: int, y: int,
-                                   target_field_conditions: list[bool | str] = None) -> bool:
+                                   target_field_conditions: set[bool | str] = None) -> bool:
         if target_field_conditions is None:
             target_field_conditions = self.target_field_conditions
 
         if 0 <= x <= 7 and 0 <= y <= 7:
             position = (x, y)
             target_field = board[position]
-            for condition in target_field_conditions:
-                if target_field == condition:
-                    positions.append(position)
-                    return True
+            if target_field in target_field_conditions:
+                positions.append(position)
+                return True
         return False
 
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:

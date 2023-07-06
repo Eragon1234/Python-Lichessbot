@@ -36,9 +36,9 @@ class Pawn(AbstractPiece):
                 self.check_if_position_is_legal(board, positions, x, y + 2 * self.direction_multiplier)
 
         self.check_if_position_is_legal(board, positions, x + 1, y + 1 * self.direction_multiplier,
-                                        [not self.is_white, "enemy"])
+                                        {not self.is_white, "enemy"})
 
         self.check_if_position_is_legal(board, positions, x - 1, y + 1 * self.direction_multiplier,
-                                        [not self.is_white, "enemy"])
+                                        {not self.is_white, "enemy"})
 
         return positions
