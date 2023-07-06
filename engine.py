@@ -1,14 +1,14 @@
 import logging
 import typing
 
-from game import Board
+from game import ChessBoard
 
 
 class Engine:
     """Class to generate the best possible moves, etc."""
 
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
-        self.board = Board(fen)
+        self.board = ChessBoard(fen)
         self.positions = None
 
     def move(self, color: str, moves: str, move_fn: typing.Callable[[str], ...]) -> None:
@@ -27,6 +27,9 @@ class Engine:
         if isinstance(best_move, tuple):
             logging.info("Evaluation: %s", best_move[1])
             best_move = best_move[0]
+        if isinstance(best_move, int):
+            logging.fatal("best_move is int: %s", best_move)
+            return
         logging.info(best_move)
         self.board.move(best_move)
         move_fn(best_move)
@@ -38,7 +41,7 @@ class Engine:
         self.board.move(move)
         logging.info("opponent moved\n")
 
-    def calculate_best_move(self, for_white: bool, depth: int, board: Board = None) -> str:
+    def calculate_best_move(self, for_white: bool, depth: int, board: ChessBoard = None) -> str:
         if board is None:
             board = self.board
 
@@ -49,7 +52,7 @@ class Engine:
 
         return move
 
-    def max(self, depth: int, alpha: float, beta: float, board: Board,
+    def max(self, depth: int, alpha: float, beta: float, board: ChessBoard,
             positions: dict[str, float] = None, return_move: bool = False) -> float | tuple[
             str, float]:
         if positions is None:
@@ -62,14 +65,14 @@ class Engine:
             return -9999
 
         if depth == 0:
-            return self.get_value_difference_for_move(moves[0])
+            return self.get_material_difference_for_move(moves[0])
 
         max_value = alpha
         max_move = moves[0]
 
         for move in moves:
             with board.test_move(move) as test_board:
-                short_board = test_board.generate_flat_short_board()
+                short_board = test_board.board.flat_short_board()
 
                 if short_board in positions and not return_move:
                     return positions.get(short_board)
@@ -87,7 +90,7 @@ class Engine:
             return max_move, max_value
         return max_value
 
-    def min(self, depth: int, alpha: float, beta: float, board: Board, positions: dict[str, float] = None,
+    def min(self, depth: int, alpha: float, beta: float, board: ChessBoard, positions: dict[str, float] = None,
             return_move: bool = False) -> float | tuple[str, float]:
         if positions is None:
             positions = {}
@@ -98,14 +101,14 @@ class Engine:
             return 9999
 
         if depth == 0:
-            return self.get_value_difference_for_move(moves[0])
+            return self.get_material_difference_for_move(moves[0])
 
         min_value = beta
         min_move = moves[0]
 
         for move in moves:
             with board.test_move(move) as test_board:
-                short_board = test_board.generate_flat_short_board()
+                short_board = test_board.board.flat_short_board()
 
                 if short_board in positions and not return_move:
                     return positions.get(short_board)
@@ -123,24 +126,17 @@ class Engine:
             return min_move, min_value
         return min_value
 
-    def get_value_difference_for_move(self, move: str, board: Board = None) -> int:
+    def get_material_difference_for_move(self, move: str, board: ChessBoard = None) -> int:
         if board is None:
             board = self.board
         with board.test_move(move) as test_board:
-            evaluation = test_board.calculate_value_difference()
-        return evaluation
-
-    def get_material_difference_for_move(self, move: str, board: Board = None) -> int:
-        if board is None:
-            board = self.board
-        with board.test_move(move) as test_board:
-            evaluation = test_board.calculate_material_difference()
+            evaluation = test_board.board.material_difference()
         return evaluation
 
     def get_sort_value_for_move(self, move: str) -> int:
         if self.positions is not None:
             with self.board.test_move(move) as board:
-                short_board = board.generate_flat_short_board()
+                short_board = board.board.flat_short_board()
                 if short_board in self.positions:
                     return self.positions.get(short_board)
-        return self.get_value_difference_for_move(move)
+        return self.get_material_difference_for_move(move)

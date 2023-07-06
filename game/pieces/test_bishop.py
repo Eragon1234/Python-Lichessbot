@@ -1,21 +1,11 @@
 from unittest import TestCase
 
 from game import Bishop
-from game.types import Position, Positions
+from game.pieces.test_case import Case
 
 
 class TestBishop(TestCase):
     def test_generate_possible_positions(self):
-        class Case:
-            def __init__(self, position: Position, expected: Positions):
-                self.position = position
-                self.expected = expected
-                self.board: list[list[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
-
-            def with_piece(self, color: bool, x: int, y: int):
-                self.board[y][x] = color
-                return self
-
         test_cases: dict[str, Case] = {
             "empty_board": Case((4, 4), [
                 (5, 5), (6, 6), (7, 7),
@@ -40,6 +30,5 @@ class TestBishop(TestCase):
         for name, test_case in test_cases.items():
             with self.subTest(name):
                 actual = bishop.generate_possible_positions(test_case.position, test_case.board)
-                print(actual)
 
                 self.assertCountEqual(test_case.expected, actual)

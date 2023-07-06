@@ -1,21 +1,11 @@
 import unittest
 
 from game.pieces.knight import Knight
-from game.types import Position, Positions
+from game.pieces.test_case import Case
 
 
 class TestKnight(unittest.TestCase):
     def test_generate_possible_positions(self):
-        class Case:
-            def __init__(self, position: Position, expected: Positions):
-                self.position = position
-                self.expected = expected
-                self.board: list[list[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
-
-            def with_piece(self, color: bool | str, x: int, y: int):
-                self.board[y][x] = color
-                return self
-
         test_cases: dict[str, Case] = {
             "empty board": Case((4, 4), [
                 (2, 3),

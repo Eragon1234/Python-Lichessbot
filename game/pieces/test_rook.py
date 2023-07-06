@@ -10,10 +10,11 @@ class TestRook(TestCase):
             def __init__(self, position: Position, expected: Positions):
                 self.position = position
                 self.expected = expected
-                self.board: list[list[str | bool]] = [["EmptyField" for _ in range(8)] for _ in range(8)]
+                from game._chessboard import _ChessBoard
+                self.board = _ChessBoard.from_fen("8/8/8/8/8/8/8/8 w - - 0 1").color_board()
 
             def with_piece(self, color: bool | str, x: int, y: int):
-                self.board[y][x] = color
+                self.board[x, y] = color
                 return self
 
         test_cases: dict[str, Case] = {

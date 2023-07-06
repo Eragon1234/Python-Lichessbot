@@ -1,6 +1,6 @@
 from game.types import Coordinate, Move
 
-index_to_letter = ord("a")
+index_to_letter = ord("h")
 
 
 def uci_string_into_coordinate(uci_string: str) -> Coordinate:
@@ -12,7 +12,7 @@ def uci_string_into_coordinate(uci_string: str) -> Coordinate:
     Returns:
         tuple: a tuple containing the coordinates
     """
-    x = ord(uci_string[0]) - index_to_letter
+    x = index_to_letter - ord(uci_string[0])
     y = int(uci_string[1]) - 1
     return x, y
 
@@ -26,7 +26,7 @@ def coordinate_into_uci_string(coordinate: Coordinate) -> str:
     Returns:
         str: a string containing the coordinates
     """
-    x = chr(coordinate[0] + index_to_letter)
+    x = chr(index_to_letter - coordinate[0])
     y = coordinate[1] + 1
     return f"{x}{y}"
 

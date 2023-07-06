@@ -41,7 +41,7 @@ class AbstractPiece(abc.ABC):
 
         if 0 <= x <= 7 and 0 <= y <= 7:
             position = (x, y)
-            target_field = board[y][x]
+            target_field = board[position]
             for condition in target_field_conditions:
                 if target_field == condition:
                     positions.append(position)
@@ -56,6 +56,6 @@ class AbstractPiece(abc.ABC):
                 y = current_position[1] + move[1]
                 if not self.check_if_position_is_legal(board, possible_positions, x, y):
                     break
-                if board[y][x] == (not self.is_white) and board[y][x] != 'EmptyField':
+                if board[x, y] == (not self.is_white) and board[x, y] != 'EmptyField':
                     break
         return possible_positions

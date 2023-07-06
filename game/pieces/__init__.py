@@ -1,3 +1,4 @@
+from .abstract_piece import AbstractPiece
 from .bishop import Bishop
 from .emtpy_field import EmptyField
 from .king import King
@@ -7,6 +8,7 @@ from .queen import Queen
 from .rook import Rook
 
 __all__ = [
+    "AbstractPiece",
     "Bishop",
     "EmptyField",
     "King",

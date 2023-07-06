@@ -1,13 +1,13 @@
 import unittest
 from timeit import Timer
 
-from game.board import Board
+from game.chessboard import ChessBoard
 
 
 class MoveGenerationPerformanceTest(unittest.TestCase):
 
     def setUp(self):
-        self.board = Board()
+        self.board = ChessBoard()
 
     def test_performance_of_move_generation(self):
         move_generation_timer = Timer(self.board.generate_possible_moves)
