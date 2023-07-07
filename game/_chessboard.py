@@ -7,11 +7,16 @@ class _ChessBoard(_Board[AbstractPiece]):
                  castling_rights: str, en_passant: str, halfmove_clock: int,
                  fullmove_number: int):
         super().__init__(board)
+        self._short_board = _Board[str]([piece.short for piece in self])
         self.white_to_move = white_to_move
         self.castling_rights = castling_rights
         self.en_passant = en_passant
         self.halfmove_clock = halfmove_clock
         self.fullmove_number = fullmove_number
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        self._short_board[key] = value.short
 
     @classmethod
     def from_fen(cls, fen: str) -> '_ChessBoard':
@@ -55,10 +60,10 @@ class _ChessBoard(_Board[AbstractPiece]):
                    halfmove_clock, fullmove_number)
 
     def short_board(self) -> _Board[str]:
-        return _Board[str]([piece.short for piece in self])
+        return self._short_board
 
     def flat_short_board(self) -> tuple[str]:
-        return tuple(piece.short for piece in self)
+        return tuple(self._short_board._board)
 
     def color_board(self) -> _Board[str | bool]:
         return _Board[str]([piece.is_white for piece in self])
