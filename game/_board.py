@@ -1,7 +1,5 @@
 from typing import Generic, TypeVar, Iterator
 
-from game.pieces.abstract_piece import AbstractPiece
-
 T = TypeVar('T')
 
 

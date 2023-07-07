@@ -6,7 +6,6 @@ from game.pieces.test_case import Case
 
 class TestQueen(TestCase):
     def test_generate_possible_positions(self):
-
         test_cases: dict[str, Case] = {
             "empty board": Case((4, 4), [
                 (4, 0), (4, 1), (4, 2), (4, 3), (4, 5), (4, 6), (4, 7),
@@ -34,4 +33,3 @@ class TestQueen(TestCase):
                 actual = queen.generate_possible_positions(test_case.position, test_case.board)
 
                 self.assertCountEqual(test_case.expected, actual)
-
