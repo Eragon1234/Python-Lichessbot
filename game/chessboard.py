@@ -173,10 +173,12 @@ class ChessBoard:
             # if the piece is the color for which to generate moves for
             if piece.is_white == for_white:
                 # generating possible positions
-                new_positions = [(coordinate, new_position)
-                                 for new_position in piece.generate_possible_positions(coordinate, color_board)]
+                new_positions = piece.generate_possible_positions(coordinate,
+                                                                  color_board)
+
                 # append the new positions to the coordinate_moves
-                coordinate_moves.extend(new_positions)
+                coordinate_moves.extend((coordinate, new_position)
+                                        for new_position in new_positions)
         return coordinate_moves
 
     def generate_fen_for_board(self) -> str:
