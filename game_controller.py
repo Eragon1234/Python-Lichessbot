@@ -51,15 +51,14 @@ class GameController:
 
             moves = moves.split(" ")
 
-            # checking if it's whites Move by counting the number of plies
-            my_move = (len(moves) % 2) == 0 or moves[0] == ''
+            # if the number of plies is even, it's white's move
+            whites_move = (len(moves) % 2) == 1 or moves[0] == ''
 
-            # inverting my_move if I'm black
-            if self.color is PlayerColor.Black:
-                my_move = not my_move
+            my_move = whites_move == (self.color is PlayerColor.White)
 
             if my_move:
-                # checking if the last move is from my opponent
+                # if there is a move before the current one,
+                # it's the opponent's move
                 if len(moves) >= 1 and moves[-1] != '':
                     move = moves[-1]
                     self.emitter.emit('opponents_move', move)
