@@ -34,7 +34,8 @@ class _ChessBoard:
         for row in position:
             for char in row:
                 if char.isdigit():
-                    board.extend([EmptyField.get_self()] * int(char))
+                    n = int(char)
+                    board.extend(EmptyField.get_self() for _ in range(n))
                     continue
 
                 white = not char.islower()

@@ -3,8 +3,8 @@ from game._chessboard import _ChessBoard
 from game.pieces import EmptyField
 from game.pieces.abstract_piece import AbstractPiece
 from game.types import Moves
-from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, uci_into_coordinate_move, \
-    coordinate_move_into_uci
+from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, \
+    uci_into_coordinate_move, coordinate_move_into_uci
 
 
 class ChessBoard:
@@ -61,7 +61,8 @@ class ChessBoard:
         self.en_passant_takes.append(en_passant_taken_piece)
         self.board.en_passant = "-"
 
-        if moving_piece.lower_short == "p" and abs(move[0][1] - move[1][1]) == 2:
+        y1, y2 = move[0][1], move[1][1]
+        if moving_piece.lower_short == "p" and abs(y1 - y2) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.board.en_passant = coordinate_into_uci_string((new_x, new_y))

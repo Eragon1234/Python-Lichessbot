@@ -44,10 +44,7 @@ class GameController:
             game_id (str): the gameId of the game to be subscribed to
         """
         for event in self.client.stream_game(game_id):
-            if 'state' in event.keys():
-                moves = event['state']['moves']
-            else:
-                moves = event['moves']
+            moves = event['state']['moves'] if 'state' in event.keys() else event['moves']
 
             moves = moves.split(" ")
 

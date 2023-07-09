@@ -11,13 +11,14 @@ class Engine:
         self.board = ChessBoard(fen)
         self.positions = None
 
-    def move(self, color: str, moves: str, move_fn: typing.Callable[[str], ...]) -> None:
+    def move(self, color: str, moves: str,
+             move_callback: typing.Callable[[str], ...]) -> None:
         """ Calculates the best move and moves it
 
         Args:
             color (str): the color for whom to generate the best moves
             moves (str): moves since the start position
-            move_fn (fn): function to make the move
+            move_callback (fn): function to make the move
         """
         logging.info("my_move")
 
@@ -32,7 +33,7 @@ class Engine:
             return
         logging.info(best_move)
         self.board.move(best_move)
-        move_fn(best_move)
+        move_callback(best_move)
         logging.info("moved\n")
 
     def opponents_move(self, move) -> None:
@@ -41,7 +42,8 @@ class Engine:
         self.board.move(move)
         logging.info("opponent moved\n")
 
-    def calculate_best_move(self, for_white: bool, depth: int, board: ChessBoard = None) -> str:
+    def calculate_best_move(self, for_white: bool, depth: int,
+                            board: ChessBoard = None) -> str:
         if board is None:
             board = self.board
 
@@ -53,8 +55,7 @@ class Engine:
         return move
 
     def max(self, depth: int, alpha: float, beta: float, board: ChessBoard,
-            positions: dict[str, float] = None, return_move: bool = False) -> float | tuple[
-            str, float]:
+            positions: dict[str, float] = None, return_move: bool = False) -> float | tuple[str, float]:
         if positions is None:
             positions = {}
         self.positions = positions
@@ -90,8 +91,8 @@ class Engine:
             return max_move, max_value
         return max_value
 
-    def min(self, depth: int, alpha: float, beta: float, board: ChessBoard, positions: dict[str, float] = None,
-            return_move: bool = False) -> float | tuple[str, float]:
+    def min(self, depth: int, alpha: float, beta: float, board: ChessBoard,
+            positions: dict[str, float] = None, return_move: bool = False) -> float | tuple[str, float]:
         if positions is None:
             positions = {}
         self.positions = positions
