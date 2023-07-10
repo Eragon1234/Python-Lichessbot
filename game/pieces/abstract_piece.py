@@ -21,13 +21,10 @@ class AbstractPiece(abc.ABC):
 
     def __init__(self, is_white: bool | str):
         self.is_white = is_white
-        if self.is_white:
-            self.short = self.lower_short.upper()
-            self.direction_multiplier = 1
-        else:
-            self.short = self.lower_short
-            self.value = self.value * -1
-            self.direction_multiplier = -1
+        self.short = self.lower_short.upper() if is_white else self.lower_short
+        self.direction_multiplier = 1 if is_white else -1
+        if not is_white:
+            self.value = -self.value
 
         self.target_field_conditions = {
             not self.is_white,
