@@ -16,11 +16,12 @@ class MoveTestingTests(unittest.TestCase):
         self.check_all_moves_and_check_for_equality_before_and_after()
 
     def check_all_moves_and_check_for_equality_before_and_after(self):
+        self.board = ChessBoard()
         moves = self.board.generate_possible_moves(True)
         for move in moves:
             start_board = self.board.board.short_board()
             with self.board.test_move(move) as board:
-                board.generate_short_board()
+                board.board.short_board()
             end_board = self.board.board.short_board()
 
             self.assertCountEqual(start_board, end_board)
