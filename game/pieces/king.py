@@ -3,7 +3,7 @@ from game.pieces.abstract_piece import AbstractPiece
 
 class King(AbstractPiece):
     value = 900
-    short = 'k'
+    lower_short = 'k'
     bonus_map = [
         [0, 10, 10, 0, 0, 0, 10, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],

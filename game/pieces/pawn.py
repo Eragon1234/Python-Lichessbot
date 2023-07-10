@@ -4,7 +4,7 @@ from game.types import Position, BoardArray, Positions
 
 class Pawn(AbstractPiece):
     value = 10
-    short = 'p'
+    lower_short = 'p'
     bonus_map = [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 0, 0, 0, 0, 1, 0],

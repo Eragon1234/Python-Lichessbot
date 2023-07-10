@@ -3,7 +3,7 @@ from game.pieces.abstract_piece import AbstractPiece
 
 class Bishop(AbstractPiece):
     value = 30
-    short = 'b'
+    lower_short = 'b'
     bonus_map = [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 5, 0, 3, 3, 0, 5, 0],

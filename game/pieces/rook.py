@@ -3,7 +3,7 @@ from game.pieces.abstract_piece import AbstractPiece
 
 class Rook(AbstractPiece):
     value = 50
-    short = 'r'
+    lower_short = 'r'
     bonus_map = [
         [0, 0, 5, 7, 7, 0, 3, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],

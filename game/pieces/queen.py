@@ -5,7 +5,7 @@ from game.pieces.rook import Rook
 
 class Queen(AbstractPiece):
     value = 90
-    short = 'q'
+    lower_short = 'q'
     bonus_map = [
         [-5, 0, 0, 0, 0, 0, 0, -5],
         [0, 0, 0, 0, 0, 0, 0, 0],

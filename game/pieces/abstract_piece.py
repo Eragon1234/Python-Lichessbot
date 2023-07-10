@@ -4,7 +4,7 @@ from game.types import BoardArray, Positions, Position, Coordinate
 
 
 class AbstractPiece(abc.ABC):
-    short = 'e'
+    lower_short = 'e'
     value = 0
     bonus_map = [
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -20,12 +20,12 @@ class AbstractPiece(abc.ABC):
     possible_move_groups: list[list[Coordinate]] = []
 
     def __init__(self, is_white: bool | str):
-        self.lower_short = self.short
         self.is_white = is_white
         if self.is_white:
-            self.short = self.short.upper()
+            self.short = self.lower_short.upper()
             self.direction_multiplier = 1
         else:
+            self.short = self.lower_short
             self.value = self.value * -1
             self.direction_multiplier = -1
 

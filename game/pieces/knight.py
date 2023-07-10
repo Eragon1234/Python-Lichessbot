@@ -3,7 +3,7 @@ from game.pieces.abstract_piece import AbstractPiece
 
 class Knight(AbstractPiece):
     value = 30
-    short = 'n'
+    lower_short = 'n'
     bonus_map = [
         [-5, -5, -5, -5, -5, -5, -5, -5],
         [-5, 0, 0, 0, 0, 0, 0, -5],
