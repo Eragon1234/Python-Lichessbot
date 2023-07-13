@@ -2,7 +2,7 @@ from game._board import position_to_coordinate
 from game._chessboard import _ChessBoard
 from game.pieces import EmptyField
 from game.pieces.abstract_piece import AbstractPiece
-from game.types import Moves
+from game.types import Move
 from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, \
     uci_into_coordinate_move, coordinate_move_into_uci
 
@@ -156,7 +156,7 @@ class ChessBoard:
 
         return moves
 
-    def generate_possible_coordinate_moves(self, for_white: bool | str) -> Moves:
+    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[Move]:
         """ generates the possible coordinate moves for the passed color
 
         Args:

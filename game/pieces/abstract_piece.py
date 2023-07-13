@@ -1,6 +1,6 @@
 import abc
 
-from game.types import BoardArray, Positions, Position, Coordinate
+from game.types import BoardArray, Position, Coordinate
 
 
 class AbstractPiece(abc.ABC):
@@ -31,7 +31,7 @@ class AbstractPiece(abc.ABC):
             'EmptyField'
         }
 
-    def check_if_position_is_legal(self, board: BoardArray, positions: Positions, x: int, y: int,
+    def check_if_position_is_legal(self, board: BoardArray, positions: list[Position], x: int, y: int,
                                    target_field_conditions: set[bool | str] = None) -> bool:
         if target_field_conditions is None:
             target_field_conditions = self.target_field_conditions
@@ -44,7 +44,7 @@ class AbstractPiece(abc.ABC):
                 return True
         return False
 
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> Positions:
+    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list[Position]:
         possible_positions = []
         for move_groups in self.possible_move_groups:
             for move in move_groups:

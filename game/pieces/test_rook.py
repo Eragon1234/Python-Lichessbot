@@ -1,13 +1,13 @@
 from unittest import TestCase
 
 from game import Rook
-from game.types import Position, Positions
+from game.types import Position
 
 
 class TestRook(TestCase):
     def test_generate_possible_positions(self):
         class Case:
-            def __init__(self, position: Position, expected: Positions):
+            def __init__(self, position: Position, expected: list[Position]):
                 self.position = position
                 self.expected = expected
                 from game._chessboard import _ChessBoard
