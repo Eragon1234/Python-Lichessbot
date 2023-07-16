@@ -12,8 +12,6 @@ class ChessBoard:
 
     # a dictionary to save the possible moves
     possible_moves = {}
-    # a dictionary for saving value differences
-    value_differences = {}
 
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[str] = []
