@@ -28,21 +28,18 @@ class ChessBoard:
         Args:
             move (UCIMove): the move to move
         """
-
-        # appending the move to the array of moves
         self.moves.append(move)
 
-        # converting the UCIMove into a coordinate move
         move = uci_into_coordinate_move(move)
 
         start_field_coordinates, target_field_coordinates = move
 
-        # getting the moving piece
         moving_piece = self.board[start_field_coordinates]
-        # emptying the startField
+        captured_piece = self.board[target_field_coordinates]
+
+        self.captured_pieces.append(captured_piece)
+
         self.board[start_field_coordinates] = EmptyField.get_self()
-        # setting the targetField to the moving_piece
-        self.captured_pieces.append(self.board[target_field_coordinates])
         self.board[target_field_coordinates] = moving_piece
 
         en_passant_taken_piece = None
