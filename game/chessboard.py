@@ -62,19 +62,16 @@ class ChessBoard:
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.board.en_passant = coordinate_into_uci_string((new_x, new_y))
 
-    def unmove(self, move: str) -> None:
-        """undoes a move on the board"""
-        # removing the move to the array of moves
-        self.moves.remove(move)
-        # converting the UCIMove into a coordinate move
+    def unmove(self) -> None:
+        """undoes the last move"""
+        move = self.moves.pop()
         move = uci_into_coordinate_move(move)
 
         start_field_coordinates, target_field_coordinates = move
 
-        # getting the moved piece
         moved_piece = self.board[target_field_coordinates]
         captured_piece = self.captured_pieces.pop()
-        # adding the moved piece to the startField
+
         self.board[start_field_coordinates] = moved_piece
         self.board[target_field_coordinates] = captured_piece
 
@@ -101,7 +98,7 @@ class ChessBoard:
             return self.board
 
         def __exit__(self, exc_type, exc_val, exc_tb):
-            self.board.unmove(self.move)
+            self.board.unmove()
 
     def test_move(self, move: str) -> TestMove:
         """returns an object that can be used to test a move with the context manager"""
