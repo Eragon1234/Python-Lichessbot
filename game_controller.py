@@ -20,36 +20,71 @@ class GameController:
             if event['type'] == 'challenge':
                 challenge_id = event['challenge']['id']
 
-                self.emitter.emit('challenge', challenge_id, self.client.accept_challenge)
+                accept_challenge = partial(self.accept_challenge, challenge_id)
+                challenge = Challenge(challenge_id, accept_challenge)
+                self.emitter.emit('challenge', challenge)
             elif event['type'] == 'gameStart':
                 game_id = event['game']['gameId']
                 self.color = PlayerColor(event['game']['color'])
                 opponent = event['game']['opponent']
+                initial_fen = event['game']['fen']
 
-                self.emitter.emit('game_start', game_id, opponent, self.stream_game)
+                game = Game(self.client, self.color, game_id, initial_fen, opponent)
 
-    def on(self, event: str, fn: typing.Callable[[str, ...], None]) -> None:
-        """ adds functions to be called on the mentioned incoming events
+                self.emitter.emit('game_start', game)
 
-        Args
-            event (str): the event to be handled
-            fn (callable): the function to be assigned to the passed event
-        """
-        self.emitter.on(event, fn)
+    def on_challenge(self, fn: typing.Callable[["Challenge"], None]):
+        """ adds a function to be called on an incoming challenge"""
+        self.emitter.on('challenge', fn)
 
-    def stream_game(self, game_id: str, *args) -> None:
-        """ Subscribes to the events for the game with and emits the events
+    def on_game_start(self, fn: typing.Callable[["Game"], None]):
+        """ adds a function to be called on an incoming game start"""
+        self.emitter.on('game_start', fn)
+
+    def accept_challenge(self, challenge_id: str, *args) -> None:
+        """Accepts the challenge with the passed challenge_id
 
         Args:
-            game_id (str): the gameId of the game to be subscribed to
+            challenge_id (str): the id of the challenge to be accepted
         """
-        for event in self.client.stream_game(game_id):
+        self.client.accept_challenge(challenge_id)
+
+
+class Challenge:
+    """Represents a challenge"""
+
+    def __init__(self, challenge_id: str, accept: typing.Callable[[], None]):
+        self.challenge_id = challenge_id
+        self.accept = accept
+
+
+class Game:
+    """Represents a game"""
+
+    def __init__(self, client: LichessBotApiClient, color: PlayerColor, game_id: str,
+                 start_fen: str, opponent: str):
+        self.client = client
+        self.color = color
+        self.game_id = game_id
+        self.opponent = opponent
+        self.start_fen = start_fen
+
+        self.emitter = EventEmitter()
+
+    def on_my_move(self, fn: typing.Callable[[str, list[str], typing.Callable[[str], None]], None]):
+        self.emitter.on('my_move', fn)
+
+    def on_opponents_move(self, fn: typing.Callable[[str], None]):
+        self.emitter.on('opponents_move', fn)
+
+    def watch(self):
+        for event in self.client.stream_game(self.game_id):
             moves = event['state']['moves'] if 'state' in event.keys() else event['moves']
 
             moves = moves.split(" ")
 
             # if the number of plies is even, it's white's move
-            whites_move = (len(moves) % 2) == 1 or moves[0] == ''
+            whites_move = (len(moves) % 2) == 0 or moves[0] == ''
 
             my_move = whites_move == (self.color is PlayerColor.White)
 
@@ -60,13 +95,8 @@ class GameController:
                     move = moves[-1]
                     self.emitter.emit('opponents_move', move)
 
-                move_callback = partial(self.client.move, game_id)
+                move_callback = partial(self.client.move, self.game_id)
                 self.emitter.emit('my_move', self.color.value, moves, move_callback)
 
-    def accept_challenge(self, challenge_id: str, *args) -> None:
-        """Accepts the challenge with the passed challenge_id
-
-        Args:
-            challenge_id (str): the id of the challenge to be accepted
-        """
-        self.client.accept_challenge(challenge_id)
+    def move(self, move: str):
+        self.client.move(self.game_id, move)

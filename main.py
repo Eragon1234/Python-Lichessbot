@@ -1,10 +1,11 @@
 import logging
 import os
 import sys
+from threading import Thread
 
 import log
 from engine import Engine
-from game_controller import GameController
+from game_controller import GameController, Game
 
 
 def main():
@@ -17,14 +18,16 @@ def main():
 
     game = GameController(lichess_token)
 
-    game.on('challenge', game.accept_challenge)
-    game.on('game_start', game.stream_game)
+    game.on_challenge(lambda challenge: challenge.accept())
+    game.on_game_start(start_game)
 
-    engine = Engine()
+    game.watch()
 
-    game.on('my_move', engine.move)
-    game.on('opponents_move', engine.opponents_move)
 
+def start_game(game: Game):
+    engine = Engine(game.start_fen)
+    game.on_my_move(engine.move)
+    game.on_opponents_move(engine.opponents_move)
     game.watch()
 
 
