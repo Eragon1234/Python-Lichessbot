@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-from threading import Thread
 
 import log
 from engine import Engine
