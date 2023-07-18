@@ -25,8 +25,14 @@ def main():
 
 def start_game(game: Game):
     engine = Engine(game.start_fen)
-    game.on_my_move(engine.move)
+
+    def on_my_move(color: str, moves: list[str]):
+        move = engine.get_best_move(color, moves)
+        game.move(move)
+
+    game.on_my_move(on_my_move)
     game.on_opponents_move(engine.opponents_move)
+
     game.watch()
 
 

@@ -1,4 +1,5 @@
 import logging
+import sys
 import typing
 
 from game import ChessBoard
@@ -11,14 +12,15 @@ class Engine:
         self.board = ChessBoard(fen)
         self.positions = None
 
-    def move(self, color: str, moves: str,
-             move_callback: typing.Callable[[str], ...]) -> None:
-        """ Calculates the best move and moves it
+    def get_best_move(self, color: str, moves: list[str]) -> str:
+        """ Returns the best possible move for the given color.
 
         Args:
             color (str): the color for whom to generate the best moves
-            moves (str): moves since the start position
-            move_callback (fn): function to make the move
+            moves (list[str]): moves since the start position
+
+        Returns:
+            str: the best possible move
         """
         logging.info("my_move")
 
@@ -30,11 +32,10 @@ class Engine:
             best_move = best_move[0]
         if isinstance(best_move, int):
             logging.fatal("best_move is int: %s", best_move)
-            return
+            sys.exit(1)
         logging.info(best_move)
         self.board.move(best_move)
-        move_callback(best_move)
-        logging.info("moved\n")
+        return best_move
 
     def opponents_move(self, move) -> None:
         logging.info("opponents turn")

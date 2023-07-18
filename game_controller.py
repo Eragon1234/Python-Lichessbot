@@ -71,7 +71,7 @@ class Game:
 
         self.emitter = EventEmitter()
 
-    def on_my_move(self, fn: typing.Callable[[str, list[str], typing.Callable[[str], None]], None]):
+    def on_my_move(self, fn: typing.Callable[[str, list[str]], None]):
         self.emitter.on('my_move', fn)
 
     def on_opponents_move(self, fn: typing.Callable[[str], None]):
@@ -95,8 +95,7 @@ class Game:
                     move = moves[-1]
                     self.emitter.emit('opponents_move', move)
 
-                move_callback = partial(self.client.move, self.game_id)
-                self.emitter.emit('my_move', self.color.value, moves, move_callback)
+                self.emitter.emit('my_move', self.color.value, moves)
 
     def move(self, move: str):
         self.client.move(self.game_id, move)
