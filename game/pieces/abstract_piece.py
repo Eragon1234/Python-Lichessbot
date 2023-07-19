@@ -31,18 +31,18 @@ class AbstractPiece(abc.ABC):
             'EmptyField'
         }
 
-    def check_if_position_is_legal(self, board: BoardArray, positions: list[Position], x: int, y: int,
-                                   target_field_conditions: set[bool | str] = None) -> bool:
+    def is_legal_target(self, board: BoardArray, position: Position,
+                        target_field_conditions: set[bool | str] = None) -> bool:
         if target_field_conditions is None:
             target_field_conditions = self.target_field_conditions
 
-        if 0 <= x <= 7 and 0 <= y <= 7:
-            position = (x, y)
-            target_field = board[position]
-            if target_field in target_field_conditions:
-                positions.append(position)
-                return True
-        return False
+        x, y = position
+
+        if (0 > x or x > 7) or (0 > y or y > 7):
+            return False
+
+        target_field = board[x, y]
+        return target_field in target_field_conditions
 
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list[Position]:
         possible_positions = []
@@ -50,8 +50,11 @@ class AbstractPiece(abc.ABC):
             for move in move_groups:
                 x = current_position[0] + move[0]
                 y = current_position[1] + move[1]
-                if not self.check_if_position_is_legal(board, possible_positions, x, y):
+                if self.is_legal_target(board, (x, y)):
+                    possible_positions.append((x, y))
+                else:
                     break
+
                 if board[x, y] == (not self.is_white) and board[x, y] != 'EmptyField':
                     break
         return possible_positions

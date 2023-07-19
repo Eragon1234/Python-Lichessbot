@@ -25,20 +25,26 @@ class Pawn(AbstractPiece):
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list[Position]:
         positions = []
 
-        x = current_position[0]
-        y = current_position[1]
+        x, y = current_position
 
-        legal_move = self.check_if_position_is_legal(board, positions, x, y + 1 * self.direction_multiplier)
-        if legal_move:
-            if self.is_white and y == 1:
-                self.check_if_position_is_legal(board, positions, x, y + 2 * self.direction_multiplier)
-            elif not self.is_white and y == 6:
-                self.check_if_position_is_legal(board, positions, x, y + 2 * self.direction_multiplier)
+        possible_target = (x, y + 1 * self.direction_multiplier)
+        if self.is_legal_target(board, possible_target):
+            positions.append(possible_target)
 
-        self.check_if_position_is_legal(board, positions, x + 1, y + 1 * self.direction_multiplier,
-                                        {not self.is_white, "enemy"})
+            if self.is_start_rank(current_position):
+                possible_target = (x, y + 2 * self.direction_multiplier)
+                if self.is_legal_target(board, possible_target):
+                    positions.append(possible_target)
 
-        self.check_if_position_is_legal(board, positions, x - 1, y + 1 * self.direction_multiplier,
-                                        {not self.is_white, "enemy"})
+        possible_target = (x + 1, y + 1 * self.direction_multiplier)
+        if self.is_legal_target(board, possible_target, {not self.is_white, "enemy"}):
+            positions.append(possible_target)
+
+        possible_target = (x - 1, y + 1 * self.direction_multiplier)
+        if self.is_legal_target(board, possible_target, {not self.is_white, "enemy"}):
+            positions.append(possible_target)
 
         return positions
+
+    def is_start_rank(self, position: Position) -> bool:
+        return position[1] == (1 if self.is_white else 6)
