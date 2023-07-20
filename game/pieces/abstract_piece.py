@@ -26,23 +26,23 @@ class AbstractPiece(abc.ABC):
         if not is_white:
             self.value = -self.value
 
-        self.target_field_conditions = {
+        self.legal_target_colors = {
             not self.is_white,
             'EmptyField'
         }
 
     def is_legal_target(self, board: BoardArray, position: Position,
-                        target_field_conditions: set[bool | str] = None) -> bool:
-        if target_field_conditions is None:
-            target_field_conditions = self.target_field_conditions
+                        legal_target_colors: set[bool | str] = None) -> bool:
+        if legal_target_colors is None:
+            legal_target_colors = self.legal_target_colors
 
         x, y = position
 
         if (0 > x or x > 7) or (0 > y or y > 7):
             return False
 
-        target_field = board[x, y]
-        return target_field in target_field_conditions
+        target_field_color = board[x, y]
+        return target_field_color in legal_target_colors
 
     def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list[Position]:
         possible_positions = []
