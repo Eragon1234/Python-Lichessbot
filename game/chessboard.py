@@ -10,7 +10,6 @@ from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, \
 class ChessBoard:
     """a class to handle the current board state, making moves, generating possible moves, etc."""
 
-    # a dictionary to save the possible moves
     possible_moves = {}
 
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
@@ -118,7 +117,7 @@ class ChessBoard:
             return self.possible_moves.get(short_board)
 
         coordinate_moves = self.generate_possible_coordinate_moves(for_white)
-        # converting coordinate moves into UCIMoves
+
         moves = [coordinate_move_into_uci(move) for move in coordinate_moves]
 
         if return_pseudo_legal_moves:
@@ -158,17 +157,14 @@ class ChessBoard:
             returns all possible coordinate moves for the passed color
         """
         coordinate_moves = []
-        # generating the color_board as a parameter for the generate_possible_coordinate_moves method of the pieces
+
         color_board = self.board.color_board()
         for p, piece in enumerate(self.board):
             coordinate = position_to_coordinate(p)
 
-            # if the piece is the color for which to generate moves for
             if piece.is_white == for_white:
-                # generating possible positions
                 new_positions = piece.generate_possible_positions(color_board, coordinate)
 
-                # append the new positions to the coordinate_moves
                 coordinate_moves.extend((coordinate, new_position)
                                         for new_position in new_positions)
         return coordinate_moves
