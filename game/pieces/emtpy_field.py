@@ -12,7 +12,7 @@ class EmptyField(AbstractPiece):
     def __init__(self):
         super().__init__(self.is_white)
 
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list:
+    def generate_possible_positions(self, board: BoardArray, current_position: Position) -> list:
         return []
 
     @classmethod

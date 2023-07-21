@@ -33,6 +33,6 @@ class TestRook(TestCase):
         rook = Rook(True)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = rook.generate_possible_positions(test_case.position, test_case.board)
+                actual = rook.generate_possible_positions(test_case.board, test_case.position)
 
                 self.assertCountEqual(test_case.expected, actual)

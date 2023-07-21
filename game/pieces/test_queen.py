@@ -30,6 +30,6 @@ class TestQueen(TestCase):
         queen = Queen(True)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = queen.generate_possible_positions(test_case.position, test_case.board)
+                actual = queen.generate_possible_positions(test_case.board, test_case.position)
 
                 self.assertCountEqual(test_case.expected, actual)

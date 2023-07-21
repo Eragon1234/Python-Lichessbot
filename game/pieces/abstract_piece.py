@@ -44,7 +44,7 @@ class AbstractPiece(abc.ABC):
         target_field_color = board[x, y]
         return target_field_color in legal_target_colors
 
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list[Position]:
+    def generate_possible_positions(self, board: BoardArray, current_position: Position) -> list[Position]:
         possible_positions = []
         for move_groups in self.possible_move_groups:
             for move in move_groups:

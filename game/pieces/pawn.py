@@ -22,7 +22,7 @@ class Pawn(AbstractPiece):
             'EmptyField'
         ]
 
-    def generate_possible_positions(self, current_position: Position, board: BoardArray) -> list[Position]:
+    def generate_possible_positions(self, board: BoardArray, current_position: Position) -> list[Position]:
         positions = []
 
         x, y = current_position

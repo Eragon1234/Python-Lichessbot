@@ -166,8 +166,7 @@ class ChessBoard:
             # if the piece is the color for which to generate moves for
             if piece.is_white == for_white:
                 # generating possible positions
-                new_positions = piece.generate_possible_positions(coordinate,
-                                                                  color_board)
+                new_positions = piece.generate_possible_positions(color_board, coordinate)
 
                 # append the new positions to the coordinate_moves
                 coordinate_moves.extend((coordinate, new_position)

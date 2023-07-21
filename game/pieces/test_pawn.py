@@ -35,6 +35,6 @@ class TestPawn(TestCase):
         pawn = Pawn(True)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = pawn.generate_possible_positions(test_case.position, test_case.board)
+                actual = pawn.generate_possible_positions(test_case.board, test_case.position)
 
                 self.assertCountEqual(test_case.expected, actual)
