@@ -1,3 +1,5 @@
+from typing import Generator
+
 from game.pieces.abstract_piece import AbstractPiece
 from game.types import Position, BoardArray
 
@@ -22,29 +24,26 @@ class Pawn(AbstractPiece):
             'EmptyField'
         ]
 
-    def generate_possible_positions(self, board: BoardArray, current_position: Position) -> list[Position]:
-        positions = []
-
+    def generate_possible_positions(self, board: BoardArray,
+                                    current_position: Position) -> Generator[Position, None, None]:
         x, y = current_position
 
         possible_target = (x, y + 1 * self.direction_multiplier)
         if self.is_legal_target(board, possible_target):
-            positions.append(possible_target)
+            yield possible_target
 
             if self.is_start_rank(current_position):
                 possible_target = (x, y + 2 * self.direction_multiplier)
                 if self.is_legal_target(board, possible_target):
-                    positions.append(possible_target)
+                    yield possible_target
 
         possible_target = (x + 1, y + 1 * self.direction_multiplier)
         if self.is_legal_target(board, possible_target, {not self.is_white, "enemy"}):
-            positions.append(possible_target)
+            yield possible_target
 
         possible_target = (x - 1, y + 1 * self.direction_multiplier)
         if self.is_legal_target(board, possible_target, {not self.is_white, "enemy"}):
-            positions.append(possible_target)
-
-        return positions
+            yield possible_target
 
     def is_start_rank(self, position: Position) -> bool:
         return position[1] == (1 if self.is_white else 6)

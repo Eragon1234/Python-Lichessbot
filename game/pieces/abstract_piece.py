@@ -1,4 +1,5 @@
 import abc
+from typing import Generator
 
 from game.types import BoardArray, Position, Coordinate
 
@@ -44,17 +45,15 @@ class AbstractPiece(abc.ABC):
         target_field_color = board[x, y]
         return target_field_color in legal_target_colors
 
-    def generate_possible_positions(self, board: BoardArray, current_position: Position) -> list[Position]:
-        possible_positions = []
+    def generate_possible_positions(self, board: BoardArray, current_position: Position) -> Generator[Position, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
                 x = current_position[0] + move[0]
                 y = current_position[1] + move[1]
                 if self.is_legal_target(board, (x, y)):
-                    possible_positions.append((x, y))
+                    yield x, y
                 else:
                     break
 
                 if board[x, y] == (not self.is_white) and board[x, y] != 'EmptyField':
                     break
-        return possible_positions
