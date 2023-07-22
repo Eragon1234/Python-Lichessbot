@@ -1,3 +1,5 @@
+from typing import Generator
+
 from game._board import position_to_coordinate
 from game._chessboard import _ChessBoard
 from game.pieces import EmptyField
@@ -147,7 +149,7 @@ class ChessBoard:
 
         return moves
 
-    def generate_possible_coordinate_moves(self, for_white: bool | str) -> list[Move]:
+    def generate_possible_coordinate_moves(self, for_white: bool | str) -> Generator[Move, None, None]:
         """ generates the possible coordinate moves for the passed color
 
         Args:
@@ -156,18 +158,16 @@ class ChessBoard:
         Returns:
             returns all possible coordinate moves for the passed color
         """
-        coordinate_moves = []
-
         color_board = self.board.color_board()
         for p, piece in enumerate(self.board):
+            if piece.is_white != for_white:
+                continue
+
             coordinate = position_to_coordinate(p)
 
-            if piece.is_white == for_white:
-                new_positions = piece.generate_possible_positions(color_board, coordinate)
+            new_positions = piece.generate_possible_positions(color_board, coordinate)
 
-                coordinate_moves.extend((coordinate, new_position)
-                                        for new_position in new_positions)
-        return coordinate_moves
+            yield from ((coordinate, new_position) for new_position in new_positions)
 
     def generate_fen_for_board(self) -> str:
         """ generates the fen for the current board
