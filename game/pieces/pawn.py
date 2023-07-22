@@ -20,9 +20,9 @@ class Pawn(AbstractPiece):
 
     def __init__(self, is_white: bool):
         super().__init__(is_white)
-        self.target_field_conditions = [
+        self.legal_target_colors = {
             'EmptyField'
-        ]
+        }
 
     def generate_possible_positions(self, board: BoardArray,
                                     current_position: Position) -> Generator[Position, None, None]:
