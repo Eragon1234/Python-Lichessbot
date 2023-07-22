@@ -60,7 +60,7 @@ class Engine:
         if positions is None:
             positions = {}
         self.positions = positions
-        moves = board.generate_possible_moves(True)
+        moves = list(board.generate_possible_moves(True))
         moves.sort(key=self.get_sort_value_for_move)
 
         if len(moves) == 0:
@@ -97,7 +97,7 @@ class Engine:
         if positions is None:
             positions = {}
         self.positions = positions
-        moves = board.generate_possible_moves(False)
+        moves = list(board.generate_possible_moves(False))
 
         if len(moves) == 0:
             return 9999
