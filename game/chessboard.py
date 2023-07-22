@@ -12,8 +12,6 @@ from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, \
 class ChessBoard:
     """a class to handle the current board state, making moves, generating possible moves, etc."""
 
-    possible_moves = {}
-
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[str] = []
 
@@ -94,9 +92,8 @@ class ChessBoard:
             self.board = board
             self.move = move
 
-        def __enter__(self) -> "ChessBoard":
+        def __enter__(self):
             self.board.move(self.move)
-            return self.board
 
         def __exit__(self, exc_type, exc_val, exc_tb):
             self.board.unmove()
@@ -105,7 +102,7 @@ class ChessBoard:
         """returns an object that can be used to test a move with the context manager"""
         return self.TestMove(self, move)
 
-    def generate_possible_moves(self, for_white: bool = True, return_pseudo_legal_moves: bool = False) -> list[str]:
+    def generate_possible_moves(self, for_white: bool = True) -> Generator[str, None, None]:
         """ Generating all possible moves in the current position
 
         Args: for_white (bool): for which color to generate the moves for. Defaults to True.
@@ -114,40 +111,36 @@ class ChessBoard:
         Returns:
             list: a list of possible moves in UCIMove format
         """
-        short_board = self.board.flat_short_board()
-        if short_board in self.possible_moves:
-            return self.possible_moves.get(short_board)
-
         coordinate_moves = self.generate_possible_coordinate_moves(for_white)
 
-        moves = [coordinate_move_into_uci(move) for move in coordinate_moves]
-
-        if return_pseudo_legal_moves:
-            return moves
-
-        remove_moves = []
+        moves = (coordinate_move_into_uci(move) for move in coordinate_moves)
 
         for move in moves:
-            with self.test_move(move) as board:
-                coordinate_moves = board.generate_possible_coordinate_moves(not for_white)
-                is_check = False
-                for coordinate_move in coordinate_moves:
-                    x, y = coordinate_move[1]
-                    attacked_field: AbstractPiece = board.board[x, y]
+            with self.test_move(move):
+                if self.king_in_check(for_white):
+                    continue
 
-                    if attacked_field.lower_short == "k" and attacked_field.is_white == for_white:
-                        is_check = True
-                        break
+                yield move
 
-                if is_check:
-                    remove_moves.append(move)
+    def king_in_check(self, for_white: bool) -> bool:
+        """ returns if the king of the passed color is in check
 
-        for move in remove_moves:
-            moves.remove(move)
+        Args:
+            for_white: the color of the king to check
 
-        self.possible_moves[short_board] = moves
+        Returns:
+            bool: if the king is in check
+        """
+        coordinate_moves = self.generate_possible_coordinate_moves(not for_white)
 
-        return moves
+        for coordinate_move in coordinate_moves:
+            target_coordinate = coordinate_move[1]
+            attacked_field = self.board[target_coordinate]
+
+            if attacked_field.lower_short == "k" and attacked_field.is_white == for_white:
+                return True
+
+        return False
 
     def generate_possible_coordinate_moves(self, for_white: bool | str) -> Generator[Move, None, None]:
         """ generates the possible coordinate moves for the passed color

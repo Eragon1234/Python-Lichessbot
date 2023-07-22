@@ -20,8 +20,8 @@ class MoveTestingTests(unittest.TestCase):
         moves = self.board.generate_possible_moves(True)
         for move in moves:
             start_board = self.board.board.short_board()
-            with self.board.test_move(move) as board:
-                board.board.short_board()
+            with self.board.test_move(move):
+                self.board.board.short_board()
             end_board = self.board.board.short_board()
 
             self.assertCountEqual(start_board, end_board)

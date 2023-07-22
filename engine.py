@@ -73,13 +73,13 @@ class Engine:
         max_move = moves[0]
 
         for move in moves:
-            with board.test_move(move) as test_board:
-                short_board = test_board.board.flat_short_board()
+            with board.test_move(move):
+                short_board = board.board.flat_short_board()
 
                 if short_board in positions and not return_move:
                     return positions.get(short_board)
 
-                evaluation = self.min(depth - 1, max_value, beta, test_board, positions)
+                evaluation = self.min(depth - 1, max_value, beta, board, positions)
                 evaluation = int(evaluation)
                 if evaluation > max_value:
                     max_value = evaluation
@@ -109,13 +109,13 @@ class Engine:
         min_move = moves[0]
 
         for move in moves:
-            with board.test_move(move) as test_board:
-                short_board = test_board.board.flat_short_board()
+            with board.test_move(move):
+                short_board = board.board.flat_short_board()
 
                 if short_board in positions and not return_move:
                     return positions.get(short_board)
 
-                evaluation = self.max(depth - 1, alpha, min_value, test_board, positions)
+                evaluation = self.max(depth - 1, alpha, min_value, board, positions)
                 evaluation = int(evaluation)
                 if evaluation < min_value:
                     min_value = evaluation
@@ -131,14 +131,14 @@ class Engine:
     def get_material_difference_for_move(self, move: str, board: ChessBoard = None) -> int:
         if board is None:
             board = self.board
-        with board.test_move(move) as test_board:
-            evaluation = test_board.board.material_difference()
+        with board.test_move(move):
+            evaluation = board.board.material_difference()
         return evaluation
 
     def get_sort_value_for_move(self, move: str) -> int:
         if self.positions is not None:
-            with self.board.test_move(move) as board:
-                short_board = board.board.flat_short_board()
+            with self.board.test_move(move):
+                short_board = self.board.board.flat_short_board()
                 if short_board in self.positions:
                     return self.positions.get(short_board)
         return self.get_material_difference_for_move(move)
