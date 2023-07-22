@@ -48,12 +48,14 @@ class AbstractPiece(abc.ABC):
     def generate_possible_positions(self, board: BoardArray, current_position: Position) -> Generator[Position, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
-                x = current_position[0] + move[0]
-                y = current_position[1] + move[1]
-                if self.is_legal_target(board, (x, y)):
-                    yield x, y
-                else:
+                pos = (
+                    current_position[0] + move[0],
+                    current_position[1] + move[1]
+                )
+                if not self.is_legal_target(board, pos):
                     break
 
-                if board[x, y] == (not self.is_white) and board[x, y] != 'EmptyField':
+                yield pos
+
+                if board[pos] == (not self.is_white) and board[pos] != 'EmptyField':
                     break
