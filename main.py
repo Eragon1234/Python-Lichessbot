@@ -24,10 +24,15 @@ def main():
 
 
 def start_game(game: Game):
+    logging.info("start fen: %s", game.start_fen)
     engine = Engine(game.start_fen)
 
     def on_my_move(color: str, moves: list[str]):
-        move = engine.get_best_move(color, moves)
+        logging.info("my move")
+        move, evaluation = engine.get_best_move(color, moves)
+        logging.info("moved %s", move)
+        logging.info("evaluation %s", evaluation)
+        engine.board.move(move)
         game.move(move)
 
     game.on_my_move(on_my_move)

@@ -1,5 +1,4 @@
 import logging
-import sys
 
 from game import ChessBoard
 
@@ -10,9 +9,9 @@ class Engine:
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = ChessBoard(fen)
 
-        self.cached_moves: dict[ChessBoard, tuple[str, int]] = {}
+        self.cached_moves: dict[ChessBoard, tuple[str, float]] = {}
 
-    def get_best_move(self, color: str, moves: list[str]) -> str:
+    def get_best_move(self, color: str, moves: list[str]) -> tuple[str, float]:
         """ Returns the best possible move for the given color.
 
         Args:
@@ -22,18 +21,9 @@ class Engine:
         Returns:
             str: the best possible move
         """
-        logging.info("my_move")
-
         for_white = color == 'white'
 
-        best_move, evaluation = self.calculate_best_move(for_white, 4)
-
-        logging.info("Evaluation: %s", evaluation)
-        logging.info(best_move)
-
-        self.board.move(best_move)
-
-        return best_move
+        return self.calculate_best_move(for_white, 4)
 
     def opponents_move(self, move) -> None:
         logging.info("opponents turn")
@@ -65,7 +55,6 @@ class Engine:
         for move in moves:
             with self.board.test_move(move):
                 _, evaluation = self.min(depth - 1, max_value, beta)
-                evaluation = int(evaluation)
                 if evaluation > max_value:
                     max_value = evaluation
                     max_move = move
@@ -95,7 +84,6 @@ class Engine:
         for move in moves:
             with self.board.test_move(move):
                 _, evaluation = self.max(depth - 1, alpha, min_value)
-                evaluation = int(evaluation)
                 if evaluation < min_value:
                     min_value = evaluation
                     min_move = move
