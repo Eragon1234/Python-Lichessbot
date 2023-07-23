@@ -137,11 +137,3 @@ class Engine:
         with board.test_move(move):
             evaluation = board.board.material_difference()
         return evaluation
-
-    def get_sort_value_for_move(self, move: str) -> int:
-        if self.positions is not None:
-            with self.board.test_move(move):
-                short_board = self.board.board.flat_short_board()
-                if short_board in self.positions:
-                    return self.positions.get(short_board)
-        return self.get_material_difference_for_move(move)
