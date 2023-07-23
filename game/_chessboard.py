@@ -25,6 +25,9 @@ class _ChessBoard:
     def __iter__(self):
         return iter(self._board)
 
+    def __hash__(self):
+        return hash(self._board)
+
     @classmethod
     def from_fen(cls, fen: str) -> '_ChessBoard':
         board = []

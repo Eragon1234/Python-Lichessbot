@@ -1,6 +1,5 @@
 import logging
 import sys
-import typing
 
 from game import ChessBoard
 
@@ -10,7 +9,8 @@ class Engine:
 
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = ChessBoard(fen)
-        self.positions = None
+
+        self.cached_moves: dict[ChessBoard, tuple[str, int]] = {}
 
     def get_best_move(self, color: str, moves: list[str]) -> str:
         """ Returns the best possible move for the given color.
@@ -26,15 +26,13 @@ class Engine:
 
         for_white = color == 'white'
 
-        best_move = self.calculate_best_move(for_white, 4)
-        if isinstance(best_move, tuple):
-            logging.info("Evaluation: %s", best_move[1])
-            best_move = best_move[0]
-        if isinstance(best_move, int):
-            logging.fatal("best_move is int: %s", best_move)
-            sys.exit(1)
+        best_move, evaluation = self.calculate_best_move(for_white, 4)
+
+        logging.info("Evaluation: %s", evaluation)
         logging.info(best_move)
+
         self.board.move(best_move)
+
         return best_move
 
     def opponents_move(self, move) -> None:
@@ -43,40 +41,30 @@ class Engine:
         self.board.move(move)
         logging.info("opponent moved\n")
 
-    def calculate_best_move(self, for_white: bool, depth: int,
-                            board: ChessBoard = None) -> str:
-        if board is None:
-            board = self.board
-
+    def calculate_best_move(self, for_white: bool, depth: int) -> tuple[str, float]:
         if for_white:
-            move = self.max(depth, float("-inf"), float("inf"), board, {}, True)
+            move = self.max(depth, float("-inf"), float("inf"))
         else:
-            move = self.min(depth, float("-inf"), float("inf"), board, {}, True)
+            move = self.min(depth, float("-inf"), float("inf"))
 
         return move
 
-    def max(self, depth: int, alpha: float, beta: float, board: ChessBoard,
-            positions: dict[str, float] = None, return_move: bool = False) -> float | tuple[str, float]:
-        if positions is None:
-            positions = {}
-        self.positions = positions
-        moves = board.generate_possible_moves(True)
+    def max(self, depth: int, alpha: float, beta: float) -> tuple[str, float]:
+        if self.board in self.cached_moves:
+            return self.cached_moves[self.board]
+
+        moves = self.board.generate_possible_moves(True)
 
         if depth == 0:
             best_move = max(moves, key=self.get_material_difference_for_move)
-            return self.get_material_difference_for_move(best_move)
+            return best_move, self.get_material_difference_for_move(best_move)
 
         max_value = alpha
         max_move = None
 
         for move in moves:
-            with board.test_move(move):
-                short_board = board.board.flat_short_board()
-
-                if short_board in positions and not return_move:
-                    return positions.get(short_board)
-
-                evaluation = self.min(depth - 1, max_value, beta, board, positions)
+            with self.board.test_move(move):
+                _, evaluation = self.min(depth - 1, max_value, beta)
                 evaluation = int(evaluation)
                 if evaluation > max_value:
                     max_value = evaluation
@@ -84,37 +72,29 @@ class Engine:
                     if max_value >= beta:
                         break
 
-                positions[short_board] = max_value
-
         if max_move is None:
-            return -9999
+            return "", -9999
 
-        if return_move:
-            return max_move, max_value
-        return max_value
+        self.cached_moves[self.board] = max_move, max_value
 
-    def min(self, depth: int, alpha: float, beta: float, board: ChessBoard,
-            positions: dict[str, float] = None, return_move: bool = False) -> float | tuple[str, float]:
-        if positions is None:
-            positions = {}
-        self.positions = positions
-        moves = board.generate_possible_moves(False)
+        return max_move, max_value
+
+    def min(self, depth: int, alpha: float, beta: float) -> tuple[str, float]:
+        if self.board in self.cached_moves:
+            return self.cached_moves[self.board]
+
+        moves = self.board.generate_possible_moves(False)
 
         if depth == 0:
             move = max(moves, key=self.get_material_difference_for_move)
-            return self.get_material_difference_for_move(move)
+            return move, self.get_material_difference_for_move(move)
 
         min_value = beta
         min_move = None
 
         for move in moves:
-            with board.test_move(move):
-                short_board = board.board.flat_short_board()
-
-                if short_board in positions and not return_move:
-                    return positions.get(short_board)
-
-                evaluation = self.max(depth - 1, alpha, min_value, board, positions)
+            with self.board.test_move(move):
+                _, evaluation = self.max(depth - 1, alpha, min_value)
                 evaluation = int(evaluation)
                 if evaluation < min_value:
                     min_value = evaluation
@@ -122,18 +102,14 @@ class Engine:
                     if min_value <= alpha:
                         break
 
-                positions[short_board] = min_value
-
         if min_move is None:
-            return 9999
+            return "", 9999
 
-        if return_move:
-            return min_move, min_value
-        return min_value
+        self.cached_moves[self.board] = min_move, min_value
 
-    def get_material_difference_for_move(self, move: str, board: ChessBoard = None) -> int:
-        if board is None:
-            board = self.board
-        with board.test_move(move):
-            evaluation = board.board.material_difference()
+        return min_move, min_value
+
+    def get_material_difference_for_move(self, move: str) -> int:
+        with self.board.test_move(move):
+            evaluation = self.board.board.material_difference()
         return evaluation
