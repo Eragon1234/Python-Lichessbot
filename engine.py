@@ -60,17 +60,14 @@ class Engine:
         if positions is None:
             positions = {}
         self.positions = positions
-        moves = list(board.generate_possible_moves(True))
-        moves.sort(key=self.get_sort_value_for_move)
-
-        if len(moves) == 0:
-            return -9999
+        moves = board.generate_possible_moves(True)
 
         if depth == 0:
-            return self.get_material_difference_for_move(moves[0])
+            best_move = max(moves, key=self.get_material_difference_for_move)
+            return self.get_material_difference_for_move(best_move)
 
         max_value = alpha
-        max_move = moves[0]
+        max_move = None
 
         for move in moves:
             with board.test_move(move):
@@ -88,6 +85,10 @@ class Engine:
                         break
 
                 positions[short_board] = max_value
+
+        if max_move is None:
+            return -9999
+
         if return_move:
             return max_move, max_value
         return max_value
@@ -97,16 +98,14 @@ class Engine:
         if positions is None:
             positions = {}
         self.positions = positions
-        moves = list(board.generate_possible_moves(False))
-
-        if len(moves) == 0:
-            return 9999
+        moves = board.generate_possible_moves(False)
 
         if depth == 0:
-            return self.get_material_difference_for_move(moves[0])
+            move = max(moves, key=self.get_material_difference_for_move)
+            return self.get_material_difference_for_move(move)
 
         min_value = beta
-        min_move = moves[0]
+        min_move = None
 
         for move in moves:
             with board.test_move(move):
@@ -124,6 +123,10 @@ class Engine:
                         break
 
                 positions[short_board] = min_value
+
+        if min_move is None:
+            return 9999
+
         if return_move:
             return min_move, min_value
         return min_value
