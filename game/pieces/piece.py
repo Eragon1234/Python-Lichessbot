@@ -30,10 +30,6 @@ class Piece:
         return short
 
     @property
-    def lower_short(self):
-        return self.type.value
-
-    @property
     def is_white(self) -> bool | str:
         return "EmptyField" if self.type == PieceType.EMPTY else self.color == Color.WHITE
 

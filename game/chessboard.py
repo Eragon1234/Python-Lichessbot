@@ -45,7 +45,7 @@ class ChessBoard:
         self.board[target_field_coordinates] = moving_piece
 
         en_passant_taken_piece = None
-        if self.board.en_passant != "-" and moving_piece.lower_short == "p":
+        if self.board.en_passant != "-" and moving_piece.type == PieceType.PAWN:
             took_en_passant = target_field_coordinates == uci_string_into_coordinate(self.board.en_passant)
             if took_en_passant:
                 if self.whites_move():
@@ -59,7 +59,7 @@ class ChessBoard:
         self.board.en_passant = "-"
 
         y1, y2 = move[0][1], move[1][1]
-        if moving_piece.lower_short == "p" and abs(y1 - y2) == 2:
+        if moving_piece.type == PieceType.PAWN and abs(y1 - y2) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
             self.board.en_passant = coordinate_into_uci_string((new_x, new_y))
@@ -140,7 +140,7 @@ class ChessBoard:
             target_coordinate = coordinate_move[1]
             attacked_field = self.board[target_coordinate]
 
-            if attacked_field.lower_short == "k" and attacked_field.is_white == for_white:
+            if attacked_field.type == PieceType.KING and attacked_field.is_white == for_white:
                 return True
 
         return False
