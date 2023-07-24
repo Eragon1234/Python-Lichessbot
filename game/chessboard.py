@@ -50,10 +50,10 @@ class ChessBoard:
             if took_en_passant:
                 if self.whites_move():
                     en_passant_taken_piece = self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]]
-                    self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = EmptyField.get_self()
+                    self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY, "e")
                 else:
                     en_passant_taken_piece = self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]]
-                    self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = EmptyField.get_self()
+                    self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY, "e")
 
         self.en_passant_takes.append(en_passant_taken_piece)
         self.board.en_passant = "-"
