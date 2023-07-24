@@ -1,12 +1,13 @@
 from game._board import _Board
-from game.pieces import AbstractPiece, EmptyField, King, Queen, Bishop, Knight, Rook, Pawn
+from game.pieces import Piece
+from game.pieces.piece_type import PieceType
 
 
 class _ChessBoard:
-    def __init__(self, board: list[AbstractPiece], white_to_move: bool,
+    def __init__(self, board: list[Piece], white_to_move: bool,
                  castling_rights: str, en_passant: str, halfmove_clock: int,
                  fullmove_number: int):
-        self._board = _Board[AbstractPiece](board)
+        self._board = _Board[Piece](board)
         self._short_board = _Board[str]([piece.short for piece in self])
 
         self.white_to_move = white_to_move
@@ -15,10 +16,10 @@ class _ChessBoard:
         self.halfmove_clock = halfmove_clock
         self.fullmove_number = fullmove_number
 
-    def __getitem__(self, key: tuple[int, int]) -> AbstractPiece:
+    def __getitem__(self, key: tuple[int, int]) -> Piece:
         return self._board[key]
 
-    def __setitem__(self, key: tuple[int, int], value: AbstractPiece):
+    def __setitem__(self, key: tuple[int, int], value: Piece):
         self._board[key] = value
         self._short_board[key] = value.short
 
@@ -38,26 +39,13 @@ class _ChessBoard:
             for char in row:
                 if char.isdigit():
                     n = int(char)
-                    board.extend(EmptyField.get_self() for _ in range(n))
+                    board.extend(Piece(PieceType.EMPTY, "e") for _ in range(n))
                     continue
 
                 white = not char.islower()
                 char = char.lower()
 
-                if char == "p":
-                    board.append(Pawn(white))
-                elif char == "r":
-                    board.append(Rook(white))
-                elif char == "n":
-                    board.append(Knight(white))
-                elif char == "b":
-                    board.append(Bishop(white))
-                elif char == "q":
-                    board.append(Queen(white))
-                elif char == "k":
-                    board.append(King(white))
-                else:
-                    raise ValueError(f"Unknown piece {char}")
+                board.append(Piece(PieceType(char), white))
 
         board.reverse()
 

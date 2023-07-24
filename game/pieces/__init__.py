@@ -1,19 +1,5 @@
-from .abstract_piece import AbstractPiece
-from .bishop import Bishop
-from .emtpy_field import EmptyField
-from .king import King
-from .knight import Knight
-from .pawn import Pawn
-from .queen import Queen
-from .rook import Rook
+from .piece import Piece
 
 __all__ = [
-    "AbstractPiece",
-    "Bishop",
-    "EmptyField",
-    "King",
-    "Knight",
-    "Pawn",
-    "Queen",
-    "Rook",
+    "Piece",
 ]

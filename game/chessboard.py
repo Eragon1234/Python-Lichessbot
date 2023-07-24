@@ -2,8 +2,8 @@ from typing import Generator
 
 from game._board import position_to_coordinate
 from game._chessboard import _ChessBoard
-from game.pieces import EmptyField
-from game.pieces.abstract_piece import AbstractPiece
+from game.pieces.piece import Piece
+from game.pieces.piece_type import PieceType
 from game.types import Move
 from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, \
     uci_into_coordinate_move, coordinate_move_into_uci
@@ -15,7 +15,7 @@ class ChessBoard:
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[str] = []
 
-        self.captured_pieces: list[AbstractPiece] = []
+        self.captured_pieces: list[Piece] = []
 
         self.en_passant_takes = []
 
@@ -41,7 +41,7 @@ class ChessBoard:
 
         self.captured_pieces.append(captured_piece)
 
-        self.board[start_field_coordinates] = EmptyField.get_self()
+        self.board[start_field_coordinates] = Piece(PieceType.EMPTY, "e")
         self.board[target_field_coordinates] = moving_piece
 
         en_passant_taken_piece = None

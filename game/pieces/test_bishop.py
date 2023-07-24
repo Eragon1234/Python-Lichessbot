@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from game import Bishop
+from game.pieces import Piece
+from game.pieces.piece_type import PieceType
 from game.pieces.test_case import Case
 
 
@@ -26,7 +27,7 @@ class TestBishop(TestCase):
             ]).with_piece(False, 5, 5),
         }
 
-        bishop = Bishop(True)
+        bishop = Piece(PieceType.BISHOP, True)
         for name, test_case in test_cases.items():
             with self.subTest(name):
                 actual = bishop.generate_possible_positions(test_case.board, test_case.position)

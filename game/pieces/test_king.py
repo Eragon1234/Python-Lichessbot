@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from game import King
+from game.pieces import Piece
+from game.pieces.piece_type import PieceType
 from game.pieces.test_case import Case
 
 
@@ -28,7 +29,7 @@ class TestKing(TestCase):
             ]).with_piece(False, 3, 4)
         }
 
-        king = King(True)
+        king = Piece(PieceType.KING, True)
         for name, test_case in test_cases.items():
             with self.subTest(name):
                 actual = king.generate_possible_positions(test_case.board, test_case.position)
