@@ -24,7 +24,7 @@ class Engine:
         """
         for_white = color == 'white'
 
-        return self.calculate_best_move(for_white, 1)
+        return self.calculate_best_move(for_white, 3)
 
     def opponents_move(self, move) -> None:
         logging.info("opponents turn")

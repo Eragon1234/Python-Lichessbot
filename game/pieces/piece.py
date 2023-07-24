@@ -35,7 +35,7 @@ class Piece:
 
     @property
     def value(self):
-        return VALUES[self.type]
+        return VALUES[self.type] * self.direction_multiplier
 
     @property
     def possible_move_groups(self) -> list[list[tuple[int, int]]]:
