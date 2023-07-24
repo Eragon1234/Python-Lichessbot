@@ -82,7 +82,16 @@ class TestMoveGeneration(unittest.TestCase):
                  'g5h4', 'g5h6', 'a8b8', 'a8c8', 'a8d8', 'h8f8', 'h8g8',
                  'f6f1', 'f6f2', 'f6c3', 'f6f3', 'f6d4', 'f6f4', 'f6e5',
                  'f6f5', 'f6e6', 'f6g6', 'f6h6', 'f6e7', 'f6d8', 'e8d7',
-                 'e8e7', 'e8d8', 'e8f8', 'e8g8', 'e8c8'])
+                 'e8e7', 'e8d8', 'e8f8', 'e8g8', 'e8c8']),
+            "position with pin": Case(
+                'rnbq4/pp6/2p1P2k/4P2n/6P1/8/PPpN1P2/2K4R b - - 0 23',
+                False,
+                ['d8h8', 'd8g8', 'd8f8', 'd8e8', 'd8e7', 'd8d7', 'd8c7',
+                 'd8f6', 'd8d6', 'd8b6', 'd8g5', 'd8d5', 'd8a5', 'd8h4',
+                 'd8d4', 'd8d3', 'd8d2', 'c8d7', 'c8e6', 'b8d7', 'b8a6',
+                 'h6h7', 'h6g7', 'h6g6', 'h6g5', 'b7b6', 'a7a6', 'c6c5',
+                 'b7b5', 'a7a5']
+            )
         }
 
         for name, case in test_cases.items():
