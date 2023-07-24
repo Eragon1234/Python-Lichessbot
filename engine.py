@@ -1,6 +1,7 @@
 import logging
 
 from game import ChessBoard
+from game.uci import uci_into_coordinate_move
 
 
 class Engine:
@@ -9,7 +10,7 @@ class Engine:
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = ChessBoard(fen)
 
-        self.cached_moves: dict[ChessBoard, tuple[str, float]] = {}
+        self.cached_moves: dict[tuple[ChessBoard, bool, int], tuple[str, float]] = {}
 
     def get_best_move(self, color: str, moves: list[str]) -> tuple[str, float]:
         """ Returns the best possible move for the given color.
@@ -23,7 +24,7 @@ class Engine:
         """
         for_white = color == 'white'
 
-        return self.calculate_best_move(for_white, 4)
+        return self.calculate_best_move(for_white, 1)
 
     def opponents_move(self, move) -> None:
         logging.info("opponents turn")
@@ -40,14 +41,13 @@ class Engine:
         return move
 
     def max(self, depth: int, alpha: float, beta: float) -> tuple[str, float]:
-        if self.board in self.cached_moves:
-            return self.cached_moves[self.board]
-
-        moves = self.board.generate_possible_moves(True)
+        if (self.board, True, depth) in self.cached_moves:
+            return self.cached_moves[self.board, True, depth]
 
         if depth == 0:
-            best_move = max(moves, key=self.get_material_difference_for_move)
-            return best_move, self.get_material_difference_for_move(best_move)
+            return "", self.board.board.material_difference()
+
+        moves = self.board.generate_possible_moves(True)
 
         max_value = alpha
         max_move = None
@@ -64,19 +64,18 @@ class Engine:
         if max_move is None:
             return "", -9999
 
-        self.cached_moves[self.board] = max_move, max_value
+        self.cached_moves[self.board, True, depth] = max_move, max_value
 
         return max_move, max_value
 
     def min(self, depth: int, alpha: float, beta: float) -> tuple[str, float]:
-        if self.board in self.cached_moves:
-            return self.cached_moves[self.board]
-
-        moves = self.board.generate_possible_moves(False)
+        if (self.board, False, depth) in self.cached_moves:
+            return self.cached_moves[self.board, False, depth]
 
         if depth == 0:
-            move = max(moves, key=self.get_material_difference_for_move)
-            return move, self.get_material_difference_for_move(move)
+            return "", self.board.board.material_difference()
+
+        moves = self.board.generate_possible_moves(False)
 
         min_value = beta
         min_move = None
@@ -93,7 +92,7 @@ class Engine:
         if min_move is None:
             return "", 9999
 
-        self.cached_moves[self.board] = min_move, min_value
+        self.cached_moves[self.board, False, depth] = min_move, min_value
 
         return min_move, min_value
 
