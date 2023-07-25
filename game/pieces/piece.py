@@ -15,31 +15,22 @@ class Piece:
         if self.type == PieceType.EMPTY:
             self.color = Color.EMPTY
 
+        self.is_white = "EmptyField" if self.type == PieceType.EMPTY else self.color == Color.WHITE
+
+        self.short = self.type.value
+        if self.is_white:
+            self.short = self.short.upper()
+
         self.direction_multiplier = 1 if is_white else -1
+
+        self.value = VALUES[self.type] * self.direction_multiplier
 
         self.legal_target_colors = {
             not self.is_white,
             'EmptyField'
         }
 
-    @property
-    def short(self):
-        short = self.type.value
-        if self.is_white:
-            short = short.upper()
-        return short
-
-    @property
-    def is_white(self) -> bool | str:
-        return "EmptyField" if self.type == PieceType.EMPTY else self.color == Color.WHITE
-
-    @property
-    def value(self):
-        return VALUES[self.type] * self.direction_multiplier
-
-    @property
-    def possible_move_groups(self) -> list[list[tuple[int, int]]]:
-        return POSSIBLE_MOVE_GROUPS[self.type]
+        self.possible_move_groups = POSSIBLE_MOVE_GROUPS[self.type]
 
     def is_legal_target(self, board: BoardArray, position: Position,
                         legal_target_colors: set[bool | str] = None) -> bool:
