@@ -65,6 +65,10 @@ class TestMoveGeneration(unittest.TestCase):
                 'r4rk1/3RN1pp/p4p2/1p6/6P1/7P/PnP5/5RK1 b - - 1 25',
                 False,
                 ['g8f7', 'g8h8']),
+            "position with check 3": Case(
+                'r1b1kb1r/pp3ppp/2n1pn2/4q3/7P/P1PP1PP1/8/RNBQKBNR w KQkq - 1 11',
+                True,
+                ['e1f2', 'e1d2', 'g1e2', 'f1e2', 'd1e2', 'c1e3']),
             "position with en passant": Case(
                 'r1b1k2r/2q1bppp/p1nppn2/Pp6/4PP2/1NNB4/1PP3PP/R1BQ1RK1 w kq b6 0 12',
                 True,
