@@ -28,14 +28,12 @@ class LichessBotApiClient:
 
     def _stream(self, url: str) -> Generator[...]:
         """Streams the url and yields the response parsed as json"""
-        res = self.s.get(url, stream=True)
+        with self.s.get(url, stream=True) as res:
+            for line in res.iter_lines():
+                if not line:
+                    continue
 
-        for line in res.iter_lines():
-            if not line:
-                continue
-
-            # parsing the json response
-            yield json.loads(line)
+                yield json.loads(line)
 
     def stream_events(self) -> Generator[dict, None, None]:
         """streams events from the lichess api"""

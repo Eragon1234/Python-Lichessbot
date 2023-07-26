@@ -20,7 +20,10 @@ def main():
     game.on_challenge(lambda challenge: challenge.accept())
     game.on_game_start(start_game)
 
-    game.watch()
+    try:
+        game.watch()
+    except KeyboardInterrupt:
+        logging.info("Exiting")
 
 
 def start_game(game: Game):
