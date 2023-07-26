@@ -2,22 +2,11 @@ from unittest import TestCase
 
 from game.pieces import Piece
 from game.pieces.piece_type import PieceType
-from game.types import Position
+from game.pieces.test_case import Case
 
 
 class TestRook(TestCase):
     def test_generate_possible_positions(self):
-        class Case:
-            def __init__(self, position: Position, expected: list[Position]):
-                self.position = position
-                self.expected = expected
-                from game._chessboard import _ChessBoard
-                self.board = _ChessBoard.from_fen("8/8/8/8/8/8/8/8 w - - 0 1").color_board()
-
-            def with_piece(self, color: bool | str, x: int, y: int):
-                self.board[x, y] = color
-                return self
-
         test_cases: dict[str, Case] = {
             "completely empty board": Case((4, 4), [
                 (4, 5), (4, 6), (4, 7), (4, 3), (4, 2), (4, 1), (4, 0), (5, 4), (6, 4), (7, 4), (3, 4), (2, 4), (1, 4),
