@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, Optional
 
 from game.pieces.board import Board
 from game.pieces.values import VALUES
@@ -45,9 +45,10 @@ class Piece:
         return target_field_color in legal_target_colors
 
     def generate_possible_positions(self, board: Board,
-                                    current_position: Position) -> Generator[Position, None, None]:
+                                    current_position: Position,
+                                    en_passant: Optional[Position] = None) -> Generator[Position, None, None]:
         if self.type == PieceType.PAWN:
-            yield from self._generate_possible_positions_for_pawn(board, current_position)
+            yield from self._generate_possible_positions_for_pawn(board, current_position, en_passant)
         else:
             yield from self._generate_possible_positions_with_move_groups(board, current_position)
 
@@ -68,7 +69,8 @@ class Piece:
                     break
 
     def _generate_possible_positions_for_pawn(self, board: Board,
-                                              current_position: Position) -> Generator[Position, None, None]:
+                                              current_position: Position,
+                                              en_passant: Optional[Position] = None) -> Generator[Position, None, None]:
         x, y = current_position
 
         possible_target = (x, y + 1 * self.direction_multiplier)
@@ -84,9 +86,15 @@ class Piece:
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 
+        if en_passant == possible_target:
+            yield en_passant
+
         possible_target = (x - 1, y + 1 * self.direction_multiplier)
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
+
+        if en_passant == possible_target:
+            yield en_passant
 
     def is_start_rank(self, pos: Position):
         return pos[1] == (1 if self.is_white else 6)

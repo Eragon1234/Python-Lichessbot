@@ -31,12 +31,12 @@ class TestPawn(TestCase):
             "possible enpassant": Case((4, 4), [
                 (4, 5),
                 (3, 5)
-            ]).with_piece(Color.BLACK, 3, 4)
+            ]).with_piece(Color.BLACK, 3, 4).with_en_passant(3, 5)
         }
 
         pawn = Piece(PieceType.PAWN, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = pawn.generate_possible_positions(test_case.board, test_case.position)
+                actual = pawn.generate_possible_positions(test_case.board, test_case.position, test_case.en_passant)
 
                 self.assertCountEqual(test_case.expected, actual)
