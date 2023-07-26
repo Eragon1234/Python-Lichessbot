@@ -1,10 +1,11 @@
 from typing import Generator
 
+from game.pieces.board import Board
 from game.pieces.values import VALUES
 from game.pieces.color import Color
 from game.pieces.move_groups import POSSIBLE_MOVE_GROUPS
 from game.pieces.piece_type import PieceType
-from game.types import BoardArray, Position
+from game.types import Position
 
 
 class Piece:
@@ -24,14 +25,14 @@ class Piece:
         self.value = VALUES[self.type] * self.direction_multiplier
 
         self.legal_target_colors = {
-            not self.is_white,
-            'EmptyField'
+            self.color.enemy_color(),
+            Color.EMPTY
         }
 
         self.possible_move_groups = POSSIBLE_MOVE_GROUPS[self.type]
 
-    def is_legal_target(self, board: BoardArray, position: Position,
-                        legal_target_colors: set[bool | str] = None) -> bool:
+    def is_legal_target(self, board: Board, position: Position,
+                        legal_target_colors: set[Color] = None) -> bool:
         if legal_target_colors is None:
             legal_target_colors = self.legal_target_colors
 
@@ -40,16 +41,17 @@ class Piece:
         if (0 > x or x > 7) or (0 > y or y > 7):
             return False
 
-        target_field_color = board[x, y]
+        target_field_color = board.color_at(position)
         return target_field_color in legal_target_colors
 
-    def generate_possible_positions(self, board: BoardArray, current_position: Position) -> Generator[Position, None, None]:
+    def generate_possible_positions(self, board: Board,
+                                    current_position: Position) -> Generator[Position, None, None]:
         if self.type == PieceType.PAWN:
             yield from self._generate_possible_positions_for_pawn(board, current_position)
         else:
             yield from self._generate_possible_positions_with_move_groups(board, current_position)
 
-    def _generate_possible_positions_with_move_groups(self, board: BoardArray, current_position: Position) -> Generator[Position, None, None]:
+    def _generate_possible_positions_with_move_groups(self, board: Board, current_position: Position) -> Generator[Position, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
                 pos = (
@@ -61,27 +63,29 @@ class Piece:
 
                 yield pos
 
-                if board[pos] == (not self.is_white) and board[pos] != 'EmptyField':
+                target_field_color = board.color_at(pos)
+                if target_field_color == self.color.enemy_color() and target_field_color != Color.EMPTY:
                     break
 
-    def _generate_possible_positions_for_pawn(self, board: BoardArray, current_position: Position) -> Generator[Position, None, None]:
+    def _generate_possible_positions_for_pawn(self, board: Board,
+                                              current_position: Position) -> Generator[Position, None, None]:
         x, y = current_position
 
         possible_target = (x, y + 1 * self.direction_multiplier)
-        if self.is_legal_target(board, possible_target, {"EmptyField"}):
+        if self.is_legal_target(board, possible_target, {Color.EMPTY}):
             yield possible_target
 
             if self.is_start_rank(current_position):
                 possible_target = (x, y + 2 * self.direction_multiplier)
-                if self.is_legal_target(board, possible_target, {"EmptyField"}):
+                if self.is_legal_target(board, possible_target, {Color.EMPTY}):
                     yield possible_target
 
         possible_target = (x + 1, y + 1 * self.direction_multiplier)
-        if self.is_legal_target(board, possible_target, {not self.is_white, "enemy"}):
+        if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 
         possible_target = (x - 1, y + 1 * self.direction_multiplier)
-        if self.is_legal_target(board, possible_target, {not self.is_white, "enemy"}):
+        if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 
     def is_start_rank(self, pos: Position):

@@ -27,7 +27,7 @@ class TestKnight(unittest.TestCase):
                 (5, 6),
                 (6, 3),
                 (6, 5)
-            ]).with_piece(True, 2, 3),
+            ]).with_piece(Color.WHITE, 2, 3),
             "target field occupied by enemy piece": Case((4, 4), [
                 (2, 3),
                 (2, 5),
@@ -37,7 +37,7 @@ class TestKnight(unittest.TestCase):
                 (5, 6),
                 (6, 3),
                 (6, 5)
-            ]).with_piece(False, 2, 3),
+            ]).with_piece(Color.BLACK, 2, 3),
             "positioned in the corner": Case((0, 0), [
                 (1, 2),
                 (2, 1)

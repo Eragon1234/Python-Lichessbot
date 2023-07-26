@@ -22,12 +22,12 @@ class TestKing(TestCase):
                 (3, 3), (4, 3), (5, 3),
                 (5, 4),
                 (3, 5), (4, 5), (5, 5)
-            ]).with_piece(True, 3, 4),
+            ]).with_piece(Color.WHITE, 3, 4),
             "field occupied by enemy piece": Case((4, 4), [
                 (3, 3), (4, 3), (5, 3),
                 (3, 4), (5, 4),
                 (3, 5), (4, 5), (5, 5)
-            ]).with_piece(False, 3, 4)
+            ]).with_piece(Color.BLACK, 3, 4)
         }
 
         king = Piece(PieceType.KING, Color.WHITE)

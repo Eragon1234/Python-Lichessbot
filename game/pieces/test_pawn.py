@@ -12,26 +12,26 @@ class TestPawn(TestCase):
             "empty board": Case((4, 4), [
                 (4, 5)
             ]),
-            "field in front occupied by own piece": Case((4, 4), []).with_piece(True, 4, 5),
-            "field in front occupied by enemy piece": Case((4, 4), []).with_piece(False, 4, 5),
+            "field in front occupied by own piece": Case((4, 4), []).with_piece(Color.WHITE, 4, 5),
+            "field in front occupied by enemy piece": Case((4, 4), []).with_piece(Color.BLACK, 4, 5),
             "field left front occupied by enemy piece": Case((4, 4), [
                 (3, 5),
                 (4, 5)
-            ]).with_piece(False, 3, 5),
+            ]).with_piece(Color.BLACK, 3, 5),
             "field right front occupied by enemy piece": Case((4, 4), [
                 (5, 5),
                 (4, 5)
-            ]).with_piece(False, 5, 5),
+            ]).with_piece(Color.BLACK, 5, 5),
             "field right front occupied by own piece": Case((4, 4), [
                 (4, 5)
-            ]).with_piece(True, 5, 5),
+            ]).with_piece(Color.WHITE, 5, 5),
             "field left front occupied by own piece": Case((4, 4), [
                 (4, 5)
-            ]).with_piece(True, 3, 5),
+            ]).with_piece(Color.WHITE, 3, 5),
             "possible enpassant": Case((4, 4), [
                 (4, 5),
                 (3, 5)
-            ]).with_piece("enemy", 3, 5).with_piece(False, 3, 4)
+            ]).with_piece(Color.BLACK, 3, 4)
         }
 
         pawn = Piece(PieceType.PAWN, Color.WHITE)

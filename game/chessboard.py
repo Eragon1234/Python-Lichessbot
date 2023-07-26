@@ -155,14 +155,13 @@ class ChessBoard:
         Returns:
             returns all possible coordinate moves for the passed color
         """
-        color_board = self.board.color_board()
         for position, piece in enumerate(self.board):
             if piece.is_white != for_white:
                 continue
 
             coordinate = position_to_coordinate(position)
 
-            new_positions = piece.generate_possible_positions(color_board, coordinate)
+            new_positions = piece.generate_possible_positions(self.board, coordinate)
 
             yield from ((coordinate, new_position) for new_position in new_positions)
 

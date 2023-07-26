@@ -15,10 +15,10 @@ class TestRook(TestCase):
             ]),
             "field in front occupied by own piece": Case((4, 4), [
                 (4, 3), (4, 2), (4, 1), (4, 0), (5, 4), (6, 4), (7, 4), (3, 4), (2, 4), (1, 4), (0, 4)
-            ]).with_piece(True, 4, 5),
+            ]).with_piece(Color.WHITE, 4, 5),
             "field in front occupied by enemy piece": Case((4, 4), [
                 (4, 3), (4, 2), (4, 1), (4, 0), (5, 4), (6, 4), (7, 4), (3, 4), (2, 4), (1, 4), (0, 4), (4, 5)
-            ]).with_piece(False, 4, 5),
+            ]).with_piece(Color.BLACK, 4, 5),
         }
 
         rook = Piece(PieceType.ROOK, Color.WHITE)

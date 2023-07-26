@@ -19,13 +19,13 @@ class TestBishop(TestCase):
                 (5, 3), (6, 2), (7, 1),
                 (3, 5), (2, 6), (1, 7),
                 (3, 3), (2, 2), (1, 1), (0, 0)
-            ]).with_piece(True, 5, 5),
+            ]).with_piece(Color.WHITE, 5, 5),
             "field occupied by enemy piece": Case((4, 4), [
                 (5, 3), (6, 2), (7, 1),
                 (3, 5), (2, 6), (1, 7),
                 (3, 3), (2, 2), (1, 1), (0, 0),
                 (5, 5)
-            ]).with_piece(False, 5, 5),
+            ]).with_piece(Color.BLACK, 5, 5),
         }
 
         bishop = Piece(PieceType.BISHOP, Color.WHITE)

@@ -60,3 +60,6 @@ class _ChessBoard:
 
     def material_difference(self) -> int:
         return sum(piece.value for piece in self)
+
+    def color_at(self, position: tuple[int, int]) -> Color:
+        return self._board[position].color
