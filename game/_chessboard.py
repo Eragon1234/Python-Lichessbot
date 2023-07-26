@@ -55,9 +55,6 @@ class _ChessBoard:
         return cls(board, white_to_move, castling_rights, en_passant,
                    halfmove_clock, fullmove_number)
 
-    def color_board(self) -> _Board[str | bool]:
-        return _Board[str]([piece.is_white for piece in self])
-
     def material_difference(self) -> int:
         return sum(piece.value for piece in self)
 
