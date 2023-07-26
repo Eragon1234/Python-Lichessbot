@@ -8,7 +8,6 @@ class _ChessBoard:
                  castling_rights: str, en_passant: str, halfmove_clock: int,
                  fullmove_number: int):
         self._board = _Board[Piece](board)
-        self._short_board = _Board[str]([piece.short for piece in self])
 
         self.white_to_move = white_to_move
         self.castling_rights = castling_rights
@@ -21,7 +20,6 @@ class _ChessBoard:
 
     def __setitem__(self, key: tuple[int, int], value: Piece):
         self._board[key] = value
-        self._short_board[key] = value.short
 
     def __iter__(self):
         return iter(self._board)
@@ -57,12 +55,6 @@ class _ChessBoard:
 
         return cls(board, white_to_move, castling_rights, en_passant,
                    halfmove_clock, fullmove_number)
-
-    def short_board(self) -> _Board[str]:
-        return self._short_board
-
-    def flat_short_board(self) -> tuple[str]:
-        return tuple(self._short_board)
 
     def color_board(self) -> _Board[str | bool]:
         return _Board[str]([piece.is_white for piece in self])
