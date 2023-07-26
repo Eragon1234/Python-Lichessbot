@@ -2,6 +2,7 @@ from typing import Generator
 
 from game._board import position_to_coordinate
 from game._chessboard import _ChessBoard
+from game.pieces.color import Color
 from game.pieces.piece import Piece
 from game.pieces.piece_type import PieceType
 from game.types import Move
@@ -41,7 +42,7 @@ class ChessBoard:
 
         self.captured_pieces.append(captured_piece)
 
-        self.board[start_field_coordinates] = Piece(PieceType.EMPTY, "e")
+        self.board[start_field_coordinates] = Piece(PieceType.EMPTY, Color.EMPTY)
         self.board[target_field_coordinates] = moving_piece
 
         en_passant_taken_piece = None
@@ -50,10 +51,12 @@ class ChessBoard:
             if took_en_passant:
                 if self.whites_move():
                     en_passant_taken_piece = self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]]
-                    self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY, "e")
+                    self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY,
+                                                                                                     Color.EMPTY)
                 else:
                     en_passant_taken_piece = self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]]
-                    self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY, "e")
+                    self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY,
+                                                                                                     Color.EMPTY)
 
         self.en_passant_takes.append(en_passant_taken_piece)
         self.board.en_passant = "-"

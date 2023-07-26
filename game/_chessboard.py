@@ -1,5 +1,6 @@
 from game._board import _Board
 from game.pieces import Piece
+from game.pieces.color import Color
 from game.pieces.piece_type import PieceType
 
 
@@ -37,13 +38,13 @@ class _ChessBoard:
             for char in row:
                 if char.isdigit():
                     n = int(char)
-                    board.extend(Piece(PieceType.EMPTY, "e") for _ in range(n))
+                    board.extend(Piece(PieceType.EMPTY, Color.EMPTY) for _ in range(n))
                     continue
 
                 white = not char.islower()
                 char = char.lower()
 
-                board.append(Piece(PieceType(char), white))
+                board.append(Piece(PieceType(char), Color(white)))
 
         board.reverse()
 

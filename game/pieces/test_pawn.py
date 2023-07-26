@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from game.pieces import Piece
+from game.pieces.color import Color
 from game.pieces.piece_type import PieceType
 from game.pieces.test_case import Case
 
@@ -33,7 +34,7 @@ class TestPawn(TestCase):
             ]).with_piece("enemy", 3, 5).with_piece(False, 3, 4)
         }
 
-        pawn = Piece(PieceType.PAWN, True)
+        pawn = Piece(PieceType.PAWN, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
                 actual = pawn.generate_possible_positions(test_case.board, test_case.position)

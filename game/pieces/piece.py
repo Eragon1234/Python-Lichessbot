@@ -8,12 +8,10 @@ from game.types import BoardArray, Position
 
 
 class Piece:
-    def __init__(self, piece_type: PieceType, is_white: bool | str):
+    def __init__(self, piece_type: PieceType, color: Color):
         self.type = piece_type
 
-        self.color = Color.WHITE if is_white else Color.BLACK
-        if self.type == PieceType.EMPTY:
-            self.color = Color.EMPTY
+        self.color = color
 
         self.is_white = "EmptyField" if self.type == PieceType.EMPTY else self.color == Color.WHITE
 
@@ -21,7 +19,7 @@ class Piece:
         if self.is_white:
             self.short = self.short.upper()
 
-        self.direction_multiplier = 1 if is_white else -1
+        self.direction_multiplier = 1 if self.is_white else -1
 
         self.value = VALUES[self.type] * self.direction_multiplier
 

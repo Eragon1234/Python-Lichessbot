@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from game.pieces import Piece
+from game.pieces.color import Color
 from game.pieces.piece_type import PieceType
 from game.pieces.test_case import Case
 
@@ -20,7 +21,7 @@ class TestRook(TestCase):
             ]).with_piece(False, 4, 5),
         }
 
-        rook = Piece(PieceType.ROOK, True)
+        rook = Piece(PieceType.ROOK, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
                 actual = rook.generate_possible_positions(test_case.board, test_case.position)
