@@ -45,7 +45,7 @@ class Engine:
             return self.cached_moves[self.board, True, depth]
 
         if depth == 0:
-            return "", self.board.board.material_difference()
+            return "", self.board.material_difference()
 
         moves = self.board.generate_possible_moves(True)
 
@@ -73,7 +73,7 @@ class Engine:
             return self.cached_moves[self.board, False, depth]
 
         if depth == 0:
-            return "", self.board.board.material_difference()
+            return "", self.board.material_difference()
 
         moves = self.board.generate_possible_moves(False)
 
@@ -98,5 +98,5 @@ class Engine:
 
     def get_material_difference_for_move(self, move: str) -> int:
         with self.board.test_move(move):
-            evaluation = self.board.board.material_difference()
+            evaluation = self.board.material_difference()
         return evaluation

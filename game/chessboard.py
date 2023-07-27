@@ -177,3 +177,11 @@ class ChessBoard:
         """
         fen = '/'.join([''.join([piece.short for piece in row]) for row in self.board])
         return fen
+
+    def material_difference(self) -> int:
+        """ returns the difference in material
+
+        Returns:
+            int: the difference in material
+        """
+        return self.board.material_difference()
