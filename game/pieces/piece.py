@@ -1,10 +1,10 @@
 from typing import Generator, Optional
 
 from game.pieces.board import Board
-from game.pieces.values import VALUES
 from game.pieces.color import Color
 from game.pieces.move_groups import POSSIBLE_MOVE_GROUPS
 from game.pieces.piece_type import PieceType
+from game.pieces.values import VALUES
 from game.types import Position
 
 
@@ -52,7 +52,8 @@ class Piece:
         else:
             yield from self._generate_possible_positions_with_move_groups(board, current_position)
 
-    def _generate_possible_positions_with_move_groups(self, board: Board, current_position: Position) -> Generator[Position, None, None]:
+    def _generate_possible_positions_with_move_groups(self, board: Board, current_position: Position) -> Generator[
+        Position, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
                 pos = (

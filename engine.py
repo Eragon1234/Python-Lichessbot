@@ -1,7 +1,6 @@
 import logging
 
 from game import ChessBoard
-from game.uci import uci_into_coordinate_move
 
 
 class Engine:
