@@ -169,15 +169,6 @@ class ChessBoard:
 
             yield from ((coordinate, new_position) for new_position in new_positions)
 
-    def generate_fen_for_board(self) -> str:
-        """ generates the fen for the current board
-
-        Returns:
-            string: the fen string for the current position on the board
-        """
-        fen = '/'.join([''.join([piece.short for piece in row]) for row in self.board])
-        return fen
-
     def material_difference(self) -> int:
         """ returns the difference in material
 
