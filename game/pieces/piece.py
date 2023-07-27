@@ -52,8 +52,8 @@ class Piece:
         else:
             yield from self._generate_possible_positions_with_move_groups(board, current_position)
 
-    def _generate_possible_positions_with_move_groups(self, board: Board, current_position: Position) -> Generator[
-        Position, None, None]:
+    def _generate_possible_positions_with_move_groups(self, board: Board,
+                                                      current_position: Position) -> Generator[Position, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
                 pos = (
@@ -66,7 +66,7 @@ class Piece:
                 yield pos
 
                 target_field_color = board.color_at(pos)
-                if target_field_color == self.color.enemy_color() and target_field_color != Color.EMPTY:
+                if target_field_color is not Color.EMPTY:
                     break
 
     def _generate_possible_positions_for_pawn(self, board: Board,
@@ -74,7 +74,9 @@ class Piece:
                                               en_passant: Optional[Position] = None) -> Generator[Position, None, None]:
         x, y = current_position
 
-        possible_target = (x, y + 1 * self.direction_multiplier)
+        forward = 1 * self.direction_multiplier
+
+        possible_target = x, y + forward
         if self.is_legal_target(board, possible_target, {Color.EMPTY}):
             yield possible_target
 
@@ -83,14 +85,14 @@ class Piece:
                 if self.is_legal_target(board, possible_target, {Color.EMPTY}):
                     yield possible_target
 
-        possible_target = (x + 1, y + 1 * self.direction_multiplier)
+        possible_target = x + 1, y + forward
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 
         if en_passant == possible_target:
             yield en_passant
 
-        possible_target = (x - 1, y + 1 * self.direction_multiplier)
+        possible_target = x - 1, y + forward
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 

@@ -7,4 +7,6 @@ class Color(Enum):
     EMPTY = "EmptyField"
 
     def enemy_color(self) -> "Color":
+        if self == Color.EMPTY:
+            return Color.EMPTY
         return Color(not self.value)
