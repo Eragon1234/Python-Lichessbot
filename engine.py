@@ -94,8 +94,3 @@ class Engine:
         self.cached_moves[self.board, False, depth] = min_move, min_value
 
         return min_move, min_value
-
-    def get_material_difference_for_move(self, move: str) -> int:
-        with self.board.test_move(move):
-            evaluation = self.board.material_difference()
-        return evaluation
