@@ -3,7 +3,7 @@ import unittest
 from game.pieces import Piece
 from game.pieces.color import Color
 from game.pieces.piece_type import PieceType
-from game.pieces.test_case import Case
+from game.pieces.tests.case import Case
 
 
 class TestKnight(unittest.TestCase):
