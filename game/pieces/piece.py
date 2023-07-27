@@ -31,6 +31,13 @@ class Piece:
 
         self.possible_move_groups = POSSIBLE_MOVE_GROUPS[self.type]
 
+    @classmethod
+    def from_fen(cls, fen: str) -> 'Piece':
+        white = not fen.islower()
+        fen = fen.lower()
+
+        return cls(PieceType(fen), Color(white))
+
     def is_legal_target(self, board: Board, position: Position,
                         legal_target_colors: set[Color] = None) -> bool:
         if legal_target_colors is None:

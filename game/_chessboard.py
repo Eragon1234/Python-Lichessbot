@@ -39,10 +39,7 @@ class _ChessBoard:
                     board.extend(Piece(PieceType.EMPTY, Color.EMPTY) for _ in range(n))
                     continue
 
-                white = not char.islower()
-                char = char.lower()
-
-                board.append(Piece(PieceType(char), Color(white)))
+                board.append(Piece.from_fen(char))
 
         board.reverse()
 
