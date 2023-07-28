@@ -5,7 +5,7 @@ from game.pieces.color import Color
 from game.pieces.move_groups import POSSIBLE_MOVE_GROUPS
 from game.pieces.piece_type import PieceType
 from game.pieces.values import VALUES
-from game.types import Position
+from game.coordinate import Coordinate
 
 
 class Piece:
@@ -38,7 +38,7 @@ class Piece:
 
         return cls(PieceType(fen), Color(white))
 
-    def is_legal_target(self, board: Board, position: Position,
+    def is_legal_target(self, board: Board, position: Coordinate,
                         legal_target_colors: set[Color] = None) -> bool:
         if legal_target_colors is None:
             legal_target_colors = self.legal_target_colors
@@ -52,15 +52,15 @@ class Piece:
         return target_field_color in legal_target_colors
 
     def generate_possible_positions(self, board: Board,
-                                    current_position: Position,
-                                    en_passant: Optional[Position] = None) -> Generator[Position, None, None]:
+                                    current_position: Coordinate,
+                                    en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:
         if self.type == PieceType.PAWN:
             yield from self._generate_possible_positions_for_pawn(board, current_position, en_passant)
         else:
             yield from self._generate_possible_positions_with_move_groups(board, current_position)
 
     def _generate_possible_positions_with_move_groups(self, board: Board,
-                                                      current_position: Position) -> Generator[Position, None, None]:
+                                                      current_position: Coordinate) -> Generator[Coordinate, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
                 pos = (
@@ -77,8 +77,8 @@ class Piece:
                     break
 
     def _generate_possible_positions_for_pawn(self, board: Board,
-                                              current_position: Position,
-                                              en_passant: Optional[Position] = None) -> Generator[Position, None, None]:
+                                              current_position: Coordinate,
+                                              en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:
         x, y = current_position
 
         forward = 1 * self.direction_multiplier
@@ -106,5 +106,5 @@ class Piece:
         if en_passant == possible_target:
             yield en_passant
 
-    def is_start_rank(self, pos: Position):
+    def is_start_rank(self, pos: Coordinate):
         return pos[1] == (1 if self.is_white else 6)

@@ -1,4 +1,5 @@
-from game.types import Coordinate, Move
+from game.move import Move
+from game.coordinate import Coordinate
 
 index_to_letter = ord("h")
 

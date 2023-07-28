@@ -3,7 +3,7 @@ from typing import Generator
 from game._board import position_to_coordinate
 from game._chessboard import _ChessBoard
 from game.pieces import Piece, PieceType, Color
-from game.types import Move
+from game.move import Move
 from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, \
     uci_into_coordinate_move, coordinate_move_into_uci
 

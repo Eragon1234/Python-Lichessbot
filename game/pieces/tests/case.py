@@ -1,10 +1,10 @@
 from game import Piece
 from game.pieces import Color, PieceType
-from game.types import Position
+from game.coordinate import Coordinate
 
 
 class Case:
-    def __init__(self, position: Position, expected: list[Position]):
+    def __init__(self, position: Coordinate, expected: list[Coordinate]):
         self.position = position
         self.expected = expected
         from game._chessboard import _ChessBoard
