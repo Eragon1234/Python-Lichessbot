@@ -109,8 +109,8 @@ class ChessBoard:
     def generate_possible_moves(self, for_white: bool = True) -> Generator[str, None, None]:
         """ Generating all possible moves in the current position
 
-        Args: for_white (bool): for which color to generate the moves for. Defaults to True.
-        return_pseudo_legal_moves (bool): if moves should be returned, including pseudo-legal moves. Defaults to False
+        Args:
+            for_white (bool): for which color to generate the moves for. Defaults to True.
 
         Returns:
             list: a list of possible moves in UCIMove format
