@@ -63,10 +63,8 @@ class Piece:
                                                       current_position: Coordinate) -> Generator[Coordinate, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
-                pos = Coordinate(
-                    current_position[0] + move[0],
-                    current_position[1] + move[1]
-                )
+                pos = current_position + move
+
                 if not self.is_legal_target(board, pos):
                     break
 
@@ -77,29 +75,29 @@ class Piece:
                     break
 
     def _generate_possible_positions_for_pawn(self, board: Board,
-                                              current_position: Coordinate,
+                                              pos: Coordinate,
                                               en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:
-        x, y = current_position
+        forward = Coordinate(0, 1 * self.direction_multiplier)
+        left = Coordinate(-1, 0)
+        right = Coordinate(1, 0)
 
-        forward = 1 * self.direction_multiplier
-
-        possible_target = Coordinate(x, y + forward)
+        possible_target = pos + forward
         if self.is_legal_target(board, possible_target, {Color.EMPTY}):
             yield possible_target
 
-            if self.is_start_rank(current_position):
-                possible_target = Coordinate(x, y + 2 * self.direction_multiplier)
+            if self.is_start_rank(pos):
+                possible_target = pos + forward + forward
                 if self.is_legal_target(board, possible_target, {Color.EMPTY}):
                     yield possible_target
 
-        possible_target = Coordinate(x + 1, y + forward)
+        possible_target = pos + left + forward
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 
         if en_passant == possible_target:
             yield en_passant
 
-        possible_target = Coordinate(x - 1, y + forward)
+        possible_target = pos + right + forward
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 

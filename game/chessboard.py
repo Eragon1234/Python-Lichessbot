@@ -162,7 +162,7 @@ class ChessBoard:
             if piece.is_white != for_white:
                 continue
 
-            coordinate = position_to_coordinate(position)
+            coordinate = Coordinate(*position_to_coordinate(position))
 
             new_positions = piece.generate_possible_positions(self.board, coordinate, en_passant)
 
