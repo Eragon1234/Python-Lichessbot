@@ -5,6 +5,7 @@ import sys
 import log
 from engine import Engine
 from game_controller import GameController, Game
+from playercolor import PlayerColor
 
 
 def main():
@@ -30,7 +31,7 @@ def start_game(game: Game):
     logging.info("start fen: %s", game.start_fen)
     engine = Engine(game.start_fen)
 
-    def on_my_move(color: str, moves: list[str]):
+    def on_my_move(color: PlayerColor, moves: list[str]):
         logging.info("my move")
         move, evaluation = engine.get_best_move(color, moves)
         logging.info("moved %s", move)

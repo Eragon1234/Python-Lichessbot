@@ -1,6 +1,7 @@
 import logging
 
 from game import ChessBoard
+from playercolor import PlayerColor
 
 
 class Engine:
@@ -11,19 +12,17 @@ class Engine:
 
         self.cached_moves: dict[tuple[ChessBoard, bool, int], tuple[str, float]] = {}
 
-    def get_best_move(self, color: str, moves: list[str]) -> tuple[str, float]:
+    def get_best_move(self, color: PlayerColor, moves: list[str]) -> tuple[str, float]:
         """ Returns the best possible move for the given color.
 
         Args:
-            color (str): the color for whom to generate the best moves
+            color (PlayerColor): the color for whom to generate the best moves
             moves (list[str]): moves since the start position
 
         Returns:
-            str: the best possible move
+            tuple[str, float]: the best move and the evaluation of the board after the move
         """
-        for_white = color == 'white'
-
-        return self.calculate_best_move(for_white, 3)
+        return self.calculate_best_move(color, 3)
 
     def opponents_move(self, move) -> None:
         logging.info("opponents turn")
@@ -31,13 +30,11 @@ class Engine:
         self.board.move(move)
         logging.info("opponent moved\n")
 
-    def calculate_best_move(self, for_white: bool, depth: int) -> tuple[str, float]:
-        if for_white:
-            move = self.max(depth, float("-inf"), float("inf"))
-        else:
-            move = self.min(depth, float("-inf"), float("inf"))
+    def calculate_best_move(self, color: PlayerColor, depth: int) -> tuple[str, float]:
+        if color == PlayerColor.White:
+            return self.max(depth, float("-inf"), float("inf"))
 
-        return move
+        return self.min(depth, float("-inf"), float("inf"))
 
     def max(self, depth: int, alpha: float, beta: float) -> tuple[str, float]:
         if (self.board, True, depth) in self.cached_moves:
