@@ -2,10 +2,9 @@ from typing import Generator
 
 from game._board import position_to_coordinate
 from game._chessboard import _ChessBoard
-from game.pieces import Piece, PieceType, Color
+from game.coordinate import Coordinate
 from game.move import Move
-from game.uci import uci_string_into_coordinate, coordinate_into_uci_string, \
-    uci_into_coordinate_move, coordinate_move_into_uci
+from game.pieces import Piece, PieceType, Color
 
 
 class ChessBoard:
@@ -31,7 +30,7 @@ class ChessBoard:
         """
         self.moves.append(move)
 
-        move = uci_into_coordinate_move(move)
+        move = Move.from_uci(move)
 
         start_field_coordinates, target_field_coordinates = move
 
@@ -45,7 +44,7 @@ class ChessBoard:
 
         en_passant_taken_piece = None
         if self.board.en_passant != "-" and moving_piece.type == PieceType.PAWN:
-            took_en_passant = target_field_coordinates == uci_string_into_coordinate(self.board.en_passant)
+            took_en_passant = target_field_coordinates == Coordinate.from_uci(self.board.en_passant)
             if took_en_passant:
                 if self.whites_move():
                     en_passant_taken_piece = self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]]
@@ -63,12 +62,12 @@ class ChessBoard:
         if moving_piece.type == PieceType.PAWN and abs(y1 - y2) == 2:
             new_x = move[0][0]
             new_y = int(move[0][1] - ((move[0][1] - move[1][1]) / 2))
-            self.board.en_passant = coordinate_into_uci_string((new_x, new_y))
+            self.board.en_passant = Coordinate(new_x, new_y).uci()
 
     def unmove(self) -> None:
         """undoes the last move"""
         move = self.moves.pop()
-        move = uci_into_coordinate_move(move)
+        move = Move.from_uci(move)
 
         start_field_coordinates, target_field_coordinates = move
 
@@ -117,7 +116,7 @@ class ChessBoard:
         """
         coordinate_moves = self.generate_possible_coordinate_moves(for_white)
 
-        moves = (coordinate_move_into_uci(move) for move in coordinate_moves)
+        moves = (move.uci() for move in coordinate_moves)
 
         for move in moves:
             with self.test_move(move):
@@ -157,7 +156,7 @@ class ChessBoard:
         """
         en_passant = None
         if self.board.en_passant != "-":
-            en_passant = uci_string_into_coordinate(self.board.en_passant)
+            en_passant = Coordinate.from_uci(self.board.en_passant)
 
         for position, piece in enumerate(self.board):
             if piece.is_white != for_white:
@@ -167,7 +166,7 @@ class ChessBoard:
 
             new_positions = piece.generate_possible_positions(self.board, coordinate, en_passant)
 
-            yield from ((coordinate, new_position) for new_position in new_positions)
+            yield from (Move(Coordinate(*coordinate), Coordinate(*new_position)) for new_position in new_positions)
 
     def material_difference(self) -> int:
         """ returns the difference in material
