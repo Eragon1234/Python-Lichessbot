@@ -63,7 +63,7 @@ class Piece:
                                                       current_position: Coordinate) -> Generator[Coordinate, None, None]:
         for move_groups in self.possible_move_groups:
             for move in move_groups:
-                pos = (
+                pos = Coordinate(
                     current_position[0] + move[0],
                     current_position[1] + move[1]
                 )
@@ -83,23 +83,23 @@ class Piece:
 
         forward = 1 * self.direction_multiplier
 
-        possible_target = x, y + forward
+        possible_target = Coordinate(x, y + forward)
         if self.is_legal_target(board, possible_target, {Color.EMPTY}):
             yield possible_target
 
             if self.is_start_rank(current_position):
-                possible_target = (x, y + 2 * self.direction_multiplier)
+                possible_target = Coordinate(x, y + 2 * self.direction_multiplier)
                 if self.is_legal_target(board, possible_target, {Color.EMPTY}):
                     yield possible_target
 
-        possible_target = x + 1, y + forward
+        possible_target = Coordinate(x + 1, y + forward)
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 
         if en_passant == possible_target:
             yield en_passant
 
-        possible_target = x - 1, y + forward
+        possible_target = Coordinate(x - 1, y + forward)
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 

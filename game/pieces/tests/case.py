@@ -4,9 +4,9 @@ from game.coordinate import Coordinate
 
 
 class Case:
-    def __init__(self, position: Coordinate, expected: list[Coordinate]):
-        self.position = position
-        self.expected = expected
+    def __init__(self, position: tuple[int, int], expected: list[tuple[int, int]]):
+        self.position = Coordinate(*position)
+        self.expected = (Coordinate(*expected) for expected in expected)
         from game._chessboard import _ChessBoard
         self.board = _ChessBoard.from_fen("8/8/8/8/8/8/8/8 w - - 0 1")
         self.en_passant = None
