@@ -12,7 +12,6 @@ class GameController:
     def __init__(self, token: str):
         self.client = LichessBotApiClient(token)
         self.emitter = EventEmitter()
-        self.color = None
 
     def watch(self) -> typing.NoReturn:
         """subscribes to the lichess api and emits the events"""
@@ -20,18 +19,28 @@ class GameController:
             if event['type'] == 'challenge':
                 challenge_id = event['challenge']['id']
 
-                accept_challenge = partial(self.accept_challenge, challenge_id)
-                challenge = Challenge(challenge_id, accept_challenge)
-                self.emitter.emit('challenge', challenge)
+                self.emit_challenge(challenge_id)
             elif event['type'] == 'gameStart':
                 game_id = event['game']['gameId']
-                self.color = PlayerColor(event['game']['color'])
-                opponent = event['game']['opponent']
+                color = event['game']['color']
+                opponent = event['game']['opponent']['id']
                 initial_fen = event['game']['fen']
 
-                game = Game(self.client, self.color, game_id, initial_fen, opponent)
+                self.emit_game_start(game_id, color, opponent, initial_fen)
 
-                self.emitter.emit('game_start', game)
+    def emit_challenge(self, challenge_id: str):
+        accept_challenge = partial(self.accept_challenge, challenge_id)
+        challenge = Challenge(challenge_id, accept_challenge)
+
+        self.emitter.emit('challenge', challenge)
+
+    def emit_game_start(self, game_id: str, color: str,
+                        opponent: str, initial_fen: str):
+        color = PlayerColor(color)
+
+        game = Game(self.client, color, game_id, initial_fen, opponent)
+
+        self.emitter.emit('game_start', game)
 
     def on_challenge(self, fn: typing.Callable[["Challenge"], None]):
         """ adds a function to be called on an incoming challenge"""
@@ -61,8 +70,8 @@ class Challenge:
 class Game:
     """Represents a game"""
 
-    def __init__(self, client: LichessBotApiClient, color: PlayerColor, game_id: str,
-                 start_fen: str, opponent: str):
+    def __init__(self, client: LichessBotApiClient, color: PlayerColor,
+                 game_id: str, start_fen: str, opponent: str):
         self.client = client
         self.color = color
         self.game_id = game_id
@@ -79,7 +88,8 @@ class Game:
 
     def watch(self):
         for event in self.client.stream_game(self.game_id):
-            moves = event['state']['moves'] if 'state' in event.keys() else event['moves']
+            state = event['state'] if 'state' in event else event
+            moves = state['moves']
 
             moves = moves.split(" ")
 

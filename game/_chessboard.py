@@ -29,9 +29,9 @@ class _ChessBoard:
     @classmethod
     def from_fen(cls, fen: str) -> '_ChessBoard':
         board = []
-        fen = fen.split()
+        fen_parts = fen.split()
 
-        position = fen[0].split("/")
+        position = fen_parts[0].split("/")
         for row in position:
             for char in row:
                 if char.isdigit():
@@ -43,11 +43,11 @@ class _ChessBoard:
 
         board.reverse()
 
-        white_to_move = fen[1] == "w"
-        castling_rights = fen[2]
-        en_passant = fen[3]
-        halfmove_clock = int(fen[4])
-        fullmove_number = int(fen[5])
+        white_to_move = fen_parts[1] == "w"
+        castling_rights = fen_parts[2]
+        en_passant = fen_parts[3]
+        halfmove_clock = int(fen_parts[4])
+        fullmove_number = int(fen_parts[5])
 
         return cls(board, white_to_move, castling_rights, en_passant,
                    halfmove_clock, fullmove_number)
