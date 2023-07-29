@@ -8,7 +8,7 @@ from game.pieces import Piece, PieceType, Color
 
 
 class ChessBoard:
-    """a class to handle the current board state, making moves, generating possible moves, etc."""
+    """Represents a chess board and provides ways to interact with it."""
 
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[str] = []
@@ -23,7 +23,8 @@ class ChessBoard:
         return hash(self.board)
 
     def move(self, move: str) -> None:
-        """ makes a move on the board
+        """
+        makes a move on the board
 
         Args:
             move (UCIMove): the move to move
@@ -106,10 +107,11 @@ class ChessBoard:
         return self.TestMove(self, move)
 
     def generate_possible_moves(self, for_white: bool = True) -> Generator[str, None, None]:
-        """ Generating all possible moves in the current position
+        """
+        Generating all possible moves in the current position
 
         Args:
-            for_white (bool): for which color to generate the moves for. Defaults to True.
+            for_white (bool): for which color to generate the moves for.
 
         Returns:
             list: a list of possible moves in UCIMove format
@@ -126,7 +128,8 @@ class ChessBoard:
                 yield move
 
     def king_in_check(self, for_white: bool) -> bool:
-        """ returns if the king of the passed color is in check
+        """
+        returns if the king of the passed color is in check
 
         Args:
             for_white: the color of the king to check
@@ -146,7 +149,8 @@ class ChessBoard:
         return False
 
     def generate_possible_coordinate_moves(self, for_white: bool | str) -> Generator[Move, None, None]:
-        """ generates the possible coordinate moves for the passed color
+        """
+        generates the possible coordinate moves for the passed color
 
         Args:
             for_white: the color of the pieces to generate the possible moves from
@@ -169,7 +173,8 @@ class ChessBoard:
             yield from (Move(Coordinate(*coordinate), Coordinate(*new_position)) for new_position in new_positions)
 
     def material_difference(self) -> int:
-        """ returns the difference in material
+        """
+        returns the difference in material
 
         Returns:
             int: the difference in material

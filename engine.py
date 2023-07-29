@@ -18,14 +18,15 @@ class Engine:
         self.cached_moves: dict[CACHE_STATE, MOVE_EVALUATION] = {}
 
     def get_best_move(self, color: PlayerColor, moves: list[str]) -> MOVE_EVALUATION:
-        """ Returns the best possible move for the given color.
+        """
+        Returns the best possible move for the given color.
 
         Args:
             color (PlayerColor): the color for whom to generate the best moves
             moves (list[str]): moves since the start position
 
         Returns:
-            tuple[str, float]: the best move and the evaluation of the board after the move
+            tuple[str, int]: the move and the evaluation
         """
         return self.calculate_best_move(color, 3)
 

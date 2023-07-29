@@ -43,15 +43,16 @@ class GameController:
         self.emitter.emit('game_start', game)
 
     def on_challenge(self, fn: typing.Callable[["Challenge"], None]):
-        """ adds a function to be called on an incoming challenge"""
+        """adds a function to be called on an incoming challenge"""
         self.emitter.on('challenge', fn)
 
     def on_game_start(self, fn: typing.Callable[["Game"], None]):
-        """ adds a function to be called on an incoming game start"""
+        """adds a function to be called on an incoming game start"""
         self.emitter.on('game_start', fn)
 
     def accept_challenge(self, challenge_id: str, *args) -> None:
-        """Accepts the challenge with the passed challenge_id
+        """
+        Accepts the challenge with the passed challenge_id
 
         Args:
             challenge_id (str): the id of the challenge to be accepted
