@@ -1,8 +1,5 @@
-import logging
-
 from game import ChessBoard
 from playercolor import PlayerColor
-
 
 CACHE_STATE = tuple[ChessBoard, bool, int]
 

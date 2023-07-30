@@ -1,6 +1,6 @@
 from game import Piece
-from game.piece import Color, PieceType
 from game.coordinate import Coordinate
+from game.piece import Color, PieceType
 
 
 class Case:
