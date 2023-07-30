@@ -17,10 +17,10 @@ class Coordinate(NamedTuple):
         return self * other
 
     @classmethod
-    def from_uci(cls, uci: str):
+    def from_uci(cls, uci: str) -> "Coordinate":
         x = index_to_letter - ord(uci[0])
         y = int(uci[1]) - 1
-        return x, y
+        return Coordinate(x, y)
 
     def uci(self):
         x = chr(index_to_letter - self.x)
