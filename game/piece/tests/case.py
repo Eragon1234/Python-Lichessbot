@@ -1,5 +1,5 @@
 from game import Piece
-from game.pieces import Color, PieceType
+from game.piece import Color, PieceType
 from game.coordinate import Coordinate
 
 

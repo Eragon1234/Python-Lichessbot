@@ -1,4 +1,4 @@
-from game.pieces.piece_type import PieceType
+from game.piece.piece_type import PieceType
 
 VALUES = {
     PieceType.PAWN: 1,

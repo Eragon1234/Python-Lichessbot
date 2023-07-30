@@ -1,5 +1,5 @@
 from game.coordinate import Coordinate
-from game.pieces.piece_type import PieceType
+from game.piece.piece_type import PieceType
 
 FORWARD = Coordinate(0, 1)
 BACKWARD = Coordinate(0, -1)

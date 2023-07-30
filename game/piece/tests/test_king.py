@@ -1,9 +1,9 @@
 from unittest import TestCase
 
-from game.pieces import Piece
-from game.pieces.color import Color
-from game.pieces.piece_type import PieceType
-from game.pieces.tests.case import Case
+from game.piece import Piece
+from game.piece.color import Color
+from game.piece.piece_type import PieceType
+from game.piece.tests.case import Case
 
 
 class TestKing(TestCase):

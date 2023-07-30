@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from game.pieces.color import Color
+from game.piece.color import Color
 
 
 class Board(Protocol):

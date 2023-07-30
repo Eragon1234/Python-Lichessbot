@@ -1,5 +1,5 @@
 from game._board import _Board
-from game.pieces import Piece, Color, PieceType
+from game.piece import Piece, Color, PieceType
 
 
 class _ChessBoard:

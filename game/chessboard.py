@@ -4,7 +4,7 @@ from game._board import position_to_coordinate
 from game._chessboard import _ChessBoard
 from game.coordinate import Coordinate
 from game.move import Move
-from game.pieces import Piece, PieceType, Color
+from game.piece import Piece, PieceType, Color
 
 
 class ChessBoard:
