@@ -16,7 +16,10 @@ class Piece:
 
         self.color = color
 
-        self.is_white = self.color.value
+        if self.color == Color.EMPTY:
+            self.is_white = "EmptyField"
+        else:
+            self.is_white = self.color == Color.WHITE
 
         self.short = self.type.value
         if self.is_white:

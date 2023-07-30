@@ -9,4 +9,4 @@ class Color(Enum):
     def enemy_color(self) -> "Color":
         if self == Color.EMPTY:
             return Color.EMPTY
-        return Color(not self.value)
+        return Color.WHITE if self == Color.BLACK else Color.BLACK
