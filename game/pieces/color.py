@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import Flag, auto
 
 
-class Color(Enum):
-    WHITE = True
-    BLACK = False
-    EMPTY = "EmptyField"
+class Color(Flag):
+    WHITE = auto()
+    BLACK = auto()
+    EMPTY = auto()
 
     def enemy_color(self) -> "Color":
         if self == Color.EMPTY:

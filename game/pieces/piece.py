@@ -38,10 +38,10 @@ class Piece:
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Piece':
-        white = not fen.islower()
+        white = Color.WHITE if not fen.islower() else Color.BLACK
         fen = fen.lower()
 
-        return cls(PieceType(fen), Color(white))
+        return cls(PieceType(fen), white)
 
     def is_legal_target(self, board: Board, position: Coordinate,
                         legal_target_colors: set[Color] = None) -> bool:
