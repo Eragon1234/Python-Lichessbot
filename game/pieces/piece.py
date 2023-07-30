@@ -29,10 +29,7 @@ class Piece:
 
         self.value = VALUES[self.type] * self.direction_multiplier
 
-        self.legal_target_colors = {
-            self.color.enemy_color(),
-            Color.EMPTY
-        }
+        self.legal_target_colors = self.color.enemy_color() | Color.EMPTY
 
         self.possible_move_groups = POSSIBLE_MOVE_GROUPS[self.type]
 
@@ -44,7 +41,7 @@ class Piece:
         return cls(PieceType(fen), white)
 
     def is_legal_target(self, board: Board, position: Coordinate,
-                        legal_target_colors: set[Color] = None) -> bool:
+                        legal_target_colors: Optional[Color] = None) -> bool:
         if legal_target_colors is None:
             legal_target_colors = self.legal_target_colors
 
@@ -84,23 +81,23 @@ class Piece:
                                               en_passant: Optional[Coordinate] = None) -> PositionGenerator:
         forward = FORWARD * self.direction_multiplier
         possible_target = pos + forward
-        if self.is_legal_target(board, possible_target, {Color.EMPTY}):
+        if self.is_legal_target(board, possible_target, Color.EMPTY):
             yield possible_target
 
             if self.is_start_rank(pos):
                 possible_target = pos + 2 * forward
-                if self.is_legal_target(board, possible_target, {Color.EMPTY}):
+                if self.is_legal_target(board, possible_target, Color.EMPTY):
                     yield possible_target
 
         possible_target = pos + LEFT + forward
-        if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
+        if self.is_legal_target(board, possible_target, self.color.enemy_color()):
             yield possible_target
 
         if en_passant == possible_target:
             yield en_passant
 
         possible_target = pos + RIGHT + forward
-        if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
+        if self.is_legal_target(board, possible_target, self.color.enemy_color()):
             yield possible_target
 
         if en_passant == possible_target:
