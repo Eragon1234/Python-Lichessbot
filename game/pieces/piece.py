@@ -2,10 +2,12 @@ from typing import Generator, Optional
 
 from game.pieces.board import Board
 from game.pieces.color import Color
-from game.pieces.move_groups import POSSIBLE_MOVE_GROUPS
+from game.pieces.move_groups import POSSIBLE_MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.pieces.piece_type import PieceType
 from game.pieces.values import VALUES
 from game.coordinate import Coordinate
+
+PositionGenerator = Generator[Coordinate, None, None]
 
 
 class Piece:
@@ -14,7 +16,7 @@ class Piece:
 
         self.color = color
 
-        self.is_white = "EmptyField" if self.type == PieceType.EMPTY else self.color == Color.WHITE
+        self.is_white = self.color.value
 
         self.short = self.type.value
         if self.is_white:
@@ -53,16 +55,16 @@ class Piece:
 
     def generate_possible_positions(self, board: Board,
                                     current_position: Coordinate,
-                                    en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:
+                                    en_passant: Optional[Coordinate] = None) -> PositionGenerator:
         if self.type == PieceType.PAWN:
             yield from self._generate_possible_positions_for_pawn(board, current_position, en_passant)
         else:
             yield from self._generate_possible_positions_with_move_groups(board, current_position)
 
     def _generate_possible_positions_with_move_groups(self, board: Board,
-                                                      current_position: Coordinate) -> Generator[Coordinate, None, None]:
-        for move_groups in self.possible_move_groups:
-            for move in move_groups:
+                                                      current_position: Coordinate) -> PositionGenerator:
+        for move_group in self.possible_move_groups:
+            for move in move_group:
                 pos = current_position + move
 
                 if not self.is_legal_target(board, pos):
@@ -76,28 +78,25 @@ class Piece:
 
     def _generate_possible_positions_for_pawn(self, board: Board,
                                               pos: Coordinate,
-                                              en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:
-        forward = Coordinate(0, 1 * self.direction_multiplier)
-        left = Coordinate(-1, 0)
-        right = Coordinate(1, 0)
-
+                                              en_passant: Optional[Coordinate] = None) -> PositionGenerator:
+        forward = FORWARD * self.direction_multiplier
         possible_target = pos + forward
         if self.is_legal_target(board, possible_target, {Color.EMPTY}):
             yield possible_target
 
             if self.is_start_rank(pos):
-                possible_target = pos + forward + forward
+                possible_target = pos + 2 * forward
                 if self.is_legal_target(board, possible_target, {Color.EMPTY}):
                     yield possible_target
 
-        possible_target = pos + left + forward
+        possible_target = pos + LEFT + forward
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 
         if en_passant == possible_target:
             yield en_passant
 
-        possible_target = pos + right + forward
+        possible_target = pos + RIGHT + forward
         if self.is_legal_target(board, possible_target, {self.color.enemy_color()}):
             yield possible_target
 

@@ -10,6 +10,12 @@ class Coordinate(NamedTuple):
     def __add__(self, other: "Coordinate") -> "Coordinate":
         return Coordinate(self.x + other.x, self.y + other.y)
 
+    def __mul__(self, other: int) -> "Coordinate":
+        return Coordinate(self.x * other, self.y * other)
+
+    def __rmul__(self, other: int) -> "Coordinate":
+        return self * other
+
     @classmethod
     def from_uci(cls, uci: str):
         x = index_to_letter - ord(uci[0])
