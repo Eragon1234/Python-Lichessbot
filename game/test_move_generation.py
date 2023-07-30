@@ -101,7 +101,7 @@ class TestMoveGeneration(unittest.TestCase):
         for name, case in test_cases.items():
             with self.subTest(name):
                 board = ChessBoard(case.fen)
-                moves = board.generate_possible_moves(case.for_white)
+                moves = board.possible_moves(case.for_white)
                 self.assertCountEqual(case.expected, moves)
 
 

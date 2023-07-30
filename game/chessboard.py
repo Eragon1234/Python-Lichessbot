@@ -5,6 +5,10 @@ from game._chessboard import _ChessBoard
 from game.coordinate import Coordinate
 from game.move import Move
 from game.piece import Piece, PieceType, Color
+from game.piece.move_groups import BACKWARD
+
+UCI_MOVE_GENERATOR = Generator[str, None, None]
+MOVE_GENERATOR = Generator[Move, None, None]
 
 
 class ChessBoard:
@@ -33,28 +37,27 @@ class ChessBoard:
 
         move = Move.from_uci(move)
 
-        start_field_coordinates, target_field_coordinates = move
+        start_coordinates, target_coordinates = move
 
-        moving_piece = self.board[start_field_coordinates]
-        captured_piece = self.board[target_field_coordinates]
+        moving_piece = self.board[start_coordinates]
+        captured_piece = self.board[target_coordinates]
 
         self.captured_pieces.append(captured_piece)
 
-        self.board[start_field_coordinates] = Piece(PieceType.EMPTY, Color.EMPTY)
-        self.board[target_field_coordinates] = moving_piece
+        self.board[start_coordinates] = Piece(PieceType.EMPTY, Color.EMPTY)
+        self.board[target_coordinates] = moving_piece
 
         en_passant_taken_piece = None
         if self.board.en_passant != "-" and moving_piece.type == PieceType.PAWN:
-            took_en_passant = target_field_coordinates == Coordinate.from_uci(self.board.en_passant)
+            en_passant_coordinate = Coordinate.from_uci(self.board.en_passant)
+            took_en_passant = target_coordinates == en_passant_coordinate
             if took_en_passant:
-                if self.whites_move():
-                    en_passant_taken_piece = self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]]
-                    self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY,
-                                                                                                     Color.EMPTY)
-                else:
-                    en_passant_taken_piece = self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]]
-                    self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = Piece(PieceType.EMPTY,
-                                                                                                     Color.EMPTY)
+                direction = 1 if self.whites_move() else -1
+                took_coordinate = en_passant_coordinate + BACKWARD * direction
+                en_passant_taken_piece = self.board[took_coordinate]
+
+                empty_piece = Piece(PieceType.EMPTY, Color.EMPTY)
+                self.board[took_coordinate] = empty_piece
 
         self.en_passant_takes.append(en_passant_taken_piece)
         self.board.en_passant = "-"
@@ -70,20 +73,19 @@ class ChessBoard:
         move = self.moves.pop()
         move = Move.from_uci(move)
 
-        start_field_coordinates, target_field_coordinates = move
+        start_coordinates, target_coordinates = move
 
-        moved_piece = self.board[target_field_coordinates]
+        moved_piece = self.board[target_coordinates]
         captured_piece = self.captured_pieces.pop()
 
-        self.board[start_field_coordinates] = moved_piece
-        self.board[target_field_coordinates] = captured_piece
+        self.board[start_coordinates] = moved_piece
+        self.board[target_coordinates] = captured_piece
 
         en_passant_taken_piece = self.en_passant_takes.pop()
         if en_passant_taken_piece is not None:
-            if self.whites_move():
-                self.board[target_field_coordinates[0] + 1, target_field_coordinates[1]] = en_passant_taken_piece
-            else:
-                self.board[target_field_coordinates[0] - 1, target_field_coordinates[1]] = en_passant_taken_piece
+            direction = 1 if self.whites_move() else -1
+            took_coordinate = target_coordinates + BACKWARD * direction
+            self.board[took_coordinate] = en_passant_taken_piece
 
     def whites_move(self) -> bool:
         """returns if it's white's move"""
@@ -106,7 +108,7 @@ class ChessBoard:
         """returns an object that can be used to test a move with the context manager"""
         return self.TestMove(self, move)
 
-    def generate_possible_moves(self, for_white: bool = True) -> Generator[str, None, None]:
+    def possible_moves(self, for_white: bool = True) -> UCI_MOVE_GENERATOR:
         """
         Generating all possible moves in the current position
 
@@ -116,7 +118,7 @@ class ChessBoard:
         Returns:
             list: a list of possible moves in UCIMove format
         """
-        coordinate_moves = self.generate_possible_coordinate_moves(for_white)
+        coordinate_moves = self.coordinate_moves(for_white)
 
         moves = (move.uci() for move in coordinate_moves)
 
@@ -137,7 +139,7 @@ class ChessBoard:
         Returns:
             bool: if the king is in check
         """
-        coordinate_moves = self.generate_possible_coordinate_moves(not for_white)
+        coordinate_moves = self.coordinate_moves(not for_white)
 
         for coordinate_move in coordinate_moves:
             target_coordinate = coordinate_move[1]
@@ -148,7 +150,7 @@ class ChessBoard:
 
         return False
 
-    def generate_possible_coordinate_moves(self, for_white: bool | str) -> Generator[Move, None, None]:
+    def coordinate_moves(self, for_white: bool | str) -> MOVE_GENERATOR:
         """
         generates the possible coordinate moves for the passed color
 
