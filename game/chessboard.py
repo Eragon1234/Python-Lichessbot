@@ -170,7 +170,7 @@ class ChessBoard:
 
             new_positions = piece.generate_possible_positions(self.board, coordinate, en_passant)
 
-            yield from (Move(Coordinate(*coordinate), Coordinate(*new_position)) for new_position in new_positions)
+            yield from (Move(coordinate, new_position) for new_position in new_positions)
 
     def material_difference(self) -> int:
         """
