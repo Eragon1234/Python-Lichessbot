@@ -30,12 +30,6 @@ class Engine:
         """
         return self.calculate_best_move(color, 3)
 
-    def opponents_move(self, move) -> None:
-        logging.info("opponents turn")
-        logging.info("opponent moved: %s", move)
-        self.board.move(move)
-        logging.info("opponent moved\n")
-
     def calculate_best_move(self, color: PlayerColor, depth: int) -> MOVE_EVALUATION:
         if color == PlayerColor.White:
             return self.max(depth, float("-inf"), float("inf"))

@@ -39,8 +39,12 @@ def start_game(game: Game):
         engine.board.move(move)
         game.move(move)
 
+    def on_opponents_move(move: str):
+        logging.info("opponent moved %s", move)
+        engine.board.move(move)
+
     game.on_my_move(on_my_move)
-    game.on_opponents_move(engine.opponents_move)
+    game.on_opponents_move(on_opponents_move)
 
     game.watch()
 
