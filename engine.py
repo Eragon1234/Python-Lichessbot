@@ -40,7 +40,7 @@ class Engine:
         if depth == 0:
             return "", self.board.material_difference()
 
-        moves = self.board.possible_moves(True)
+        moves = self.board.legal_moves(True)
 
         max_value = alpha
         max_move = None
@@ -68,7 +68,7 @@ class Engine:
         if depth == 0:
             return "", self.board.material_difference()
 
-        moves = self.board.possible_moves(False)
+        moves = self.board.legal_moves(False)
 
         min_value = beta
         min_move = None

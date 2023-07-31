@@ -1,6 +1,7 @@
 import unittest
 
 from game import ChessBoard
+from game.move import Move
 
 
 class TestMoveGeneration(unittest.TestCase):
@@ -101,7 +102,7 @@ class TestMoveGeneration(unittest.TestCase):
         for name, case in test_cases.items():
             with self.subTest(name):
                 board = ChessBoard(case.fen)
-                moves = board.possible_moves(case.for_white)
+                moves = board.legal_moves(case.for_white)
                 self.assertCountEqual(case.expected, moves)
 
 
@@ -109,4 +110,4 @@ class Case:
     def __init__(self, fen: str, for_white: bool, expected: list[str]):
         self.fen = fen
         self.for_white = for_white
-        self.expected = expected
+        self.expected = [Move.from_uci(move) for move in expected]

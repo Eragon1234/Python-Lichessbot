@@ -15,7 +15,7 @@ class ChessBoard:
     """Represents a chess board and provides ways to interact with it."""
 
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
-        self.moves: list[str] = []
+        self.moves: list[Move] = []
 
         self.captured_pieces: list[Piece] = []
 
@@ -26,16 +26,17 @@ class ChessBoard:
     def __hash__(self):
         return hash(self.board)
 
-    def move(self, move: str) -> None:
+    def move(self, move: Move | str) -> None:
         """
         makes a move on the board
 
         Args:
-            move (UCIMove): the move to move
+            move (Move): the move to move
         """
-        self.moves.append(move)
+        if isinstance(move, str):
+            move = Move.from_uci(move)
 
-        move = Move.from_uci(move)
+        self.moves.append(move)
 
         start_coordinates, target_coordinates = move
 
@@ -71,7 +72,6 @@ class ChessBoard:
     def unmove(self) -> None:
         """undoes the last move"""
         move = self.moves.pop()
-        move = Move.from_uci(move)
 
         start_coordinates, target_coordinates = move
 
@@ -94,7 +94,7 @@ class ChessBoard:
     class TestMove:
         """a class to test a move with the context manager"""
 
-        def __init__(self, board: "ChessBoard", move: str):
+        def __init__(self, board: "ChessBoard", move: Move):
             self.board = board
             self.move = move
 
@@ -104,11 +104,11 @@ class ChessBoard:
         def __exit__(self, exc_type, exc_val, exc_tb):
             self.board.unmove()
 
-    def test_move(self, move: str) -> TestMove:
+    def test_move(self, move: Move) -> TestMove:
         """returns an object that can be used to test a move with the context manager"""
         return self.TestMove(self, move)
 
-    def possible_moves(self, for_white: bool = True) -> UCI_MOVE_GENERATOR:
+    def legal_moves(self, for_white: bool = True) -> MOVE_GENERATOR:
         """
         Generating all possible moves in the current position
 
@@ -118,11 +118,9 @@ class ChessBoard:
         Returns:
             list: a list of possible moves in UCIMove format
         """
-        coordinate_moves = self.coordinate_moves(for_white)
+        coordinate_moves = self.pseudo_legal_moves(for_white)
 
-        moves = (move.uci() for move in coordinate_moves)
-
-        for move in moves:
+        for move in coordinate_moves:
             with self.test_move(move):
                 if self.king_in_check(for_white):
                     continue
@@ -139,7 +137,7 @@ class ChessBoard:
         Returns:
             bool: if the king is in check
         """
-        coordinate_moves = self.coordinate_moves(not for_white)
+        coordinate_moves = self.pseudo_legal_moves(not for_white)
 
         for coordinate_move in coordinate_moves:
             target_coordinate = coordinate_move[1]
@@ -150,9 +148,9 @@ class ChessBoard:
 
         return False
 
-    def coordinate_moves(self, for_white: bool | str) -> MOVE_GENERATOR:
+    def pseudo_legal_moves(self, for_white: bool | str) -> MOVE_GENERATOR:
         """
-        generates the possible coordinate moves for the passed color
+        generates the pseudo legal moves for the passed color
 
         Args:
             for_white: the color of the pieces to generate the possible moves from
