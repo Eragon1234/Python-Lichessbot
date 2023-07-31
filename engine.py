@@ -1,9 +1,10 @@
 from game import ChessBoard
+from game.move import Move
 from playercolor import PlayerColor
 
 CACHE_STATE = tuple[ChessBoard, bool, int]
 
-MOVE_EVALUATION = tuple[str, float]
+MOVE_EVALUATION = tuple[Move, float]
 
 
 class Engine:
