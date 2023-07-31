@@ -42,6 +42,18 @@ class Piece:
 
     def is_legal_target(self, board: Board, position: Coordinate,
                         legal_target_colors: Optional[Color] = None) -> bool:
+        """
+        Checks if a given position on the board is a legal target for a piece.
+
+        Args:
+            board (Board): The game board.
+            position (Coordinate): The position to check.
+            legal_target_colors (Optional[Color]): The legal target colors.
+
+        Returns:
+            bool: whether the position is a legal target.
+
+        """
         if legal_target_colors is None:
             legal_target_colors = self.legal_target_colors
 
@@ -56,6 +68,17 @@ class Piece:
     def generate_possible_positions(self, board: Board,
                                     current_position: Coordinate,
                                     en_passant: Optional[Coordinate] = None) -> PositionGenerator:
+        """
+        Generates possible positions for a piece on the given chess board.
+
+        Args:
+            board: The chess board.
+            current_position: The current position of the piece.
+            en_passant: Optional en passant position.
+
+        Returns:
+            A generator object that yields possible positions for the piece.
+        """
         if self.type == PieceType.PAWN:
             yield from self._generate_possible_positions_for_pawn(board, current_position, en_passant)
         else:
