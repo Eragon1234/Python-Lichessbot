@@ -6,6 +6,8 @@ CACHE_STATE = tuple[ChessBoard, bool, int]
 
 MOVE_EVALUATION = tuple[Move, float]
 
+NULL_MOVE = Move.from_uci("d1e8")
+
 
 class Engine:
     """Class to generate the best possible moves, etc."""
@@ -39,7 +41,7 @@ class Engine:
             return self.cached_moves[self.board, True, depth]
 
         if depth == 0:
-            return "", self.board.material_difference()
+            return NULL_MOVE, self.board.material_difference()
 
         moves = self.board.legal_moves(True)
 
@@ -56,7 +58,7 @@ class Engine:
                         break
 
         if max_move is None:
-            return "", -9999
+            return NULL_MOVE, -9999
 
         self.cached_moves[self.board, True, depth] = max_move, max_value
 
@@ -67,7 +69,7 @@ class Engine:
             return self.cached_moves[self.board, False, depth]
 
         if depth == 0:
-            return "", self.board.material_difference()
+            return NULL_MOVE, self.board.material_difference()
 
         moves = self.board.legal_moves(False)
 
@@ -84,7 +86,7 @@ class Engine:
                         break
 
         if min_move is None:
-            return "", 9999
+            return NULL_MOVE, 9999
 
         self.cached_moves[self.board, False, depth] = min_move, min_value
 
