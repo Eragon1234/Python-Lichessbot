@@ -11,6 +11,12 @@ PositionGenerator = Generator[Coordinate, None, None]
 
 
 class Piece:
+    """
+    A piece on a chess board.
+    The type of the piece is specified by the type attribute.
+    The piece can also represent an empty field.
+    """
+
     def __init__(self, piece_type: PieceType, color: Color):
         self.type = piece_type
 
