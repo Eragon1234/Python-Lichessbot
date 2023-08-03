@@ -12,7 +12,7 @@ MOVE_GENERATOR = Generator[Move, None, None]
 
 
 class ChessBoard:
-    """Represents a chess board and provides ways to interact with it."""
+    """Provides ways to interact with a chess board."""
 
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[Move] = []

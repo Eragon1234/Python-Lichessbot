@@ -13,7 +13,7 @@ PositionGenerator = Generator[Coordinate, None, None]
 class Piece:
     """
     A piece on a chess board.
-    The type of the piece is specified by the type attribute.
+    The type attribute specifies the type of the piece.
     The piece can also represent an empty field.
     """
 
