@@ -18,6 +18,20 @@ class Coordinate(NamedTuple):
 
     @classmethod
     def from_uci(cls, uci: str) -> "Coordinate":
+        """
+        Parses a UCI string into a Coordinate.
+
+        Args:
+            uci: A string representing the UCI notation for a chess coordinate.
+
+        Returns:
+            Coordinate: A Coordinate representing the chess coordinate.
+
+        Raises:
+            ValueError: If the length of the UCI string is not 2.
+        """
+        if len(uci) != 2:
+            raise ValueError(f"UCI must be 2 characters long, not {len(uci)}")
         x = index_to_letter - ord(uci[0])
         y = int(uci[1]) - 1
         return Coordinate(x, y)
