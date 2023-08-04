@@ -5,8 +5,9 @@ FORWARD = Coordinate(0, 1)
 BACKWARD = Coordinate(0, -1)
 LEFT = Coordinate(-1, 0)
 RIGHT = Coordinate(1, 0)
+NO_MOVE = Coordinate(0, 0)
 
-POSSIBLE_MOVE_GROUPS = {
+MOVE_GROUPS = {
     PieceType.PAWN: [],
     PieceType.BISHOP: [
         [(RIGHT + FORWARD) * i for i in range(1, 8)],
@@ -24,9 +25,13 @@ POSSIBLE_MOVE_GROUPS = {
         [LEFT * i for i in range(1, 8)],
     ],
     PieceType.KING: [
-        [Coordinate(i, j)] for i in (-1, 0, 1) for j in (-1, 0, 1) if i != 0 or j != 0
+        [i + j]
+        for i in (LEFT, NO_MOVE, RIGHT)
+        for j in (FORWARD, NO_MOVE, BACKWARD)
+        if i != NO_MOVE or j != NO_MOVE
     ],
     PieceType.EMPTY: []
 }
 
-POSSIBLE_MOVE_GROUPS[PieceType.QUEEN] = POSSIBLE_MOVE_GROUPS[PieceType.BISHOP] + POSSIBLE_MOVE_GROUPS[PieceType.ROOK]
+MOVE_GROUPS[PieceType.QUEEN] = (MOVE_GROUPS[PieceType.BISHOP]
+                                + MOVE_GROUPS[PieceType.ROOK])

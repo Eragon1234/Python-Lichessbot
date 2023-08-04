@@ -3,7 +3,7 @@ from typing import Generator, Optional
 from game.coordinate import Coordinate
 from game.piece.board import Board
 from game.piece.color import Color
-from game.piece.move_groups import POSSIBLE_MOVE_GROUPS, FORWARD, LEFT, RIGHT
+from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
 from game.piece.values import VALUES
 
@@ -37,7 +37,7 @@ class Piece:
 
         self.legal_target_colors = self.color.enemy_color() | Color.EMPTY
 
-        self.possible_move_groups = POSSIBLE_MOVE_GROUPS[self.type]
+        self.possible_move_groups = MOVE_GROUPS[self.type]
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Piece':
