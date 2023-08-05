@@ -49,7 +49,9 @@ class ChessBoard:
         self.board[target_coordinates] = moving_piece
 
         en_passant_taken_piece = None
-        if self.board.en_passant != "-" and moving_piece.type == PieceType.PAWN:
+
+        could_move_en_passant = self.board.en_passant != "-"
+        if could_move_en_passant and moving_piece.type == PieceType.PAWN:
             en_passant_coordinate = Coordinate.from_uci(self.board.en_passant)
             took_en_passant = target_coordinates == en_passant_coordinate
             if took_en_passant:
@@ -105,7 +107,7 @@ class ChessBoard:
             self.board.unmove()
 
     def test_move(self, move: Move) -> TestMove:
-        """returns an object that can be used to test a move with the context manager"""
+        """Returns a context manager to test a move."""
         return self.TestMove(self, move)
 
     def legal_moves(self, for_white: bool = True) -> MOVE_GENERATOR:
@@ -143,7 +145,10 @@ class ChessBoard:
             target_coordinate = coordinate_move[1]
             attacked_field = self.board[target_coordinate]
 
-            if attacked_field.type == PieceType.KING and attacked_field.is_white == for_white:
+            if attacked_field.is_white != for_white:
+                continue
+
+            if attacked_field.type == PieceType.KING:
                 return True
 
         return False
@@ -153,7 +158,7 @@ class ChessBoard:
         generates the pseudo legal moves for the passed color
 
         Args:
-            for_white: the color of the pieces to generate the possible moves from
+            for_white: the color to generate the moves for
 
         Returns:
             returns all possible coordinate moves for the passed color
@@ -170,7 +175,8 @@ class ChessBoard:
 
             new_positions = piece.generate_possible_positions(self.board, coordinate, en_passant)
 
-            yield from (Move(coordinate, new_position) for new_position in new_positions)
+            yield from (Move(coordinate, new_position)
+                        for new_position in new_positions)
 
     def material_difference(self) -> int:
         """
