@@ -35,7 +35,7 @@ class Piece:
 
         self.value = VALUES[self.type] * self.direction_multiplier
 
-        self.legal_target_colors = self.color.enemy_color() | Color.EMPTY
+        self.legal_target_colors = self.color.enemy() | Color.EMPTY
 
         self.possible_move_groups = MOVE_GROUPS[self.type]
 
@@ -117,14 +117,14 @@ class Piece:
                     yield possible_target
 
         possible_target = pos + LEFT + forward
-        if self.is_legal_target(board, possible_target, self.color.enemy_color()):
+        if self.is_legal_target(board, possible_target, self.color.enemy()):
             yield possible_target
 
         if en_passant == possible_target:
             yield en_passant
 
         possible_target = pos + RIGHT + forward
-        if self.is_legal_target(board, possible_target, self.color.enemy_color()):
+        if self.is_legal_target(board, possible_target, self.color.enemy()):
             yield possible_target
 
         if en_passant == possible_target:
