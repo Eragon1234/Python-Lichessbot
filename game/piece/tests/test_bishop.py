@@ -31,6 +31,6 @@ class TestBishop(TestCase):
         bishop = Piece(PieceType.BISHOP, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = bishop.generate_possible_positions(test_case.board, test_case.position)
+                actual = bishop.possible_positions(test_case.board, test_case.position)
 
                 self.assertCountEqual(test_case.expected, actual)

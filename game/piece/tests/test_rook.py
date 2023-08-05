@@ -24,6 +24,6 @@ class TestRook(TestCase):
         rook = Piece(PieceType.ROOK, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = rook.generate_possible_positions(test_case.board, test_case.position)
+                actual = rook.possible_positions(test_case.board, test_case.position)
 
                 self.assertCountEqual(test_case.expected, actual)
