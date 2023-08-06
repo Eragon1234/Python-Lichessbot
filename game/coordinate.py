@@ -19,7 +19,7 @@ class Coordinate(NamedTuple):
     @classmethod
     def from_uci(cls, uci: str) -> "Coordinate":
         """
-        Parses a UCI string into a Coordinate.
+        Parses an UCI string into a Coordinate.
 
         Args:
             uci: A string representing the UCI notation for a chess coordinate.
