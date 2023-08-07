@@ -33,7 +33,9 @@ class Piece:
 
         self.direction_multiplier = 1 if self.is_white else -1
 
-        self.value = VALUES[self.type] * self.direction_multiplier
+        self.value = VALUES[self.type]
+        if not self.is_white:
+            self.value = -self.value
 
         self.legal_target_colors = self.color.enemy() | Color.EMPTY
 
@@ -106,7 +108,10 @@ class Piece:
 
     def _possible_positions_for_pawn(self, board: Board, pos: Coordinate,
                                      en_passant: Optional[Coordinate] = None) -> PositionGenerator:
-        forward = FORWARD * self.direction_multiplier
+        forward = FORWARD
+        if not self.is_white:
+            forward = -forward
+
         possible_target = pos + forward
         if self.is_legal_target(board, possible_target, Color.EMPTY):
             yield possible_target

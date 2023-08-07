@@ -10,6 +10,9 @@ class Coordinate(NamedTuple):
     def __add__(self, other: "Coordinate") -> "Coordinate":
         return Coordinate(self.x + other.x, self.y + other.y)
 
+    def __neg__(self):
+        return Coordinate(-self.x, -self.y)
+
     def __mul__(self, other: int) -> "Coordinate":
         return Coordinate(self.x * other, self.y * other)
 
