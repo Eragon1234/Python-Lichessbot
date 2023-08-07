@@ -31,8 +31,6 @@ class Piece:
         if self.is_white:
             self.short = self.short.upper()
 
-        self.direction_multiplier = 1 if self.is_white else -1
-
         self.value = VALUES[self.type]
         if not self.is_white:
             self.value = -self.value
