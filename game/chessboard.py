@@ -7,8 +7,8 @@ from game.move import Move
 from game.piece import Piece, PieceType, Color
 from game.piece.move_groups import BACKWARD
 
-UCI_MOVE_GENERATOR = Generator[str, None, None]
-MOVE_GENERATOR = Generator[Move, None, None]
+UciMoveGenerator = Generator[str, None, None]
+MoveGenerator = Generator[Move, None, None]
 
 
 class ChessBoard:
@@ -110,7 +110,7 @@ class ChessBoard:
         """Returns a context manager to test a move."""
         return self.TestMove(self, move)
 
-    def legal_moves(self, for_white: bool = True) -> MOVE_GENERATOR:
+    def legal_moves(self, for_white: bool = True) -> MoveGenerator:
         """
         Generating all possible moves in the current position
 
@@ -153,7 +153,7 @@ class ChessBoard:
 
         return False
 
-    def pseudo_legal_moves(self, for_white: bool | str) -> MOVE_GENERATOR:
+    def pseudo_legal_moves(self, for_white: bool | str) -> MoveGenerator:
         """
         generates the pseudo legal moves for the passed color
 
