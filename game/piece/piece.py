@@ -41,10 +41,19 @@ class Piece:
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Piece':
-        white = Color.WHITE if not fen.islower() else Color.BLACK
+        """
+        Creates a piece from a FEN string.
+
+        Args:
+            fen: The FEN string.
+
+        Returns:
+            A piece object.
+        """
+        color = Color.WHITE if not fen.islower() else Color.BLACK
         fen = fen.lower()
 
-        return cls(PieceType(fen), white)
+        return cls(PieceType(fen), color)
 
     def is_legal_target(self, board: Board, position: Coordinate,
                         legal_target_colors: Optional[Color] = None) -> bool:
