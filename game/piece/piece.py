@@ -27,10 +27,6 @@ class Piece:
         else:
             self.is_white = self.color == Color.WHITE
 
-        self.short = self.type.value
-        if self.is_white:
-            self.short = self.short.upper()
-
         self.value = VALUES[self.type]
         if not self.is_white:
             self.value = -self.value
