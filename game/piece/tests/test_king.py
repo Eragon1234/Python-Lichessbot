@@ -33,6 +33,6 @@ class TestKing(TestCase):
         king = Piece(PieceType.KING, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = king.possible_positions(test_case.board, test_case.position)
+                actual = king.positions(test_case.board, test_case.position)
 
                 self.assertCountEqual(test_case.expected, actual)

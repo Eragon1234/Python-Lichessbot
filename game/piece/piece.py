@@ -71,29 +71,29 @@ class Piece:
         target_field_color = board.color_at(position)
         return target_field_color in legal_target_colors
 
-    def possible_positions(self, board: Board, current_position: Coordinate,
-                           en_passant: Optional[Coordinate] = None) -> PositionGenerator:
+    def positions(self, board: Board, pos: Coordinate,
+                  en_passant: Optional[Coordinate] = None) -> PositionGenerator:
         """
         Generates possible positions for a piece on the given chess board.
 
         Args:
             board: The chess board.
-            current_position: The current position of the piece.
+            pos: The current position of the piece.
             en_passant: Optional en passant position.
 
         Returns:
             A generator object that yields possible positions for the piece.
         """
         if self.type == PieceType.PAWN:
-            yield from self._possible_positions_for_pawn(board, current_position, en_passant)
-        else:
-            yield from self._possible_positions_with_move_groups(board, current_position)
+            return self._positions_for_pawn(board, pos, en_passant)
 
-    def _possible_positions_with_move_groups(self, board: Board,
-                                             current_position: Coordinate) -> PositionGenerator:
+        return self._positions_with_move_groups(board, pos)
+
+    def _positions_with_move_groups(self, board: Board,
+                                    pos: Coordinate) -> PositionGenerator:
         for move_group in self.possible_move_groups:
             for move in move_group:
-                pos = current_position + move
+                pos = pos + move
 
                 if not self.is_legal_target(board, pos):
                     break
@@ -104,8 +104,8 @@ class Piece:
                 if target_field_color is not Color.EMPTY:
                     break
 
-    def _possible_positions_for_pawn(self, board: Board, pos: Coordinate,
-                                     en_passant: Optional[Coordinate] = None) -> PositionGenerator:
+    def _positions_for_pawn(self, board: Board, pos: Coordinate,
+                            en_passant: Optional[Coordinate] = None) -> PositionGenerator:
         forward = FORWARD
         if self.color == Color.BLACK:
             forward = -forward

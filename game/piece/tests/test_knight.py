@@ -47,6 +47,6 @@ class TestKnight(unittest.TestCase):
         knight = Piece(PieceType.KNIGHT, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = knight.possible_positions(test_case.board, test_case.position)
+                actual = knight.positions(test_case.board, test_case.position)
 
                 self.assertCountEqual(test_case.expected, actual)
