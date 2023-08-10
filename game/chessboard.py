@@ -139,13 +139,15 @@ class ChessBoard:
         Returns:
             bool: if the king is in check
         """
+        target_color = Color.WHITE if for_white else Color.BLACK
+
         coordinate_moves = self.pseudo_legal_moves(not for_white)
 
         for coordinate_move in coordinate_moves:
             target_coordinate = coordinate_move[1]
             attacked_field = self.board[target_coordinate]
 
-            if attacked_field.is_white != for_white:
+            if attacked_field.color != target_color:
                 continue
 
             if attacked_field.type == PieceType.KING:
@@ -163,12 +165,14 @@ class ChessBoard:
         Returns:
             returns all possible coordinate moves for the passed color
         """
+        target_color = Color.WHITE if for_white else Color.BLACK
+
         en_passant = None
         if self.board.en_passant != "-":
             en_passant = Coordinate.from_uci(self.board.en_passant)
 
         for position, piece in enumerate(self.board):
-            if piece.is_white != for_white:
+            if piece.color != target_color:
                 continue
 
             coordinate = Coordinate(*position_to_coordinate(position))

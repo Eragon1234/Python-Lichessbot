@@ -22,13 +22,8 @@ class Piece:
 
         self.color = color
 
-        if self.color == Color.EMPTY:
-            self.is_white = "EmptyField"
-        else:
-            self.is_white = self.color == Color.WHITE
-
         self.value = VALUES[self.type]
-        if not self.is_white:
+        if self.color == Color.BLACK:
             self.value = -self.value
 
         self.legal_target_colors = self.color.enemy() | Color.EMPTY
@@ -112,7 +107,7 @@ class Piece:
     def _possible_positions_for_pawn(self, board: Board, pos: Coordinate,
                                      en_passant: Optional[Coordinate] = None) -> PositionGenerator:
         forward = FORWARD
-        if not self.is_white:
+        if self.color == Color.BLACK:
             forward = -forward
 
         possible_target = pos + forward
@@ -139,4 +134,5 @@ class Piece:
             yield en_passant
 
     def is_start_rank(self, pos: Coordinate):
-        return pos[1] == (1 if self.is_white else 6)
+        start_rank = 1 if self.color == Color.WHITE else 6
+        return pos[1] == start_rank
