@@ -91,6 +91,16 @@ class Piece:
 
     def _positions_with_move_groups(self, board: Board,
                                     pos: Coordinate) -> PositionGenerator:
+        """
+        Generates possible positions for a piece on the given chess board.
+
+        Args:
+            board: The chess board.
+            pos: The current position of the piece.
+
+        Returns:
+            A generator object that yields possible positions for the piece.
+        """
         for move_group in self.possible_move_groups:
             for move in move_group:
                 pos = pos + move
@@ -106,6 +116,17 @@ class Piece:
 
     def _positions_for_pawn(self, board: Board, pos: Coordinate,
                             en_passant: Optional[Coordinate] = None) -> PositionGenerator:
+        """
+        Generates possible positions for a pawn on the given chess board.
+
+        Args:
+            board: The chess board.
+            pos: The current position of the pawn.
+            en_passant: The position where a pawn could move en passant.
+
+        Returns:
+            A generator object that yields possible positions for the pawn.
+        """
         forward = FORWARD
         if self.color == Color.BLACK:
             forward = -forward
@@ -134,5 +155,14 @@ class Piece:
             yield en_passant
 
     def is_start_rank(self, pos: Coordinate):
+        """
+        Checks if a given position is the start rank for a pawn.
+
+        Args:
+            pos: The position to check.
+
+        Returns:
+            bool: whether the position is the start rank for a pawn.
+        """
         start_rank = 1 if self.color == Color.WHITE else 6
         return pos[1] == start_rank
