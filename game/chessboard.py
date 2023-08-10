@@ -110,44 +110,42 @@ class ChessBoard:
         """Returns a context manager to test a move."""
         return self.TestMove(self, move)
 
-    def legal_moves(self, for_white: bool = True) -> MoveGenerator:
+    def legal_moves(self, color: Color) -> MoveGenerator:
         """
         Generating all possible moves in the current position
 
         Args:
-            for_white (bool): for which color to generate the moves for.
+            color: for which color to generate the moves for.
 
         Returns:
             list: a list of possible moves in UCIMove format
         """
-        coordinate_moves = self.pseudo_legal_moves(for_white)
+        coordinate_moves = self.pseudo_legal_moves(color)
 
         for move in coordinate_moves:
             with self.test_move(move):
-                if self.king_in_check(for_white):
+                if self.king_in_check(color):
                     continue
 
                 yield move
 
-    def king_in_check(self, for_white: bool) -> bool:
+    def king_in_check(self, color: Color) -> bool:
         """
         returns if the king of the passed color is in check
 
         Args:
-            for_white: the color of the king to check
+            color: the color of the king to check
 
         Returns:
             bool: if the king is in check
         """
-        target_color = Color.WHITE if for_white else Color.BLACK
-
-        coordinate_moves = self.pseudo_legal_moves(not for_white)
+        coordinate_moves = self.pseudo_legal_moves(color.enemy())
 
         for coordinate_move in coordinate_moves:
             target_coordinate = coordinate_move[1]
             attacked_field = self.board[target_coordinate]
 
-            if attacked_field.color != target_color:
+            if attacked_field.color != color:
                 continue
 
             if attacked_field.type == PieceType.KING:
@@ -155,24 +153,22 @@ class ChessBoard:
 
         return False
 
-    def pseudo_legal_moves(self, for_white: bool | str) -> MoveGenerator:
+    def pseudo_legal_moves(self, color: Color) -> MoveGenerator:
         """
         generates the pseudo legal moves for the passed color
 
         Args:
-            for_white: the color to generate the moves for
+            color: the color to generate the moves for
 
         Returns:
             returns all possible coordinate moves for the passed color
         """
-        target_color = Color.WHITE if for_white else Color.BLACK
-
         en_passant = None
         if self.board.en_passant != "-":
             en_passant = Coordinate.from_uci(self.board.en_passant)
 
         for position, piece in enumerate(self.board):
-            if piece.color != target_color:
+            if piece.color != color:
                 continue
 
             coordinate = Coordinate(*position_to_coordinate(position))

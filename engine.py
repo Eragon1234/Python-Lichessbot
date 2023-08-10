@@ -1,5 +1,6 @@
 from game import ChessBoard
 from game.move import Move
+from game.piece import Color
 from playercolor import PlayerColor
 
 CacheState = tuple[ChessBoard, bool, int]
@@ -43,7 +44,7 @@ class Engine:
         if depth == 0:
             return NULL_MOVE, self.board.material_difference()
 
-        moves = self.board.legal_moves(True)
+        moves = self.board.legal_moves(Color.WHITE)
 
         max_value = alpha
         max_move = None
@@ -71,7 +72,7 @@ class Engine:
         if depth == 0:
             return NULL_MOVE, self.board.material_difference()
 
-        moves = self.board.legal_moves(False)
+        moves = self.board.legal_moves(Color.BLACK)
 
         min_value = beta
         min_move = None
