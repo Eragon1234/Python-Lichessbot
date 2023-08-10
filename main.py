@@ -7,13 +7,16 @@ from engine import Engine
 from game_controller import GameController, Game
 from playercolor import PlayerColor
 
+MISSING_LICHESS_TOKEN = ("Missing Lichess token. "
+                         "Please set the environment variable LICHESS_TOKEN.")
+
 
 def main():
     log.init_logging()
 
     lichess_token = os.getenv("LICHESS_TOKEN")
     if lichess_token is None:
-        logging.error("Missing Lichess token. Please set the environment variable LICHESS_TOKEN to your lichess token.")
+        logging.error(MISSING_LICHESS_TOKEN)
         sys.exit(1)
 
     game = GameController(lichess_token)
