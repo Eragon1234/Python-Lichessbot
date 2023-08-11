@@ -2,6 +2,7 @@ from typing import Generator, Optional
 
 from game.coordinate import Coordinate
 from game.piece.board import Board
+from game.piece.bonus import BONUS_MAPS
 from game.piece.color import Color
 from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
@@ -29,6 +30,14 @@ class Piece:
         self.legal_target_colors = self.color.enemy() | Color.EMPTY
 
         self.possible_move_groups = MOVE_GROUPS[self.type]
+
+        self.bonus_map = BONUS_MAPS[self.type]
+
+    def move_to(self, position: tuple[int, int]):
+        bonus = self.bonus_map[position[1]][position[0]]
+        self.value = VALUES[self.type] + bonus
+        if self.color is Color.BLACK:
+            self.value = -self.value
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Piece':

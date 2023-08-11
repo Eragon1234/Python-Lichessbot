@@ -19,6 +19,7 @@ class _ChessBoard:
         return self._board[item[1] * 8 + item[0]]
 
     def __setitem__(self, key: tuple[int, int], value: Piece):
+        value.move_to(key)
         self._board[key[1] * 8 + key[0]] = value
 
     def __iter__(self) -> Iterator[Piece]:

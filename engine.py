@@ -37,7 +37,7 @@ class Engine:
         Returns:
             tuple[str, int]: the move and the evaluation
         """
-        return self.calculate_best_move(color, 1)
+        return self.calculate_best_move(color, 3)
 
     def calculate_best_move(self, color: PlayerColor, depth: int) -> MoveEvaluation:
         color = Color.WHITE if color is PlayerColor.White else Color.BLACK
