@@ -78,7 +78,7 @@ class ChessBoard:
         if target_coordinate != en_passant_coordinate:
             return None
 
-        direction = 1 if self.whites_move() else -1
+        direction = 1 if moving_piece.color == Color.WHITE else -1
         return target_coordinate + BACKWARD * direction
 
     def new_en_passant_coordinate(self, move: Move) -> str:
@@ -119,9 +119,8 @@ class ChessBoard:
 
         en_passant_taken_piece = self.en_passant_takes.pop()
         if en_passant_taken_piece is not None:
-            direction = 1 if self.whites_move() else -1
-            took_coordinate = target_coordinates + BACKWARD * direction
-            self.board[took_coordinate] = en_passant_taken_piece
+            en_passant_coordinate = self.get_en_passant_capture(move)
+            self.board[en_passant_coordinate] = en_passant_taken_piece
 
     def whites_move(self) -> bool:
         """returns if it's white's move"""
