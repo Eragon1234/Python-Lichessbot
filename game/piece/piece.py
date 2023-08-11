@@ -58,14 +58,13 @@ class Piece:
 
         Returns:
             bool: whether the position is a legal target.
-
         """
         if legal_target_colors is None:
             legal_target_colors = self.legal_target_colors
 
         x, y = position
 
-        if (0 > x or x > 7) or (0 > y or y > 7):
+        if x < 0 or x > 7 or y < 0 or y > 7:
             return False
 
         target_field_color = board.color_at(position)
