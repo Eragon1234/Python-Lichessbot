@@ -3,7 +3,7 @@ from game.move import Move
 from game.piece import Color
 from playercolor import PlayerColor
 
-CacheState = tuple[ChessBoard, bool, int]
+CacheState = tuple[ChessBoard, Color, int]
 
 MoveEvaluation = tuple[Move, float]
 
@@ -32,63 +32,40 @@ class Engine:
         return self.calculate_best_move(color, 3)
 
     def calculate_best_move(self, color: PlayerColor, depth: int) -> MoveEvaluation:
-        if color == PlayerColor.White:
-            return self.max(depth, float("-inf"), float("inf"))
+        color = Color.WHITE if color == PlayerColor.White else Color.BLACK
 
-        return self.min(depth, float("-inf"), float("inf"))
+        return self.negamax(depth, float("-inf"), float("inf"), color)
 
-    def max(self, depth: int, alpha: float, beta: float) -> MoveEvaluation:
-        if (self.board, True, depth) in self.cached_moves:
-            return self.cached_moves[self.board, True, depth]
+    def negamax(self, depth: int, alpha: float, beta: float,
+                color: Color) -> MoveEvaluation:
+        if (self.board, color, depth) in self.cached_moves:
+            return self.cached_moves[self.board, color, depth]
 
         if depth == 0:
             return NULL_MOVE, self.board.material_difference()
 
-        moves = self.board.legal_moves(Color.WHITE)
+        moves = self.board.legal_moves(color)
 
-        max_value = alpha
-        max_move = None
+        best_move = None
+        max_value = float("-inf")
 
         for move in moves:
             with self.board.test_move(move):
-                _, evaluation = self.min(depth - 1, max_value, beta)
-                if evaluation > max_value:
-                    max_value = evaluation
-                    max_move = move
-                    if max_value >= beta:
-                        break
+                _, value = self.negamax(depth - 1, -beta, -alpha, color.enemy())
+                value = -value
 
-        if max_move is None:
+                if value > max_value:
+                    max_value = value
+                    best_move = move
+
+                alpha = max(alpha, max_value)
+
+                if alpha >= beta:
+                    break
+
+        if best_move is None:
             return NULL_MOVE, -9999
 
-        self.cached_moves[self.board, True, depth] = max_move, max_value
+        self.cached_moves[self.board, color, depth] = best_move, max_value
 
-        return max_move, max_value
-
-    def min(self, depth: int, alpha: float, beta: float) -> MoveEvaluation:
-        if (self.board, False, depth) in self.cached_moves:
-            return self.cached_moves[self.board, False, depth]
-
-        if depth == 0:
-            return NULL_MOVE, self.board.material_difference()
-
-        moves = self.board.legal_moves(Color.BLACK)
-
-        min_value = beta
-        min_move = None
-
-        for move in moves:
-            with self.board.test_move(move):
-                _, evaluation = self.max(depth - 1, alpha, min_value)
-                if evaluation < min_value:
-                    min_value = evaluation
-                    min_move = move
-                    if min_value <= alpha:
-                        break
-
-        if min_move is None:
-            return NULL_MOVE, 9999
-
-        self.cached_moves[self.board, False, depth] = min_move, min_value
-
-        return min_move, min_value
+        return best_move, max_value
