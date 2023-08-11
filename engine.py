@@ -29,7 +29,7 @@ class Engine:
         Returns:
             tuple[str, int]: the move and the evaluation
         """
-        return self.calculate_best_move(color, 3)
+        return self.calculate_best_move(color, 1)
 
     def calculate_best_move(self, color: PlayerColor, depth: int) -> MoveEvaluation:
         color = Color.WHITE if color is PlayerColor.White else Color.BLACK
@@ -44,7 +44,8 @@ class Engine:
         if depth == 0:
             return NULL_MOVE, self.board.material_difference()
 
-        moves = self.board.legal_moves(color)
+        moves = list(self.board.legal_moves(color))
+        moves = self.order_moves(moves)
 
         best_move = None
         max_value = float("-inf")
@@ -69,3 +70,9 @@ class Engine:
         self.cached_moves[self.board, color, depth] = best_move, max_value
 
         return best_move, max_value
+
+    def order_moves(self, moves: list[Move]) -> list[Move]:
+        def sort_key(move: Move) -> int:
+            return self.board.board[move.target_field].value
+
+        return sorted(moves, key=sort_key, reverse=True)
