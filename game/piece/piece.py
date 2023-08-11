@@ -103,14 +103,14 @@ class Piece:
         """
         for move_group in self.possible_move_groups:
             for move in move_group:
-                pos = pos + move
+                new_pos = pos + move
 
-                if not self.is_legal_target(board, pos):
+                if not self.is_legal_target(board, new_pos):
                     break
 
-                yield pos
+                yield new_pos
 
-                target_field_color = board.color_at(pos)
+                target_field_color = board.color_at(new_pos)
                 if target_field_color is not Color.EMPTY:
                     break
 
