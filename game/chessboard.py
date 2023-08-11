@@ -39,21 +39,16 @@ class ChessBoard:
 
         start_coordinates, target_coordinates = move
 
-        moving_piece = self.board[start_coordinates]
-        captured_piece = self.board[target_coordinates]
+        moving_piece = self.board.pop(start_coordinates)
 
-        self.captured_pieces.append(captured_piece)
+        self.captured_pieces.append(self.board[target_coordinates])
 
-        self.board[start_coordinates] = Piece(PieceType.EMPTY, Color.EMPTY)
         self.board[target_coordinates] = moving_piece
 
         en_passant_coordinate = self.en_passant(move)
         en_passant_taken_piece = None
         if en_passant_coordinate is not None:
-            en_passant_taken_piece = self.board[en_passant_coordinate]
-
-            empty_piece = Piece(PieceType.EMPTY, Color.EMPTY)
-            self.board[en_passant_coordinate] = empty_piece
+            en_passant_taken_piece = self.board.pop(en_passant_coordinate)
 
         self.en_passant_takes.append(en_passant_taken_piece)
         self.board.en_passant = "-"

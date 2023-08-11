@@ -61,6 +61,11 @@ class _ChessBoard:
     def color_at(self, position: tuple[int, int]) -> Color:
         return self[position].color
 
+    def pop(self, position: tuple[int, int]) -> Piece:
+        piece = self[position]
+        self[position] = Piece(PieceType.EMPTY, Color.EMPTY)
+        return piece
+
 
 def position_to_coordinate(position: int) -> tuple[int, int]:
     """
