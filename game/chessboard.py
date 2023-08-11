@@ -45,19 +45,15 @@ class ChessBoard:
 
         self.board[target_coordinates] = moving_piece
 
-        en_passant_coordinate = self.en_passant(move)
-        en_passant_taken_piece = None
+        en_passant_coordinate = self.get_en_passant_capture(move)
         if en_passant_coordinate is not None:
-            en_passant_taken_piece = self.board.pop(en_passant_coordinate)
+            self.en_passant_takes.append(self.board.pop(en_passant_coordinate))
+        else:
+            self.en_passant_takes.append(None)
 
-        self.en_passant_takes.append(en_passant_taken_piece)
-        self.board.en_passant = "-"
+        self.board.en_passant = self.new_en_passant_coordinate(move)
 
-        new_en_passant_coordinate = self.new_en_passant_coordinate(move)
-        if new_en_passant_coordinate is not None:
-            self.board.en_passant = new_en_passant_coordinate.uci()
-
-    def en_passant(self, move: Move) -> Optional[Coordinate]:
+    def get_en_passant_capture(self, move: Move) -> Optional[Coordinate]:
         """
         returns the coordinate of the pawn that was taken en passant
         if no pawn was taken en passant, returns None
@@ -71,46 +67,43 @@ class ChessBoard:
         start_coordinate, target_coordinate = move
 
         moving_piece = self.board[start_coordinate]
+
         if moving_piece.type != PieceType.PAWN:
             return None
 
-        could_move_en_passant = self.board.en_passant != "-"
-        if not could_move_en_passant:
+        if self.board.en_passant == "-":
             return None
 
         en_passant_coordinate = Coordinate.from_uci(self.board.en_passant)
-        took_en_passant = target_coordinate == en_passant_coordinate
-        if not took_en_passant:
+        if target_coordinate != en_passant_coordinate:
             return None
 
         direction = 1 if self.whites_move() else -1
         return target_coordinate + BACKWARD * direction
 
-    def new_en_passant_coordinate(self, move: Move) -> Optional[Coordinate]:
+    def new_en_passant_coordinate(self, move: Move) -> str:
         """
-        returns the coordinate where a pawn can be taken en passant
-        if no pawn was taken en passant, returns None
+        returns the uci coordinate where a pawn can be taken en passant
+        if no pawn was taken en passant, returns '-'
 
         Args:
             move: the move to check
 
         Returns:
-            Coordinate: the coordinate where a pawn could move to en passant
+            str: the uci coordinate where a pawn can be taken en passant
         """
         start_coordinate, target_coordinate = move
 
         moving_piece = self.board[start_coordinate]
         if moving_piece.type != PieceType.PAWN:
-            return None
+            return "-"
 
         move_difference = abs(start_coordinate.y - target_coordinate.y)
         if move_difference != 2:
-            return None
+            return "-"
 
         en_passant_rank = 2 if moving_piece.color == Color.WHITE else 5
-        return Coordinate(target_coordinate.x, en_passant_rank)
-
-
+        return Coordinate(target_coordinate.x, en_passant_rank).uci()
 
     def unmove(self) -> None:
         """undoes the last move"""
