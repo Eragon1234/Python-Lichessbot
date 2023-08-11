@@ -1,13 +1,21 @@
+from collections import defaultdict
+from functools import partial
+
 from game import ChessBoard
 from game.move import Move
 from game.piece import Color
+from growing_list import GrowingList
 from playercolor import PlayerColor
 
-CacheState = tuple[ChessBoard, Color, int]
+CacheState = tuple[ChessBoard, Color]
 
 MoveEvaluation = tuple[Move, float]
 
+Cache = dict[CacheState, GrowingList[MoveEvaluation]]
+
 NULL_MOVE = Move.from_uci("d1e8")
+
+MoveEvaluationGrowingList = partial(GrowingList, (None, -9999))
 
 
 class Engine:
@@ -16,7 +24,7 @@ class Engine:
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = ChessBoard(fen)
 
-        self.cached_moves: dict[CacheState, MoveEvaluation] = {}
+        self.cached_moves: Cache = defaultdict(MoveEvaluationGrowingList)
 
     def get_best_move(self, color: PlayerColor, moves: list[str]) -> MoveEvaluation:
         """
@@ -38,8 +46,9 @@ class Engine:
 
     def negamax(self, depth: int, alpha: float, beta: float,
                 color: Color) -> MoveEvaluation:
-        if (self.board, color, depth) in self.cached_moves:
-            return self.cached_moves[self.board, color, depth]
+        if (self.board, color) in self.cached_moves:
+            if len(self.cached_moves[self.board, color]) > depth:
+                return self.cached_moves[self.board, color][-1]
 
         if depth == 0:
             return NULL_MOVE, self.board.material_difference()
@@ -47,8 +56,8 @@ class Engine:
         moves = list(self.board.legal_moves(color))
         moves = self.order_moves(moves)
 
-        best_move = None
-        max_value = float("-inf")
+        best_move, max_value = self.cached_moves[self.board, color][-1]
+        alpha = max(alpha, max_value)
 
         for move in moves:
             with self.board.test_move(move):
@@ -67,7 +76,7 @@ class Engine:
         if best_move is None:
             return NULL_MOVE, -9999
 
-        self.cached_moves[self.board, color, depth] = best_move, max_value
+        self.cached_moves[self.board, color][depth] = best_move, max_value
 
         return best_move, max_value
 
