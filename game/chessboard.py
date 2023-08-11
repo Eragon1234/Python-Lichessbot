@@ -68,7 +68,7 @@ class ChessBoard:
 
         moving_piece = self.board[start_coordinate]
 
-        if moving_piece.type != PieceType.PAWN:
+        if moving_piece.type is not PieceType.PAWN:
             return None
 
         if self.board.en_passant == "-":
@@ -78,7 +78,7 @@ class ChessBoard:
         if target_coordinate != en_passant_coordinate:
             return None
 
-        direction = 1 if moving_piece.color == Color.WHITE else -1
+        direction = 1 if moving_piece.color is Color.WHITE else -1
         return target_coordinate + BACKWARD * direction
 
     def new_en_passant_coordinate(self, move: Move) -> str:
@@ -95,14 +95,14 @@ class ChessBoard:
         start_coordinate, target_coordinate = move
 
         moving_piece = self.board[start_coordinate]
-        if moving_piece.type != PieceType.PAWN:
+        if moving_piece.type is not PieceType.PAWN:
             return "-"
 
         move_difference = abs(start_coordinate.y - target_coordinate.y)
         if move_difference != 2:
             return "-"
 
-        en_passant_rank = 2 if moving_piece.color == Color.WHITE else 5
+        en_passant_rank = 2 if moving_piece.color is Color.WHITE else 5
         return Coordinate(target_coordinate.x, en_passant_rank).uci()
 
     def unmove(self) -> None:
@@ -178,10 +178,10 @@ class ChessBoard:
             target_coordinate = coordinate_move[1]
             attacked_field = self.board[target_coordinate]
 
-            if attacked_field.color != color:
+            if attacked_field.color is not color:
                 continue
 
-            if attacked_field.type == PieceType.KING:
+            if attacked_field.type is PieceType.KING:
                 return True
 
         return False
@@ -201,7 +201,7 @@ class ChessBoard:
             en_passant = Coordinate.from_uci(self.board.en_passant)
 
         for position, piece in enumerate(self.board):
-            if piece.color != color:
+            if piece.color is not color:
                 continue
 
             coordinate = Coordinate(*position_to_coordinate(position))

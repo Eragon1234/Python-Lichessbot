@@ -16,12 +16,10 @@ class _ChessBoard:
         self.fullmove_number = fullmove_number
 
     def __getitem__(self, item: tuple[int, int]) -> Piece:
-        index = coordinate_to_position(*item)
-        return self._board[index]
+        return self._board[item[1] * 8 + item[0]]
 
     def __setitem__(self, key: tuple[int, int], value: Piece):
-        index = coordinate_to_position(*key)
-        self._board[index] = value
+        self._board[key[1] * 8 + key[0]] = value
 
     def __iter__(self) -> Iterator[Piece]:
         return iter(self._board)

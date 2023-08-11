@@ -23,7 +23,7 @@ class Piece:
         self.color = color
 
         self.value = VALUES[self.type]
-        if self.color == Color.BLACK:
+        if self.color is Color.BLACK:
             self.value = -self.value
 
         self.legal_target_colors = self.color.enemy() | Color.EMPTY
@@ -67,8 +67,7 @@ class Piece:
         if x < 0 or x > 7 or y < 0 or y > 7:
             return False
 
-        target_field_color = board.color_at(position)
-        return target_field_color in legal_target_colors
+        return board.color_at(position) in legal_target_colors
 
     def positions(self, board: Board, pos: Coordinate,
                   en_passant: Optional[Coordinate] = None) -> PositionGenerator:
@@ -83,7 +82,7 @@ class Piece:
         Returns:
             A generator object that yields possible positions for the piece.
         """
-        if self.type == PieceType.PAWN:
+        if self.type is PieceType.PAWN:
             return self._positions_for_pawn(board, pos, en_passant)
 
         return self._positions_with_move_groups(board, pos)
@@ -127,7 +126,7 @@ class Piece:
             A generator object that yields possible positions for the pawn.
         """
         forward = FORWARD
-        if self.color == Color.BLACK:
+        if self.color is Color.BLACK:
             forward = -forward
 
         possible_target = pos + forward
@@ -163,5 +162,5 @@ class Piece:
         Returns:
             bool: whether the position is the start rank for a pawn.
         """
-        start_rank = 1 if self.color == Color.WHITE else 6
+        start_rank = 1 if self.color is Color.WHITE else 6
         return pos[1] == start_rank

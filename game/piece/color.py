@@ -7,6 +7,6 @@ class Color(Flag):
     EMPTY = auto()
 
     def enemy(self) -> "Color":
-        if self == Color.EMPTY:
+        if self is Color.EMPTY:
             return Color.EMPTY
-        return Color.WHITE if self == Color.BLACK else Color.BLACK
+        return Color.WHITE if self is Color.BLACK else Color.BLACK

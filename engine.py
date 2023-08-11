@@ -32,7 +32,7 @@ class Engine:
         return self.calculate_best_move(color, 3)
 
     def calculate_best_move(self, color: PlayerColor, depth: int) -> MoveEvaluation:
-        color = Color.WHITE if color == PlayerColor.White else Color.BLACK
+        color = Color.WHITE if color is PlayerColor.White else Color.BLACK
 
         return self.negamax(depth, float("-inf"), float("inf"), color)
 
