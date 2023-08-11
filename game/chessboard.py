@@ -1,7 +1,6 @@
 from typing import Generator
 
-from game._board import position_to_coordinate
-from game._chessboard import _ChessBoard
+from game._chessboard import _ChessBoard, position_to_coordinate
 from game.coordinate import Coordinate
 from game.move import Move
 from game.piece import Piece, PieceType, Color
