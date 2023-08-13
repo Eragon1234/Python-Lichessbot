@@ -34,4 +34,3 @@ class NoCache(Cache):
     def put(self, color: Color, board: ChessBoard,
             depth: int, value: MoveEvaluation):
         """Does nothing."""
-        pass
