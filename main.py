@@ -2,7 +2,6 @@ import logging
 import os
 import sys
 
-import log
 from engine.engine import Engine
 from game_controller import GameController, Game
 from playercolor import PlayerColor
@@ -12,7 +11,7 @@ MISSING_LICHESS_TOKEN = ("Missing Lichess token. "
 
 
 def main():
-    log.init_logging()
+    logging.basicConfig(level=logging.INFO)
 
     lichess_token = os.getenv("LICHESS_TOKEN")
     if lichess_token is None:
