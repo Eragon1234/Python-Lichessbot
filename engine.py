@@ -7,11 +7,11 @@ from game.piece import Color
 from growing_list import GrowingList
 from playercolor import PlayerColor
 
-CacheState = tuple[ChessBoard, Color]
-
 MoveEvaluation = tuple[Move, float]
 
-Cache = dict[CacheState, GrowingList[MoveEvaluation]]
+EvaluationCache = dict[ChessBoard, GrowingList[MoveEvaluation]]
+
+Cache = dict[Color, EvaluationCache]
 
 NULL_MOVE = Move.from_uci("d1e8")
 
@@ -24,7 +24,10 @@ class Engine:
     def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = ChessBoard(fen)
 
-        self.cached_moves: Cache = defaultdict(MoveEvaluationGrowingList)
+        self.cached_moves: Cache = {
+            Color.WHITE: defaultdict(MoveEvaluationGrowingList),
+            Color.BLACK: defaultdict(MoveEvaluationGrowingList)
+        }
 
     def get_best_move(self, color: PlayerColor, moves: list[str]) -> MoveEvaluation:
         """
@@ -46,9 +49,9 @@ class Engine:
 
     def negamax(self, depth: int, alpha: float, beta: float,
                 color: Color) -> MoveEvaluation:
-        if (self.board, color) in self.cached_moves:
-            if len(self.cached_moves[self.board, color]) > depth:
-                return self.cached_moves[self.board, color][-1]
+        cached = self.cached_moves[color][self.board]
+        if len(cached) > depth:
+            return cached[-1]
 
         if depth == 0:
             return NULL_MOVE, self.board.material_difference()
@@ -56,7 +59,8 @@ class Engine:
         moves = list(self.board.legal_moves(color))
         moves = self.order_moves(moves)
 
-        best_move, max_value = self.cached_moves[self.board, color][-1]
+        best_move, max_value = cached[-1]
+
         alpha = max(alpha, max_value)
 
         for move in moves:
@@ -76,7 +80,7 @@ class Engine:
         if best_move is None:
             return NULL_MOVE, -9999
 
-        self.cached_moves[self.board, color][depth] = best_move, max_value
+        cached[depth] = best_move, max_value
 
         return best_move, max_value
 
