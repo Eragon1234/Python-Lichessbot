@@ -1,33 +1,23 @@
-from collections import defaultdict
-from functools import partial
-
+from engine.cache import Cache, NoCache, MoveEvaluation
 from game import ChessBoard
 from game.move import Move
 from game.piece import Color
-from growing_list import GrowingList
 from playercolor import PlayerColor
 
-MoveEvaluation = tuple[Move, float]
-
-EvaluationCache = dict[ChessBoard, GrowingList[MoveEvaluation]]
-
-Cache = dict[Color, EvaluationCache]
-
 NULL_MOVE = Move.from_uci("d1e8")
-
-MoveEvaluationGrowingList = partial(GrowingList, (None, -9999))
+DEFAULT_MOVE_EVALUATION = (NULL_MOVE, -9999)
 
 
 class Engine:
     """Class to generate the best possible moves, etc."""
 
-    def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
+    def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                 cache: Cache = None):
         self.board = ChessBoard(fen)
 
-        self.cached_moves: Cache = {
-            Color.WHITE: defaultdict(MoveEvaluationGrowingList),
-            Color.BLACK: defaultdict(MoveEvaluationGrowingList)
-        }
+        self.cache = cache
+        if self.cache is None:
+            self.cache = NoCache()
 
     def get_best_move(self, color: PlayerColor, moves: list[str]) -> MoveEvaluation:
         """
@@ -49,9 +39,8 @@ class Engine:
 
     def negamax(self, depth: int, alpha: float, beta: float,
                 color: Color) -> MoveEvaluation:
-        cached = self.cached_moves[color][self.board]
-        if len(cached) > depth:
-            return cached[-1]
+        if cached := self.cache.get(color, self.board, depth) is not None:
+            return cached
 
         if depth == 0:
             return NULL_MOVE, self.board.material_difference()
@@ -59,7 +48,7 @@ class Engine:
         moves = list(self.board.legal_moves(color))
         moves = self.order_moves(moves)
 
-        best_move, max_value = cached[-1]
+        best_move, max_value = self.cache.get(color, self.board, 0, DEFAULT_MOVE_EVALUATION)
 
         alpha = max(alpha, max_value)
 
@@ -80,7 +69,7 @@ class Engine:
         if best_move is None:
             return NULL_MOVE, -9999
 
-        cached[depth] = best_move, max_value
+        self.cache.put(color, self.board, depth, (best_move, max_value))
 
         return best_move, max_value
 

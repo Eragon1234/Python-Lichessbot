@@ -3,7 +3,7 @@ import os
 import sys
 
 import log
-from engine import Engine
+from engine.engine import Engine
 from game_controller import GameController, Game
 from playercolor import PlayerColor
 
