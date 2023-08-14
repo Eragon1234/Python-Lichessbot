@@ -43,7 +43,7 @@ class Engine:
             return cached
 
         if depth == 0:
-            return NULL_MOVE, self.board.material_difference()
+            return NULL_MOVE, self.material_difference(color)
 
         moves = list(self.board.legal_moves(color))
         moves = self.order_moves(moves)
@@ -78,3 +78,10 @@ class Engine:
             return self.board.board[move.target_field].value
 
         return sorted(moves, key=sort_key, reverse=True)
+
+    def material_difference(self, color: Color) -> int:
+        material_difference = self.board.material_difference()
+        if color is Color.BLACK:
+            material_difference = -material_difference
+
+        return material_difference
