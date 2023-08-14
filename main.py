@@ -34,20 +34,18 @@ def start_game(game: Game):
     engine = Engine(game.start_fen)
 
     def on_my_move(color: PlayerColor, moves: list[str]):
-        logging.info("my move")
         move, evaluation = engine.get_best_move(color, moves)
         uci_move = move.uci()
-        logging.info("moved %s", uci_move)
-        logging.info("evaluation %s", evaluation)
-        engine.board.move(move)
+        logging.info("best move %s", uci_move)
+        logging.info("evaluation %s\n\n", evaluation)
         game.move(uci_move)
 
-    def on_opponents_move(move: str):
-        logging.info("opponent moved %s", move)
+    def on_move(move: str):
+        logging.info("moved %s\n\n", move)
         engine.board.move(move)
 
     game.on_my_move(on_my_move)
-    game.on_opponents_move(on_opponents_move)
+    game.on_move(on_move)
 
     game.watch()
 

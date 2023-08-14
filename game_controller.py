@@ -84,8 +84,8 @@ class Game:
     def on_my_move(self, fn: typing.Callable[[PlayerColor, list[str]], None]):
         self.emitter.on('my_move', fn)
 
-    def on_opponents_move(self, fn: typing.Callable[[str], None]):
-        self.emitter.on('opponents_move', fn)
+    def on_move(self, fn: typing.Callable[[str], None]):
+        self.emitter.on('move', fn)
 
     def watch(self):
         for event in self.client.stream_game(self.game_id):
@@ -99,13 +99,10 @@ class Game:
 
             my_move = whites_move == (self.color is PlayerColor.White)
 
-            if my_move:
-                # if there is a move before the current one,
-                # it's the opponent's move
-                if len(moves) >= 1 and moves[-1] != '':
-                    move = moves[-1]
-                    self.emitter.emit('opponents_move', move)
+            if len(moves) > 0 and moves[-1] != '':
+                self.emitter.emit('move', moves[-1])
 
+            if my_move:
                 self.emitter.emit('my_move', self.color, moves)
 
     def move(self, move: str):
