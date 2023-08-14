@@ -59,6 +59,17 @@ class TestMoveGeneration(unittest.TestCase):
                  'g5f4', 'g5h4', 'g5f6', 'g5h6', 'g5e7', 'g5d8', 'g6e4',
                  'g6f5', 'g6h5', 'g6e6', 'g6f6', 'g6h6', 'g6f7', 'g6g7',
                  'g6h7', 'g6e8', 'g6g8']),
+            "test position 6": Case(
+                '6kr/1q1r2qp/8/p7/K7/8/8/8 b - - 1 75',
+                Color.BLACK,
+                ['g8f8', 'g8f7', 'g7f8', 'g7f7', 'g7e7', 'g7h6', 'g7g6',
+                 'g7f6', 'g7g5', 'g7e5', 'g7g4', 'g7d4', 'g7g3', 'g7c3',
+                 'g7g2', 'g7b2', 'g7g1', 'g7a1', 'd7d8', 'd7f7', 'd7e7',
+                 'd7c7', 'd7d6', 'd7d5', 'd7d4', 'd7d3', 'd7d2', 'd7d1',
+                 'b7c8', 'b7b8', 'b7a8', 'b7c7', 'b7a7', 'b7c6', 'b7b6',
+                 'b7a6', 'b7d5', 'b7b5', 'b7e4', 'b7b4', 'b7f3', 'b7b3',
+                 'b7g2', 'b7b2', 'b7h1', 'b7b1', 'h7h6', 'h7h5']
+            ),
             "position with check": Case(
                 'r5k1/5pp1/4p3/7Q/p1p3P1/P1B1q3/1P5P/5RK1 w - - 3 35',
                 Color.WHITE,
