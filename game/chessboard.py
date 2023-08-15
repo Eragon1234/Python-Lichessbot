@@ -35,9 +35,13 @@ class ChessBoard:
         if isinstance(move, str):
             move = Move.from_uci(move)
 
+        move: Move
+
         self.moves.append(move)
 
         moving_piece = self.board.pop(move.start_field)
+        if move.promote_to is not None:
+            moving_piece = Piece(move.promote_to, moving_piece.color)
 
         self.captured_pieces.append(self.board[move.target_field])
 
@@ -104,6 +108,8 @@ class ChessBoard:
         move = self.moves.pop()
 
         moved_piece = self.board[move.target_field]
+        if move.promote_to is not None:
+            moved_piece = Piece(PieceType.PAWN, moved_piece.color)
         captured_piece = self.captured_pieces.pop()
 
         self.board[move.start_field] = moved_piece
