@@ -151,16 +151,16 @@ class ChessBoard:
             color: for which color to generate the moves for.
 
         Returns:
-            list: a list of possible moves in UCIMove format
+            MoveGenerator: a generator for all possible moves
         """
-        coordinate_moves = self.pseudo_legal_moves(color)
+        moves = self.pseudo_legal_moves(color)
 
-        for move in coordinate_moves:
+        for move in moves:
             with self.test_move(move):
                 if self.king_in_check(color):
                     continue
 
-                yield move
+            yield move
 
     def king_in_check(self, color: Color) -> bool:
         """
@@ -194,7 +194,7 @@ class ChessBoard:
             color: the color to generate the moves for
 
         Returns:
-            returns all possible coordinate moves for the passed color
+            returns all possible moves for the passed color
         """
         en_passant = None
         if self.board.en_passant != "-":
