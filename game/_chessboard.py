@@ -26,8 +26,14 @@ class _ChessBoard:
         return iter(self._board)
 
     def iter_rows(self) -> Iterator[list[Piece]]:
-        for i in range(8):
-            yield self._board[i * 8:i * 8 + 8]
+        """
+        Iterate over the rows of the board.
+        The rows are a8-h8, a7-h7, ..., a1-h1
+        Returns:
+
+        """
+        for i in reversed(range(8)):
+            yield reversed(self._board[i * 8:i * 8 + 8])
 
     def __hash__(self) -> int:
         return hash(tuple(self._board))
@@ -59,22 +65,26 @@ class _ChessBoard:
                    halfmove_clock, fullmove_number)
 
     def fen(self) -> str:
-        fen = ""
+        rows = []
         for row in self.iter_rows():
             empty_count = 0
+            row_fen = ""
             for piece in row:
                 if piece.type == PieceType.EMPTY:
                     empty_count += 1
                     continue
 
                 if empty_count > 0:
-                    fen += str(empty_count)
+                    row_fen += str(empty_count)
                     empty_count = 0
-                fen += piece.fen()
+                row_fen += piece.fen()
 
             if empty_count > 0:
-                fen += str(empty_count)
-            fen += "/"
+                row_fen += str(empty_count)
+
+            rows.append(row_fen)
+
+        fen = "/".join(rows)
 
         return (f"{fen} {'w' if self.white_to_move else 'b'} "
                 f"{self.castling_rights} {self.en_passant} "
