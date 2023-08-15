@@ -1,6 +1,7 @@
 from typing import Generator, Optional
 
 from game.coordinate import Coordinate
+from game.move import Move
 from game.piece.board import Board
 from game.piece.bonus import BONUS_MAPS
 from game.piece.color import Color
@@ -8,7 +9,9 @@ from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
 from game.piece.values import VALUES
 
-PositionGenerator = Generator[Coordinate, None, None]
+MoveGenerator = Generator[Move, None, None]
+PROMOTE_TYPES = [PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP,
+                 PieceType.KNIGHT]
 
 
 class Piece:
@@ -88,10 +91,10 @@ class Piece:
 
         return board.color_at(position) in legal_target_colors
 
-    def positions(self, board: Board, pos: Coordinate,
-                  en_passant: Optional[Coordinate] = None) -> PositionGenerator:
+    def moves(self, board: Board, pos: Coordinate,
+              en_passant: Optional[Coordinate] = None) -> MoveGenerator:
         """
-        Generates possible positions for a piece on the given chess board.
+        Generates possible moves for a piece on the given chess board.
 
         Args:
             board: The chess board.
@@ -99,24 +102,24 @@ class Piece:
             en_passant: Optional en passant position.
 
         Returns:
-            A generator object that yields possible positions for the piece.
+            A generator object that yields possible moves for the piece.
         """
         if self.type is PieceType.PAWN:
-            return self._positions_for_pawn(board, pos, en_passant)
+            return self._moves_for_pawn(board, pos, en_passant)
 
-        return self._positions_with_move_groups(board, pos)
+        return self._moves_with_move_groups(board, pos)
 
-    def _positions_with_move_groups(self, board: Board,
-                                    pos: Coordinate) -> PositionGenerator:
+    def _moves_with_move_groups(self, board: Board,
+                                pos: Coordinate) -> MoveGenerator:
         """
-        Generates possible positions for a piece on the given chess board.
+        Generates possible moves for a piece on the given chess board.
 
         Args:
             board: The chess board.
             pos: The current position of the piece.
 
         Returns:
-            A generator object that yields possible positions for the piece.
+            A generator object that yields possible moves for the piece.
         """
         for move_group in self.possible_move_groups:
             for move in move_group:
@@ -125,16 +128,16 @@ class Piece:
                 if not self.is_legal_target(board, new_pos):
                     break
 
-                yield new_pos
+                yield Move(pos, new_pos)
 
                 target_field_color = board.color_at(new_pos)
                 if target_field_color is not Color.EMPTY:
                     break
 
-    def _positions_for_pawn(self, board: Board, pos: Coordinate,
-                            en_passant: Optional[Coordinate] = None) -> PositionGenerator:
+    def _moves_for_pawn(self, board: Board, pos: Coordinate,
+                        en_passant: Optional[Coordinate] = None) -> MoveGenerator:
         """
-        Generates possible positions for a pawn on the given chess board.
+        Generates possible moves for a pawn on the given chess board.
 
         Args:
             board: The chess board.
@@ -142,7 +145,21 @@ class Piece:
             en_passant: The position where a pawn could move en passant.
 
         Returns:
-            A generator object that yields possible positions for the pawn.
+            A generator object that yields possible moves for the pawn.
+        """
+        promote = self.is_start_rank(pos, self.color.enemy())
+        for target in self._positions_for_pawn(board, pos, en_passant):
+            if not promote:
+                yield Move(pos, target)
+                continue
+
+            for piece_type in PROMOTE_TYPES:
+                yield Move(pos, target, piece_type)
+
+    def _positions_for_pawn(self, board: Board, pos: Coordinate,
+                            en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:
+        """
+        Generates possible positions for a pawn on the given chess board.
         """
         forward = FORWARD
         if self.color is Color.BLACK:
@@ -171,15 +188,19 @@ class Piece:
         if en_passant == possible_target:
             yield en_passant
 
-    def is_start_rank(self, pos: Coordinate):
+    def is_start_rank(self, pos: Coordinate,
+                      color: Optional[Color] = None) -> bool:
         """
-        Checks if a given position is the start rank for a pawn.
+        Checks if a given position is the start rank for a pawn of the color.
 
         Args:
             pos: The position to check.
+            color: The color of the pawn. Defaults to the color of the piece.
 
         Returns:
             bool: whether the position is the start rank for a pawn.
         """
-        start_rank = 1 if self.color is Color.WHITE else 6
+        if color is None:
+            color = self.color
+        start_rank = 1 if color is Color.WHITE else 6
         return pos[1] == start_rank

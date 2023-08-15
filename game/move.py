@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from game.coordinate import Coordinate
-from game.piece import PieceType
+from game.piece.piece_type import PieceType
 
 
 @dataclass

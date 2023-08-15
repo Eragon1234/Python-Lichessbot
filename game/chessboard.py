@@ -203,10 +203,9 @@ class ChessBoard:
 
             coordinate = Coordinate(*position_to_coordinate(position))
 
-            new_positions = piece.positions(self.board, coordinate, en_passant)
+            new_positions = piece.moves(self.board, coordinate, en_passant)
 
-            yield from (Move(coordinate, new_position)
-                        for new_position in new_positions)
+            yield from new_positions
 
     def material_difference(self) -> int:
         """
