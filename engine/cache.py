@@ -17,7 +17,7 @@ class Cache(Protocol):
         If there isn't one, it returns default.
         """
 
-    def put(self, color: Color, board: ChessBoard,
+    def set(self, color: Color, board: ChessBoard,
             depth: int, value: MoveEvaluation):
         """
         Puts the given value in the cache for the given color and board
@@ -31,6 +31,6 @@ class NoCache(Cache):
         """Returns the default value."""
         return default
 
-    def put(self, color: Color, board: ChessBoard,
+    def set(self, color: Color, board: ChessBoard,
             depth: int, value: MoveEvaluation):
         """Does nothing."""

@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 
+from cache.move_cache import MoveCache
 from engine.engine import Engine
 from game_controller import GameController, Game
 from playercolor import PlayerColor
@@ -31,7 +32,8 @@ def main():
 
 def start_game(game: Game):
     logging.info("start fen: %s", game.start_fen)
-    engine = Engine(game.start_fen)
+    cache = MoveCache(1_000_000)
+    engine = Engine(game.start_fen, cache)
 
     def on_my_move(color: PlayerColor, moves: list[str]):
         move, evaluation = engine.get_best_move(color, moves)

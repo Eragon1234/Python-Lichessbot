@@ -1,3 +1,7 @@
+import logging
+import time
+from itertools import count
+
 from engine.cache import Cache, NoCache, MoveEvaluation
 from game import ChessBoard
 from game.move import Move
@@ -5,7 +9,6 @@ from game.piece import Color
 from playercolor import PlayerColor
 
 NULL_MOVE = Move.from_uci("d1e8")
-DEFAULT_MOVE_EVALUATION = (NULL_MOVE, -9999)
 
 
 class Engine:
@@ -32,14 +35,25 @@ class Engine:
         """
         return self.calculate_best_move(color, 3)
 
-    def calculate_best_move(self, color: PlayerColor, depth: int) -> MoveEvaluation:
+    def calculate_best_move(self, color: PlayerColor, seconds: int) -> MoveEvaluation:
         color = Color.WHITE if color is PlayerColor.White else Color.BLACK
 
-        return self.negamax(depth, float("-inf"), float("inf"), color)
+        exit_time = time.time() + seconds
+        best_move = NULL_MOVE
+        value = -9999
+        for depth in count(1):
+            logging.info(f"Depth: {depth}")
+            best_move, value = self.negamax(depth, -9999, 9999, color)
+            depth += 1
+            if time.time() > exit_time:
+                break
+
+        return best_move, value
 
     def negamax(self, depth: int, alpha: float, beta: float,
                 color: Color) -> MoveEvaluation:
-        if cached := self.cache.get(color, self.board, depth) is not None:
+        cached = self.cache.get(color, self.board, depth)
+        if cached is not None:
             return cached
 
         if depth == 0:
@@ -48,9 +62,8 @@ class Engine:
         moves = list(self.board.legal_moves(color))
         moves = self.order_moves(moves)
 
-        best_move, max_value = self.cache.get(color, self.board, 0, DEFAULT_MOVE_EVALUATION)
-
-        alpha = max(alpha, max_value)
+        best_move = None
+        max_value = alpha
 
         for move in moves:
             with self.board.test_move(move):
@@ -69,7 +82,7 @@ class Engine:
         if best_move is None:
             return NULL_MOVE, -9999
 
-        self.cache.put(color, self.board, depth, (best_move, max_value))
+        self.cache.set(color, self.board, depth, (best_move, max_value))
 
         return best_move, max_value
 

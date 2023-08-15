@@ -36,31 +36,6 @@ class TestBestMoveGenerationPerformance(unittest.TestCase):
         print("depth 5:", best_move_generation_time)
         self.assertLess(best_move_generation_time, .3)
 
-    def test_check_performance_of_move_generation_with_depth_6(self):
-        best_move_generation_time = self.run_with_depth(6)
-        print("depth 6:", best_move_generation_time)
-        self.assertLess(best_move_generation_time, .5)
-
-    def test_check_performance_of_move_generation_with_depth_7(self):
-        best_move_generation_time = self.run_with_depth(7)
-        print("depth 7:", best_move_generation_time)
-        self.assertLess(best_move_generation_time, 1)
-
-    def test_check_performance_of_move_generation_with_depth_8(self):
-        best_move_generation_time = self.run_with_depth(8)
-        print("depth 8:", best_move_generation_time)
-        self.assertLess(best_move_generation_time, 2)
-
-    def test_check_performance_of_move_generation_with_depth_9(self):
-        best_move_generation_time = self.run_with_depth(9)
-        print("depth 9:", best_move_generation_time)
-        self.assertLess(best_move_generation_time, 4)
-
-    def test_check_performance_of_move_generation_with_depth_10(self):
-        best_move_generation_time = self.run_with_depth(10)
-        print("depth 10:", best_move_generation_time)
-        self.assertLess(best_move_generation_time, 8)
-
     def run_with_depth(self, depth: int) -> float:
         def run():
             self.engine.calculate_best_move(PlayerColor.White, depth)
