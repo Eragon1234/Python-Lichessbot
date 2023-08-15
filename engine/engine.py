@@ -84,7 +84,7 @@ class Engine:
                     break
 
         if best_move is None:
-            return NULL_MOVE, -9999
+            max_value = -9999 if self.board.king_in_check(color) else 0
 
         self.cache.set(color, self.board, depth, (best_move, max_value))
 
