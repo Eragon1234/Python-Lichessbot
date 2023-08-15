@@ -25,6 +25,10 @@ class _ChessBoard:
     def __iter__(self) -> Iterator[Piece]:
         return iter(self._board)
 
+    def iter_rows(self) -> Iterator[list[Piece]]:
+        for i in range(8):
+            yield self._board[i * 8:i * 8 + 8]
+
     def __hash__(self) -> int:
         return hash(tuple(self._board))
 
@@ -53,6 +57,28 @@ class _ChessBoard:
 
         return cls(board, white_to_move, castling_rights, en_passant,
                    halfmove_clock, fullmove_number)
+
+    def fen(self) -> str:
+        fen = ""
+        for row in self.iter_rows():
+            empty_count = 0
+            for piece in row:
+                if piece.type == PieceType.EMPTY:
+                    empty_count += 1
+                    continue
+
+                if empty_count > 0:
+                    fen += str(empty_count)
+                    empty_count = 0
+                fen += piece.fen()
+
+            if empty_count > 0:
+                fen += str(empty_count)
+            fen += "/"
+
+        return (f"{fen} {'w' if self.white_to_move else 'b'} "
+                f"{self.castling_rights} {self.en_passant} "
+                f"{self.halfmove_clock} {self.fullmove_number}")
 
     def material_difference(self) -> int:
         return sum(piece.value for piece in self)

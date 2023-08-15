@@ -55,6 +55,16 @@ class Piece:
 
         return cls(PieceType(fen), color)
 
+    def fen(self) -> str:
+        """
+        Returns:
+            The FEN string for the piece.
+        """
+        short = self.type.value
+        if self.color is Color.WHITE:
+            short = short.upper()
+        return short
+
     def is_legal_target(self, board: Board, position: Coordinate,
                         legal_target_colors: Optional[Color] = None) -> bool:
         """

@@ -219,3 +219,12 @@ class ChessBoard:
             int: the difference in material
         """
         return self.board.material_difference()
+
+    def fen(self) -> str:
+        """
+        returns the fen of the board
+
+        Returns:
+            str: the fen of the board
+        """
+        return self.board.fen()
