@@ -35,7 +35,7 @@ class Engine:
         Returns:
             tuple[str, int]: the move and the evaluation
         """
-        exit_time = time.time()
+        exit_time = time.time() + seconds
 
         best_move = NULL_MOVE
         value = -9999
