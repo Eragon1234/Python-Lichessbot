@@ -1,9 +1,10 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 
 from game.coordinate import Coordinate
 
 
-class Move(NamedTuple):
+@dataclass
+class Move:
     start_field: Coordinate
     target_field: Coordinate
 

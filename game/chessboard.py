@@ -37,13 +37,11 @@ class ChessBoard:
 
         self.moves.append(move)
 
-        start_coordinates, target_coordinates = move
+        moving_piece = self.board.pop(move.start_field)
 
-        moving_piece = self.board.pop(start_coordinates)
+        self.captured_pieces.append(self.board[move.target_field])
 
-        self.captured_pieces.append(self.board[target_coordinates])
-
-        self.board[target_coordinates] = moving_piece
+        self.board[move.target_field] = moving_piece
 
         en_passant_coordinate = self.get_en_passant_capture(move)
         if en_passant_coordinate is not None:
@@ -64,9 +62,7 @@ class ChessBoard:
         Returns:
             Coordinate: the coordinate of the pawn that was taken en passant
         """
-        start_coordinate, target_coordinate = move
-
-        moving_piece = self.board[start_coordinate]
+        moving_piece = self.board[move.start_field]
 
         if moving_piece.type is not PieceType.PAWN:
             return None
@@ -75,11 +71,11 @@ class ChessBoard:
             return None
 
         en_passant_coordinate = Coordinate.from_uci(self.board.en_passant)
-        if target_coordinate != en_passant_coordinate:
+        if move.target_field != en_passant_coordinate:
             return None
 
         direction = 1 if moving_piece.color is Color.WHITE else -1
-        return target_coordinate + BACKWARD * direction
+        return move.target_field + BACKWARD * direction
 
     def new_en_passant_coordinate(self, move: Move) -> str:
         """
@@ -92,30 +88,26 @@ class ChessBoard:
         Returns:
             str: the uci coordinate where a pawn can be taken en passant
         """
-        start_coordinate, target_coordinate = move
-
-        moving_piece = self.board[start_coordinate]
+        moving_piece = self.board[move.start_field]
         if moving_piece.type is not PieceType.PAWN:
             return "-"
 
-        move_difference = abs(start_coordinate.y - target_coordinate.y)
+        move_difference = abs(move.start_field.y - move.target_field.y)
         if move_difference != 2:
             return "-"
 
         en_passant_rank = 2 if moving_piece.color is Color.WHITE else 5
-        return Coordinate(target_coordinate.x, en_passant_rank).uci()
+        return Coordinate(move.target_field.x, en_passant_rank).uci()
 
     def unmove(self) -> None:
         """undoes the last move"""
         move = self.moves.pop()
 
-        start_coordinates, target_coordinates = move
-
-        moved_piece = self.board[target_coordinates]
+        moved_piece = self.board[move.target_field]
         captured_piece = self.captured_pieces.pop()
 
-        self.board[start_coordinates] = moved_piece
-        self.board[target_coordinates] = captured_piece
+        self.board[move.start_field] = moved_piece
+        self.board[move.target_field] = captured_piece
 
         en_passant_taken_piece = self.en_passant_takes.pop()
         if en_passant_taken_piece is not None:
@@ -172,11 +164,10 @@ class ChessBoard:
         Returns:
             bool: if the king is in check
         """
-        coordinate_moves = self.pseudo_legal_moves(color.enemy())
+        moves = self.pseudo_legal_moves(color.enemy())
 
-        for coordinate_move in coordinate_moves:
-            target_coordinate = coordinate_move[1]
-            attacked_field = self.board[target_coordinate]
+        for move in moves:
+            attacked_field = self.board[move.target_field]
 
             if attacked_field.color is not color:
                 continue

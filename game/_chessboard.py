@@ -29,8 +29,6 @@ class _ChessBoard:
         """
         Iterate over the rows of the board.
         The rows are a8-h8, a7-h7, ..., a1-h1
-        Returns:
-
         """
         for i in reversed(range(8)):
             yield reversed(self._board[i * 8:i * 8 + 8])
