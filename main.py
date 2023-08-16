@@ -43,8 +43,9 @@ def start_game(game: Game):
         game.move(uci_move)
 
     def on_move(move: str):
-        logging.info("moved %s\n\n", move)
+        logging.info("moved %s", move)
         engine.board.move(move)
+        logging.info("new fen: %s\n\n", engine.board.fen())
 
     game.on_my_move(on_my_move)
     game.on_move(on_move)
