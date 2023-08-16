@@ -41,7 +41,7 @@ class Engine:
         value = -9999
 
         for depth in count(1):
-            logging.info(f"Depth: {depth}")
+            logging.info("Depth: %s", depth)
             best_move, value = self.calculate_best_move(color, depth)
             depth += 1
             if time.time() > exit_time:
