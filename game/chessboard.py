@@ -18,6 +18,7 @@ class ChessBoard:
 
         self.captured_pieces: list[Piece] = []
 
+        self.en_passant: list[str] = []
         self.en_passant_takes = []
 
         self.board = _ChessBoard.from_fen(fen)
@@ -38,6 +39,8 @@ class ChessBoard:
         move: Move
 
         self.moves.append(move)
+        self.castling_rights.append(self.board.castling_rights.copy())
+        self.en_passant.append(self.board.en_passant)
 
         moving_piece = self.board.pop(move.start_field)
         if move.promote_to is not None:
@@ -54,6 +57,8 @@ class ChessBoard:
             self.en_passant_takes.append(None)
 
         self.board.en_passant = self.new_en_passant_coordinate(move)
+
+        self.board.turn = self.board.turn.enemy()
 
     def get_en_passant_capture(self, move: Move) -> Optional[Coordinate]:
         """
@@ -119,6 +124,11 @@ class ChessBoard:
         if en_passant_taken_piece is not None:
             en_passant_coordinate = self.get_en_passant_capture(move)
             self.board[en_passant_coordinate] = en_passant_taken_piece
+
+        self.board.en_passant = self.en_passant.pop()
+        self.board.castling_rights = self.castling_rights.pop()
+
+        self.board.turn = self.board.turn.enemy()
 
     def whites_move(self) -> bool:
         """returns if it's white's move"""
