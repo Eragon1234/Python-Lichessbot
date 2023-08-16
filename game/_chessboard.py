@@ -4,12 +4,12 @@ from game.piece import Piece, Color, PieceType
 
 
 class _ChessBoard:
-    def __init__(self, board: list[Piece], white_to_move: bool,
-                 castling_rights: str, en_passant: str, halfmove_clock: int,
+    def __init__(self, board: list[Piece], turn: Color,
+                 castling_rights: set[str], en_passant: str, halfmove_clock: int,
                  fullmove_number: int):
         self._board = board
 
-        self.white_to_move = white_to_move
+        self.turn = turn
         self.castling_rights = castling_rights
         self.en_passant = en_passant
         self.halfmove_clock = halfmove_clock
@@ -53,13 +53,14 @@ class _ChessBoard:
 
         board.reverse()
 
-        white_to_move = fen_parts[1] == "w"
-        castling_rights = fen_parts[2]
+        turn = Color.WHITE if fen_parts[1] == "w" else Color.BLACK
+        castling_rights = set(fen_parts[2])
+        castling_rights.discard("-")
         en_passant = fen_parts[3]
         halfmove_clock = int(fen_parts[4])
         fullmove_number = int(fen_parts[5])
 
-        return cls(board, white_to_move, castling_rights, en_passant,
+        return cls(board, turn, castling_rights, en_passant,
                    halfmove_clock, fullmove_number)
 
     def fen(self) -> str:
@@ -84,8 +85,12 @@ class _ChessBoard:
 
         fen = "/".join(rows)
 
-        return (f"{fen} {'w' if self.white_to_move else 'b'} "
-                f"{self.castling_rights} {self.en_passant} "
+        castling_rights = "".join(sorted(self.castling_rights))
+        if castling_rights == "":
+            castling_rights = "-"
+
+        return (f"{fen} {'w' if self.turn else 'b'} "
+                f"{castling_rights} {self.en_passant} "
                 f"{self.halfmove_clock} {self.fullmove_number}")
 
     def material_difference(self) -> int:
