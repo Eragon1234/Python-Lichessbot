@@ -67,7 +67,7 @@ class Engine:
         moves = self.order_moves(moves)
 
         best_move = None
-        max_value = alpha
+        max_value = -9999
 
         for move in moves:
             with self.board.test_move(move):
