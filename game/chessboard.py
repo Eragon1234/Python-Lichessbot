@@ -158,7 +158,6 @@ class ChessBoard:
                 rook = self.board.pop(Coordinate(2, move.start_field.y))
                 self.board[Coordinate(0, move.start_field.y)] = rook
             elif move.start_field.x - move.target_field.x == -2:
-                print(self.fen())
                 rook = self.board.pop(Coordinate(4, move.start_field.y))
                 self.board[Coordinate(7, move.start_field.y)] = rook
 
