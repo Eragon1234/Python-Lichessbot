@@ -92,7 +92,8 @@ class Piece:
         return board.color_at(position) in legal_target_colors
 
     def moves(self, board: Board, pos: Coordinate,
-              en_passant: Optional[Coordinate] = None) -> MoveGenerator:
+              en_passant: Optional[Coordinate] = None,
+              castling_rights: Optional[set[str]] = None) -> MoveGenerator:
         """
         Generates possible moves for a piece on the given chess board.
 
@@ -100,14 +101,49 @@ class Piece:
             board: The chess board.
             pos: The current position of the piece.
             en_passant: Optional en passant position.
+            castling_rights: Optional castling rights.
 
         Returns:
             A generator object that yields possible moves for the piece.
         """
-        if self.type is PieceType.PAWN:
-            return self._moves_for_pawn(board, pos, en_passant)
+        yield from self._moves_with_move_groups(board, pos)
 
-        return self._moves_with_move_groups(board, pos)
+        if self.type is PieceType.PAWN:
+            yield from self._moves_for_pawn(board, pos, en_passant)
+
+        if self.type is PieceType.KING:
+            yield from self._castling_moves(board, pos, castling_rights)
+
+    def _castling_moves(self, board: Board, pos: Coordinate,
+                        castling_rights: Optional[set[str]] = None) -> MoveGenerator:
+        """
+        Generates possible castling moves for a king on the given chess board.
+        """
+        if castling_rights is None:
+            return
+
+        if len(castling_rights) == 0:
+            return
+
+        castling: list[tuple[Coordinate, int]] = []
+        king = pos
+        if self.color is Color.WHITE:
+            if "K" in castling_rights:
+                castling.append((Coordinate(7, 0), 1))
+            if "Q" in castling_rights:
+                castling.append((Coordinate(0, 0), -1))
+        else:
+            if "k" in castling_rights:
+                castling.append((Coordinate(0, 7), -1))
+            if "q" in castling_rights:
+                castling.append((Coordinate(7, 7), 1))
+
+        for rook, steps in castling:
+            for x in range(king[0] + steps, rook[0], steps):
+                if board.color_at((x, king[1])) is not Color.EMPTY:
+                    break
+            else:
+                yield Move(king, Coordinate(king[0] + 2 * steps, king[1]))
 
     def _moves_with_move_groups(self, board: Board,
                                 pos: Coordinate) -> MoveGenerator:

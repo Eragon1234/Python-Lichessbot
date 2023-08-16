@@ -19,6 +19,7 @@ class ChessBoard:
         self.captured_pieces: list[Piece] = []
 
         self.en_passant: list[str] = []
+        self.castling_rights: list[set[str]] = []
         self.en_passant_takes = []
 
         self.board = _ChessBoard.from_fen(fen)
@@ -57,6 +58,31 @@ class ChessBoard:
             self.en_passant_takes.append(None)
 
         self.board.en_passant = self.new_en_passant_coordinate(move)
+
+        if moving_piece.type is PieceType.KING:
+            if move.start_field.x - move.target_field.x == 2:
+                rook = self.board.pop(Coordinate(0, move.start_field.y))
+                self.board[Coordinate(2, move.start_field.y)] = rook
+            elif move.start_field.x - move.target_field.x == -2:
+                rook = self.board.pop(Coordinate(7, move.start_field.y))
+                self.board[Coordinate(4, move.start_field.y)] = rook
+
+            castling_rights = "kq"
+            if moving_piece.color is Color.WHITE:
+                castling_rights = castling_rights.upper()
+            self.board.castling_rights.difference_update(castling_rights)
+
+        if moving_piece.type is PieceType.ROOK:
+            if move.start_field.x == 0:
+                castling_rights = "q"
+            elif move.start_field.x == 7:
+                castling_rights = "k"
+            else:
+                castling_rights = ""
+
+            if moving_piece.color is Color.WHITE:
+                castling_rights = castling_rights.upper()
+            self.board.castling_rights.difference_update(castling_rights)
 
         self.board.turn = self.board.turn.enemy()
 
@@ -126,6 +152,16 @@ class ChessBoard:
             self.board[en_passant_coordinate] = en_passant_taken_piece
 
         self.board.en_passant = self.en_passant.pop()
+
+        if moved_piece.type is PieceType.KING:
+            if move.start_field.x - move.target_field.x == 2:
+                rook = self.board.pop(Coordinate(2, move.start_field.y))
+                self.board[Coordinate(0, move.start_field.y)] = rook
+            elif move.start_field.x - move.target_field.x == -2:
+                print(self.fen())
+                rook = self.board.pop(Coordinate(4, move.start_field.y))
+                self.board[Coordinate(7, move.start_field.y)] = rook
+
         self.board.castling_rights = self.castling_rights.pop()
 
         self.board.turn = self.board.turn.enemy()
@@ -164,11 +200,42 @@ class ChessBoard:
         moves = self.pseudo_legal_moves(color)
 
         for move in moves:
+            if self.is_castle(move):
+                if self.king_in_check(color):
+                    continue
+                if self.is_attacked(self.castles_trough(move), color.enemy()):
+                    continue
             with self.test_move(move):
                 if self.king_in_check(color):
                     continue
 
             yield move
+
+    def is_castle(self, move: Move) -> bool:
+        """
+        returns if the move is a castle
+        Args:
+            move: the move to check
+
+        Returns:
+            bool: if the move is a castle
+        """
+        return (self.board[move.start_field].type is PieceType.KING
+                and abs(move.start_field.x - move.target_field.x) == 2)
+
+    def castles_trough(self, move: Move) -> Coordinate:
+        """
+        returns the coordinate the king moves trough when castling
+        It is assumed that the move is a castle
+
+        Args:
+            move: the move to check
+
+        Returns:
+            Coordinate: the coordinate the king moves trough when castling
+        """
+        direction = 1 if move.start_field.x < move.target_field.x else -1
+        return move.start_field + BACKWARD * direction
 
     def king_in_check(self, color: Color) -> bool:
         """
@@ -193,6 +260,25 @@ class ChessBoard:
 
         return False
 
+    def is_attacked(self, pos: Coordinate, color: Color) -> bool:
+        """
+        returns if the passed position is attacked by the passed color
+
+        Args:
+            pos: the position to check
+            color: the color to check
+
+        Returns:
+            bool: if the position is attacked
+        """
+        moves = self.pseudo_legal_moves(color)
+
+        for move in moves:
+            if move.target_field == pos:
+                return True
+
+        return False
+
     def pseudo_legal_moves(self, color: Color) -> MoveGenerator:
         """
         generates the pseudo legal moves for the passed color
@@ -207,15 +293,18 @@ class ChessBoard:
         if self.board.en_passant != "-":
             en_passant = Coordinate.from_uci(self.board.en_passant)
 
+        castling_rights = self.board.castling_rights.copy()
+
         for position, piece in enumerate(self.board):
             if piece.color is not color:
                 continue
 
             coordinate = Coordinate(*position_to_coordinate(position))
 
-            new_positions = piece.moves(self.board, coordinate, en_passant)
+            moves = piece.moves(self.board, coordinate, en_passant,
+                                castling_rights)
 
-            yield from new_positions
+            yield from moves
 
     def material_difference(self) -> int:
         """
