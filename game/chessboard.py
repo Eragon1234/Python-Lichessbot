@@ -43,6 +43,8 @@ class ChessBoard:
         self.castling_rights.append(self.board.castling_rights.copy())
         self.en_passant.append(self.board.en_passant)
 
+        self.update_castling_rights(move)
+
         moving_piece = self.board.pop(move.start_field)
         if move.promote_to is not None:
             moving_piece = Piece(move.promote_to, moving_piece.color)
@@ -60,19 +62,41 @@ class ChessBoard:
         self.board.en_passant = self.new_en_passant_coordinate(move)
 
         if moving_piece.type is PieceType.KING:
-            if move.start_field.x - move.target_field.x == 2:
-                rook = self.board.pop(Coordinate(0, move.start_field.y))
-                self.board[Coordinate(2, move.start_field.y)] = rook
-            elif move.start_field.x - move.target_field.x == -2:
-                rook = self.board.pop(Coordinate(7, move.start_field.y))
-                self.board[Coordinate(4, move.start_field.y)] = rook
+            rook_move = self.castle_rook_move(move)
+            if rook_move is not None:
+                rook = self.board.pop(rook_move.start_field)
+                self.board[rook_move.target_field] = rook
 
+        self.board.turn = self.board.turn.enemy()
+
+    def castle_rook_move(self, move: Move) -> Optional[Move]:
+        """
+        returns the move of the rook when castling
+
+        Args:
+            move: the move to check
+
+        Returns:
+            Move: the move of the rook when castling
+        """
+        if self.is_kingside_castle(move):
+            return Move(Coordinate(0, move.start_field.y),
+                        Coordinate(2, move.start_field.y))
+        elif self.is_queenside_castle(move):
+            return Move(Coordinate(7, move.start_field.y),
+                        Coordinate(4, move.start_field.y))
+        else:
+            return None
+
+    def update_castling_rights(self, move: Move) -> None:
+        moving_piece = self.board[move.start_field]
+        if moving_piece.type is PieceType.KING:
             castling_rights = "kq"
             if moving_piece.color is Color.WHITE:
                 castling_rights = castling_rights.upper()
-            self.board.castling_rights.difference_update(castling_rights)
 
-        if moving_piece.type is PieceType.ROOK:
+            self.board.castling_rights.difference_update(castling_rights)
+        elif moving_piece.type is PieceType.ROOK:
             if move.start_field.x == 0:
                 castling_rights = "q"
             elif move.start_field.x == 7:
@@ -82,9 +106,7 @@ class ChessBoard:
 
             if moving_piece.color is Color.WHITE:
                 castling_rights = castling_rights.upper()
-            self.board.castling_rights.difference_update(castling_rights)
-
-        self.board.turn = self.board.turn.enemy()
+            self.board.castling_rights.discard(castling_rights)
 
     def get_en_passant_capture(self, move: Move) -> Optional[Coordinate]:
         """
@@ -154,12 +176,11 @@ class ChessBoard:
         self.board.en_passant = self.en_passant.pop()
 
         if moved_piece.type is PieceType.KING:
-            if move.start_field.x - move.target_field.x == 2:
-                rook = self.board.pop(Coordinate(2, move.start_field.y))
-                self.board[Coordinate(0, move.start_field.y)] = rook
-            elif move.start_field.x - move.target_field.x == -2:
-                rook = self.board.pop(Coordinate(4, move.start_field.y))
-                self.board[Coordinate(7, move.start_field.y)] = rook
+            rook_move = self.castle_rook_move(move)
+
+            if rook_move is not None:
+                rook = self.board.pop(rook_move.target_field)
+                self.board[rook_move.start_field] = rook
 
         self.board.castling_rights = self.castling_rights.pop()
 
@@ -219,8 +240,34 @@ class ChessBoard:
         Returns:
             bool: if the move is a castle
         """
-        return (self.board[move.start_field].type is PieceType.KING
-                and abs(move.start_field.x - move.target_field.x) == 2)
+        if not self.board[move.start_field].type is PieceType.KING:
+            return False
+
+        return self.is_kingside_castle(move) or self.is_queenside_castle(move)
+
+    def is_kingside_castle(self, move: Move) -> bool:
+        """
+        returns if the move is a kingside castle
+        assumes that the moving piece is a king
+        Args:
+            move: thte move to check
+
+        Returns:
+            bool: if the move is a kingside castle
+        """
+        return move.start_field.x - move.target_field.x == 2
+
+    def is_queenside_castle(self, move: Move) -> bool:
+        """
+        returns if the move is a queenside castle
+        assumes that the moving piece is a king
+        Args:
+            move: the move to check
+
+        Returns:
+            bool: if the move is a queenside castle
+        """
+        return move.start_field.x - move.target_field.x == -2
 
     def castles_trough(self, move: Move) -> Coordinate:
         """
