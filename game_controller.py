@@ -89,7 +89,13 @@ class Game:
 
     def watch(self):
         for event in self.client.stream_game(self.game_id):
-            state = event['state'] if 'state' in event else event
+            if event['type'] == 'gameFull':
+                state = event['state']
+            elif event['type'] == 'gameState':
+                state = event
+            else:
+                continue
+
             moves = state['moves']
 
             moves = moves.split(" ")

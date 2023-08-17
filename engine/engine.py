@@ -66,7 +66,7 @@ class Engine:
         moves = list(self.board.legal_moves(color))
         moves = self.order_moves(moves)
 
-        best_move = None
+        best_move = NULL_MOVE
         max_value = -9999
 
         for move in moves:
@@ -83,7 +83,7 @@ class Engine:
                 if alpha >= beta:
                     break
 
-        if best_move is None:
+        if best_move is NULL_MOVE:
             max_value = -9999 if self.board.king_in_check(color) else 0
 
         self.cache.set(color, self.board, depth, (best_move, max_value))
