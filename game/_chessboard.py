@@ -89,7 +89,7 @@ class _ChessBoard:
         if castling_rights == "":
             castling_rights = "-"
 
-        return (f"{fen} {'w' if self.turn else 'b'} "
+        return (f"{fen} {'w' if self.turn is Color.WHITE else 'b'} "
                 f"{castling_rights} {self.en_passant} "
                 f"{self.halfmove_clock} {self.fullmove_number}")
 
