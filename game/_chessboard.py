@@ -1,12 +1,13 @@
 from typing import Iterator
 
+from game.castling_rights import CastlingRights
 from game.piece import Piece, Color, PieceType
 
 
 class _ChessBoard:
     def __init__(self, board: list[Piece], turn: Color,
-                 castling_rights: set[str], en_passant: str, halfmove_clock: int,
-                 fullmove_number: int):
+                 castling_rights: CastlingRights, en_passant: str,
+                 halfmove_clock: int, fullmove_number: int):
         self._board = board
 
         self.turn = turn
@@ -54,8 +55,18 @@ class _ChessBoard:
         board.reverse()
 
         turn = Color.WHITE if fen_parts[1] == "w" else Color.BLACK
-        castling_rights = set(fen_parts[2])
-        castling_rights.discard("-")
+        castling_rights = CastlingRights.NONE
+        if fen_parts[2] != "-":
+            for char in fen_parts[2]:
+                if char == "K":
+                    castling_rights |= CastlingRights.WHITE_KING
+                elif char == "Q":
+                    castling_rights |= CastlingRights.WHITE_QUEEN
+                elif char == "k":
+                    castling_rights |= CastlingRights.BLACK_KING
+                elif char == "q":
+                    castling_rights |= CastlingRights.BLACK_QUEEN
+
         en_passant = fen_parts[3]
         halfmove_clock = int(fen_parts[4])
         fullmove_number = int(fen_parts[5])
@@ -85,7 +96,16 @@ class _ChessBoard:
 
         fen = "/".join(rows)
 
-        castling_rights = "".join(sorted(self.castling_rights))
+        castling_rights = ""
+        if CastlingRights.WHITE_KING in self.castling_rights:
+            castling_rights += "K"
+        if CastlingRights.WHITE_QUEEN in self.castling_rights:
+            castling_rights += "Q"
+        if CastlingRights.BLACK_KING in self.castling_rights:
+            castling_rights += "k"
+        if CastlingRights.BLACK_QUEEN in self.castling_rights:
+            castling_rights += "q"
+
         if castling_rights == "":
             castling_rights = "-"
 

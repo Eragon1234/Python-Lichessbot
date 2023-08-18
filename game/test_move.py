@@ -41,6 +41,12 @@ class TestMove(unittest.TestCase):
                 "r1bqk2r/p1p2ppp/1pnp1n2/2b1p3/4P2P/2N5/PPPP1PP1/R1BQKB1R b kq - 3 9",
                 "e8g8",
                 "r1bq1rk1/p1p2ppp/1pnp1n2/2b1p3/4P2P/2N5/PPPP1PP1/R1BQKB1R w - - 4 2"
+            ),
+            (
+                "test rook move disallows castling",
+                "3r1bnr/2k2ppp/1p2b3/8/3P4/8/PP3PPP/4K2R w K - 0 17",
+                "h1g1",
+                "3r1bnr/2k2ppp/1p2b3/8/3P4/8/PP3PPP/4K1R1 b - - 1 17"
             )
         ]
 

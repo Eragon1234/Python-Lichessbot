@@ -1,6 +1,7 @@
 from typing import Generator, Optional
 
 from game._chessboard import _ChessBoard, position_to_coordinate
+from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.move import Move
 from game.piece import Piece, PieceType, Color
@@ -19,7 +20,7 @@ class ChessBoard:
         self.captured_pieces: list[Piece] = []
 
         self.en_passant: list[str] = []
-        self.castling_rights: list[set[str]] = []
+        self.castling_rights: list[CastlingRights] = []
         self.en_passant_takes = []
 
         self.board = _ChessBoard.from_fen(fen)
@@ -40,7 +41,7 @@ class ChessBoard:
         move: Move
 
         self.moves.append(move)
-        self.castling_rights.append(self.board.castling_rights.copy())
+        self.castling_rights.append(self.board.castling_rights)
         self.en_passant.append(self.board.en_passant)
 
         self.update_castling_rights(move)
@@ -90,23 +91,30 @@ class ChessBoard:
 
     def update_castling_rights(self, move: Move) -> None:
         moving_piece = self.board[move.start_field]
+
+        remove_rights = CastlingRights.NONE
         if moving_piece.type is PieceType.KING:
-            castling_rights = "kq"
             if moving_piece.color is Color.WHITE:
-                castling_rights = castling_rights.upper()
-
-            self.board.castling_rights.difference_update(castling_rights)
-        elif moving_piece.type is PieceType.ROOK:
-            if move.start_field.x == 0:
-                castling_rights = "q"
-            elif move.start_field.x == 7:
-                castling_rights = "k"
+                remove_rights = CastlingRights.WHITE
             else:
-                castling_rights = ""
+                remove_rights = CastlingRights.BLACK
+
+        elif moving_piece.type is PieceType.ROOK:
+            print(move.start_field.x)
+            if move.start_field.x == 0:
+                remove_rights = CastlingRights.KING
+            elif move.start_field.x == 7:
+                remove_rights = CastlingRights.QUEEN
+            else:
+                return
 
             if moving_piece.color is Color.WHITE:
-                castling_rights = castling_rights.upper()
-            self.board.castling_rights.discard(castling_rights)
+                remove_rights = remove_rights & CastlingRights.WHITE
+            else:
+                remove_rights = remove_rights & CastlingRights.BLACK
+
+        print(remove_rights)
+        self.board.castling_rights &= ~remove_rights
 
     def get_en_passant_capture(self, move: Move) -> Optional[Coordinate]:
         """
@@ -339,8 +347,6 @@ class ChessBoard:
         if self.board.en_passant != "-":
             en_passant = Coordinate.from_uci(self.board.en_passant)
 
-        castling_rights = self.board.castling_rights.copy()
-
         for position, piece in enumerate(self.board):
             if piece.color is not color:
                 continue
@@ -348,7 +354,7 @@ class ChessBoard:
             coordinate = Coordinate(*position_to_coordinate(position))
 
             moves = piece.moves(self.board, coordinate, en_passant,
-                                castling_rights)
+                                self.board.castling_rights)
 
             yield from moves
 

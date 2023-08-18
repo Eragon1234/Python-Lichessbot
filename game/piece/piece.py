@@ -1,5 +1,6 @@
 from typing import Generator, Optional
 
+from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.move import Move
 from game.piece.board import Board
@@ -93,7 +94,7 @@ class Piece:
 
     def moves(self, board: Board, pos: Coordinate,
               en_passant: Optional[Coordinate] = None,
-              castling_rights: Optional[set[str]] = None) -> MoveGenerator:
+              castling_rights: CastlingRights = CastlingRights.NONE) -> MoveGenerator:
         """
         Generates possible moves for a piece on the given chess board.
 
@@ -115,27 +116,24 @@ class Piece:
             yield from self._castling_moves(board, pos, castling_rights)
 
     def _castling_moves(self, board: Board, pos: Coordinate,
-                        castling_rights: Optional[set[str]] = None) -> MoveGenerator:
+                        castling_rights: CastlingRights) -> MoveGenerator:
         """
         Generates possible castling moves for a king on the given chess board.
         """
-        if castling_rights is None:
-            return
-
-        if len(castling_rights) == 0:
+        if castling_rights is CastlingRights.NONE:
             return
 
         castling: list[tuple[Coordinate, int]] = []
         king = pos
         if self.color is Color.WHITE:
-            if "K" in castling_rights:
+            if CastlingRights.WHITE_KING in castling_rights:
                 castling.append((Coordinate(7, 0), 1))
-            if "Q" in castling_rights:
+            if CastlingRights.WHITE_QUEEN in castling_rights:
                 castling.append((Coordinate(0, 0), -1))
         else:
-            if "k" in castling_rights:
+            if CastlingRights.BLACK_KING in castling_rights:
                 castling.append((Coordinate(0, 7), -1))
-            if "q" in castling_rights:
+            if CastlingRights.BLACK_QUEEN in castling_rights:
                 castling.append((Coordinate(7, 7), 1))
 
         for rook, steps in castling:
