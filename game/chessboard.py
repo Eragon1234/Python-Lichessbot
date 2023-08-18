@@ -100,7 +100,6 @@ class ChessBoard:
                 remove_rights = CastlingRights.BLACK
 
         elif moving_piece.type is PieceType.ROOK:
-            print(move.start_field.x)
             if move.start_field.x == 0:
                 remove_rights = CastlingRights.KING
             elif move.start_field.x == 7:
@@ -113,7 +112,6 @@ class ChessBoard:
             else:
                 remove_rights = remove_rights & CastlingRights.BLACK
 
-        print(remove_rights)
         self.board.castling_rights &= ~remove_rights
 
     def get_en_passant_capture(self, move: Move) -> Optional[Coordinate]:
