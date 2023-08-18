@@ -2,7 +2,7 @@ import unittest
 
 from game import ChessBoard
 from game.move import Move
-from game.piece import Color
+from game.piece.color import Color
 
 
 class TestMoveGeneration(unittest.TestCase):

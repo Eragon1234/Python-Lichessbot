@@ -4,8 +4,10 @@ from game._chessboard import _ChessBoard, position_to_coordinate
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.move import Move
-from game.piece import Piece, PieceType, Color
+from game.piece.color import Color
 from game.piece.move_groups import BACKWARD
+from game.piece.piece import Piece
+from game.piece.piece_type import PieceType
 
 UciMoveGenerator = Generator[str, None, None]
 MoveGenerator = Generator[Move, None, None]
@@ -33,7 +35,7 @@ class ChessBoard:
         makes a move on the board
 
         Args:
-            move (Move): the move to move
+            move: the move to move
         """
         if isinstance(move, str):
             move = Move.from_uci(move)
@@ -46,13 +48,12 @@ class ChessBoard:
 
         self.update_castling_rights(move)
 
-        moving_piece = self.board.pop(move.start_field)
+        captured_piece = self.board.do_move(move)
+
+        self.captured_pieces.append(captured_piece)
+
         if move.promote_to is not None:
-            moving_piece = Piece(move.promote_to, moving_piece.color)
-
-        self.captured_pieces.append(self.board[move.target_field])
-
-        self.board[move.target_field] = moving_piece
+            self.board[move.target_field].type = move.promote_to
 
         en_passant_coordinate = self.get_en_passant_capture(move)
         if en_passant_coordinate is not None:
@@ -62,11 +63,10 @@ class ChessBoard:
 
         self.board.en_passant = self.new_en_passant_coordinate(move)
 
-        if moving_piece.type is PieceType.KING:
+        if self.board[move.target_field].type is PieceType.KING:
             rook_move = self.castle_rook_move(move)
             if rook_move is not None:
-                rook = self.board.pop(rook_move.start_field)
-                self.board[rook_move.target_field] = rook
+                self.board.do_move(rook_move)
 
         self.board.turn = self.board.turn.enemy()
 
@@ -83,11 +83,12 @@ class ChessBoard:
         if self.is_kingside_castle(move):
             return Move(Coordinate(0, move.start_field.y),
                         Coordinate(2, move.start_field.y))
-        elif self.is_queenside_castle(move):
+
+        if self.is_queenside_castle(move):
             return Move(Coordinate(7, move.start_field.y),
                         Coordinate(4, move.start_field.y))
-        else:
-            return None
+
+        return None
 
     def update_castling_rights(self, move: Move) -> None:
         moving_piece = self.board[move.start_field]
