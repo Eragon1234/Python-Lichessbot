@@ -3,7 +3,7 @@ from typing import Optional
 from cache.lru.cache import LRUCache
 from engine.cache import MoveEvaluation
 from game import ChessBoard
-from game.piece import Color
+from game.piece.color import Color
 
 
 class MoveCache:

@@ -1,13 +1,14 @@
-from game import Piece
 from game.coordinate import Coordinate
-from game.move import Move
-from game.piece import Color, PieceType
+from game.move.uci import move_from_uci
+from game.piece.color import Color
+from game.piece.piece import Piece
+from game.piece.piece_type import PieceType
 
 
 class Case:
     def __init__(self, pos: str, expected: list[str]):
         self.position = Coordinate.from_uci(pos)
-        self.expected = [Move.from_uci(pos + e) for e in expected]
+        self.expected = [move_from_uci(pos + e) for e in expected]
 
         from game._chessboard import _ChessBoard
         self.board = _ChessBoard.from_fen("8/8/8/8/8/8/8/8 w - - 0 1")

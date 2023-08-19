@@ -1,0 +1,32 @@
+from typing import Protocol
+
+from game.castling_rights import CastlingRights
+from game.coordinate import Coordinate
+from game.piece.color import Color
+from game.piece.piece_type import PieceType
+
+
+class Piece(Protocol):
+    color: Color
+    type: PieceType
+
+
+class _ChessBoard(Protocol):
+    def __getitem__(self, item: Coordinate) -> Piece:
+        ...
+
+    def __setitem__(self, key: Coordinate, value: Piece):
+        ...
+
+    def do_move(self, start_field: Coordinate,
+                target_field: Coordinate) -> Piece:
+        ...
+
+    def pop(self, field: Coordinate) -> Piece:
+        ...
+
+    en_passant: str
+
+    castling_rights: CastlingRights
+
+    turn: Color

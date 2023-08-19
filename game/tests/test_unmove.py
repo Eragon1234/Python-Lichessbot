@@ -1,7 +1,7 @@
 import unittest
 
 from game import ChessBoard
-from game.piece import Color
+from game.piece.color import Color
 
 
 class TestUnmove(unittest.TestCase):

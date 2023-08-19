@@ -1,9 +1,10 @@
-from typing import Generator, Optional
+from typing import Generator
 
 from game._chessboard import _ChessBoard, position_to_coordinate
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
-from game.move import Move
+from game.move.move import Move
+from game.move.uci import move_from_uci
 from game.piece.color import Color
 from game.piece.move_groups import BACKWARD
 from game.piece.piece import Piece
@@ -38,160 +39,19 @@ class ChessBoard:
             move: the move to move
         """
         if isinstance(move, str):
-            move = Move.from_uci(move)
+            move = move_from_uci(self.board, move)
 
         move: Move
 
         self.moves.append(move)
-        self.castling_rights.append(self.board.castling_rights)
-        self.en_passant.append(self.board.en_passant)
 
-        self.update_castling_rights(move)
-
-        captured_piece = self.board.do_move(move)
-
-        self.captured_pieces.append(captured_piece)
-
-        if move.promote_to is not None:
-            self.board[move.target_field].type = move.promote_to
-
-        en_passant_coordinate = self.get_en_passant_capture(move)
-        if en_passant_coordinate is not None:
-            self.en_passant_takes.append(self.board.pop(en_passant_coordinate))
-        else:
-            self.en_passant_takes.append(None)
-
-        self.board.en_passant = self.new_en_passant_coordinate(move)
-
-        if self.board[move.target_field].type is PieceType.KING:
-            rook_move = self.castle_rook_move(move)
-            if rook_move is not None:
-                self.board.do_move(rook_move)
-
-        self.board.turn = self.board.turn.enemy()
-
-    def castle_rook_move(self, move: Move) -> Optional[Move]:
-        """
-        returns the move of the rook when castling
-
-        Args:
-            move: the move to check
-
-        Returns:
-            Move: the move of the rook when castling
-        """
-        if self.is_kingside_castle(move):
-            return Move(Coordinate(0, move.start_field.y),
-                        Coordinate(2, move.start_field.y))
-
-        if self.is_queenside_castle(move):
-            return Move(Coordinate(7, move.start_field.y),
-                        Coordinate(4, move.start_field.y))
-
-        return None
-
-    def update_castling_rights(self, move: Move) -> None:
-        moving_piece = self.board[move.start_field]
-
-        remove_rights = CastlingRights.NONE
-        if moving_piece.type is PieceType.KING:
-            if moving_piece.color is Color.WHITE:
-                remove_rights = CastlingRights.WHITE
-            else:
-                remove_rights = CastlingRights.BLACK
-
-        elif moving_piece.type is PieceType.ROOK:
-            if move.start_field.x == 0:
-                remove_rights = CastlingRights.KING
-            elif move.start_field.x == 7:
-                remove_rights = CastlingRights.QUEEN
-            else:
-                return
-
-            if moving_piece.color is Color.WHITE:
-                remove_rights = remove_rights & CastlingRights.WHITE
-            else:
-                remove_rights = remove_rights & CastlingRights.BLACK
-
-        self.board.castling_rights &= ~remove_rights
-
-    def get_en_passant_capture(self, move: Move) -> Optional[Coordinate]:
-        """
-        returns the coordinate of the pawn that was taken en passant
-        if no pawn was taken en passant, returns None
-
-        Args:
-            move: the move to check
-
-        Returns:
-            Coordinate: the coordinate of the pawn that was taken en passant
-        """
-        moving_piece = self.board[move.start_field]
-
-        if moving_piece.type is not PieceType.PAWN:
-            return None
-
-        if self.board.en_passant == "-":
-            return None
-
-        en_passant_coordinate = Coordinate.from_uci(self.board.en_passant)
-        if move.target_field != en_passant_coordinate:
-            return None
-
-        direction = 1 if moving_piece.color is Color.WHITE else -1
-        return move.target_field + BACKWARD * direction
-
-    def new_en_passant_coordinate(self, move: Move) -> str:
-        """
-        returns the uci coordinate where a pawn can be taken en passant
-        if no pawn was taken en passant, returns '-'
-
-        Args:
-            move: the move to check
-
-        Returns:
-            str: the uci coordinate where a pawn can be taken en passant
-        """
-        moving_piece = self.board[move.start_field]
-        if moving_piece.type is not PieceType.PAWN:
-            return "-"
-
-        move_difference = abs(move.start_field.y - move.target_field.y)
-        if move_difference != 2:
-            return "-"
-
-        en_passant_rank = 2 if moving_piece.color is Color.WHITE else 5
-        return Coordinate(move.target_field.x, en_passant_rank).uci()
+        move.move(self.board)
 
     def unmove(self) -> None:
         """undoes the last move"""
         move = self.moves.pop()
 
-        moved_piece = self.board[move.target_field]
-        if move.promote_to is not None:
-            moved_piece = Piece(PieceType.PAWN, moved_piece.color)
-        captured_piece = self.captured_pieces.pop()
-
-        self.board[move.start_field] = moved_piece
-        self.board[move.target_field] = captured_piece
-
-        en_passant_taken_piece = self.en_passant_takes.pop()
-        if en_passant_taken_piece is not None:
-            en_passant_coordinate = self.get_en_passant_capture(move)
-            self.board[en_passant_coordinate] = en_passant_taken_piece
-
-        self.board.en_passant = self.en_passant.pop()
-
-        if moved_piece.type is PieceType.KING:
-            rook_move = self.castle_rook_move(move)
-
-            if rook_move is not None:
-                rook = self.board.pop(rook_move.target_field)
-                self.board[rook_move.start_field] = rook
-
-        self.board.castling_rights = self.castling_rights.pop()
-
-        self.board.turn = self.board.turn.enemy()
+        move.undo(self.board)
 
     def whites_move(self) -> bool:
         """returns if it's white's move"""
@@ -252,7 +112,8 @@ class ChessBoard:
 
         return self.is_kingside_castle(move) or self.is_queenside_castle(move)
 
-    def is_kingside_castle(self, move: Move) -> bool:
+    @staticmethod
+    def is_kingside_castle(move: Move) -> bool:
         """
         returns if the move is a kingside castle
         assumes that the moving piece is a king
@@ -264,7 +125,8 @@ class ChessBoard:
         """
         return move.start_field.x - move.target_field.x == 2
 
-    def is_queenside_castle(self, move: Move) -> bool:
+    @staticmethod
+    def is_queenside_castle(move: Move) -> bool:
         """
         returns if the move is a queenside castle
         assumes that the moving piece is a king
@@ -276,7 +138,8 @@ class ChessBoard:
         """
         return move.start_field.x - move.target_field.x == -2
 
-    def castles_trough(self, move: Move) -> Coordinate:
+    @staticmethod
+    def castles_trough(move: Move) -> Coordinate:
         """
         returns the coordinate the king moves trough when castling
         It is assumed that the move is a castle

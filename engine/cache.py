@@ -2,7 +2,7 @@ from typing import Protocol, Optional
 
 from game import ChessBoard
 from game.move import Move
-from game.piece import Color
+from game.piece.color import Color
 
 MoveEvaluation = tuple[Move, float]
 

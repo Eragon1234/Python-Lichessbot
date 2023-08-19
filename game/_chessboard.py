@@ -1,7 +1,7 @@
 from typing import Iterator
 
 from game.castling_rights import CastlingRights
-from game.move import Move
+from game.coordinate import Coordinate
 from game.piece.color import Color
 from game.piece.piece import Piece
 from game.piece.piece_type import PieceType
@@ -127,19 +127,20 @@ class _ChessBoard:
         self[position] = Piece(PieceType.EMPTY, Color.EMPTY)
         return piece
 
-    def do_move(self, move: Move) -> Piece:
+    def do_move(self, start: Coordinate, target: Coordinate) -> Piece:
         """
         Removes the piece at the start field and moves it to the end field.
         If there is a piece at the end field, it is removed and returned.
         Args:
-            move: the move to execute
+            start: the field where the piece is moved from
+            target: the field where the piece is moved to
 
         Returns:
             the piece that was removed from the end field
         """
-        piece = self.pop(move.start_field)
-        captured_piece = self.pop(move.target_field)
-        self[move.target_field] = piece
+        piece = self.pop(start)
+        captured_piece = self.pop(target)
+        self[target] = piece
         return captured_piece
 
 

@@ -2,7 +2,7 @@ from typing import Generator, Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
-from game.move import Move
+from game.move import Move, NormalMove, PawnMove, PawnPromotion, KingMove, CastleMove, RookMove
 from game.piece.board import Board
 from game.piece.bonus import BONUS_MAPS
 from game.piece.color import Color
@@ -107,13 +107,28 @@ class Piece:
         Returns:
             A generator object that yields possible moves for the piece.
         """
-        yield from self._moves_with_move_groups(board, pos)
+        if self.type is not PieceType.KING and self.type is not PieceType.ROOK:
+            yield from self._moves_with_move_groups(board, pos)
 
         if self.type is PieceType.PAWN:
             yield from self._moves_for_pawn(board, pos, en_passant)
 
         if self.type is PieceType.KING:
-            yield from self._castling_moves(board, pos, castling_rights)
+            yield from self._king_moves(board, pos, castling_rights)
+
+        if self.type is PieceType.ROOK:
+            for move in self._moves_with_move_groups(board, pos):
+                yield RookMove(move.start_field, move.target_field)
+
+    def _king_moves(self, board: Board, pos: Coordinate,
+                    castling_rights: CastlingRights) -> MoveGenerator:
+        """
+        Generates possible moves for a king on the given chess board.
+        """
+        for move in self._moves_with_move_groups(board, pos):
+            yield KingMove(move.start_field, move.target_field)
+
+        yield from self._castling_moves(board, pos, castling_rights)
 
     def _castling_moves(self, board: Board, pos: Coordinate,
                         castling_rights: CastlingRights) -> MoveGenerator:
@@ -141,7 +156,7 @@ class Piece:
                 if board.color_at((x, king[1])) is not Color.EMPTY:
                     break
             else:
-                yield Move(king, Coordinate(king[0] + 2 * steps, king[1]))
+                yield CastleMove(king, Coordinate(king[0] + 2 * steps, king[1]))
 
     def _moves_with_move_groups(self, board: Board,
                                 pos: Coordinate) -> MoveGenerator:
@@ -162,7 +177,7 @@ class Piece:
                 if not self.is_legal_target(board, new_pos):
                     break
 
-                yield Move(pos, new_pos)
+                yield NormalMove(pos, new_pos)
 
                 target_field_color = board.color_at(new_pos)
                 if target_field_color is not Color.EMPTY:
@@ -184,11 +199,11 @@ class Piece:
         promote = self.is_start_rank(pos, self.color.enemy())
         for target in self._positions_for_pawn(board, pos, en_passant):
             if not promote:
-                yield Move(pos, target)
+                yield PawnMove(pos, target)
                 continue
 
             for piece_type in PROMOTE_TYPES:
-                yield Move(pos, target, piece_type)
+                yield PawnPromotion(pos, target, piece_type)
 
     def _positions_for_pawn(self, board: Board, pos: Coordinate,
                             en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:

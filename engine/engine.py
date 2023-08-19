@@ -4,11 +4,16 @@ from itertools import count
 
 from engine.cache import Cache, NoCache, MoveEvaluation
 from game import ChessBoard
+from game.coordinate import Coordinate
 from game.move import Move
-from game.piece import Color
+from game.move.move import PureMove
+from game.piece.color import Color
 from playercolor import PlayerColor
 
-NULL_MOVE = Move.from_uci("d1e8")
+NULL_MOVE = PureMove(
+    Coordinate(0, 0),
+    Coordinate(4, 5),
+)
 
 
 class Engine:
