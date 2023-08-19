@@ -30,3 +30,7 @@ class _ChessBoard(Protocol):
     castling_rights: CastlingRights
 
     turn: Color
+
+    halfmove_clock: int
+
+    fullmove_number: int

@@ -1,50 +1,33 @@
 from typing import Optional
 
 from game.coordinate import Coordinate
-from game.move._chessboard import _ChessBoard
+from game.move import NormalMove
+from game.move._chessboard import _ChessBoard, Piece
 from game.move.move import Move
 from game.piece.color import Color
 from game.piece.piece_type import PieceType
 
 
-class PawnMove(Move):
+class PawnMove(NormalMove):
     def __init__(self, start_field: Coordinate, target_field: Coordinate):
         super().__init__(start_field, target_field)
 
-        self.old_en_passant = None
         self.en_passant_capture = None
 
-    def uci(self) -> str:
-        return super().uci()
-
-    @classmethod
-    def from_uci(cls, uci: str) -> "Move":
-        start_field = Coordinate.from_uci(uci[:2])
-        target_field = Coordinate.from_uci(uci[2:4])
-        return cls(start_field, target_field)
-
     def move(self, board: _ChessBoard) -> None:
-        self.old_en_passant = board.en_passant
-
         en_passant_coordinate = self.en_passant_coordinate(board)
         if en_passant_coordinate is not None:
             self.en_passant_capture = board.pop(en_passant_coordinate)
 
-        board.en_passant = "-"
-
-        if self.is_double_move():
-            board.en_passant = self.new_en_passant(board)
-
         super().move(board)
 
-        board.turn = board.turn.enemy()
+        if self.is_double_move() and self.next_to_pawn(board):
+            board.en_passant = self.new_en_passant(board[self.target_field])
+
+        board.halfmove_clock = 0
 
     def undo(self, board: _ChessBoard) -> None:
-        board.en_passant = self.old_en_passant
-
         super().undo(board)
-
-        board.turn = board.turn.enemy()
 
         if self.en_passant_capture is not None:
             board[self.en_passant_coordinate(board)] = self.en_passant_capture
@@ -63,11 +46,21 @@ class PawnMove(Move):
         else:
             return Coordinate(coordinate.x, coordinate.y - 1)
 
+    def next_to_pawn(self, board: _ChessBoard) -> bool:
+        if self.target_field.x != 0:
+            left = Coordinate(self.target_field.x - 1, self.target_field.y)
+            if board[left].type == PieceType.PAWN:
+                return True
+        if self.target_field.x != 7:
+            right = Coordinate(self.target_field.x + 1, self.target_field.y)
+            if board[right].type == PieceType.PAWN:
+                return True
+        return False
+
     def is_double_move(self) -> bool:
         return abs(self.start_field.y - self.target_field.y) == 2
 
-    def new_en_passant(self, board: _ChessBoard) -> str:
-        moving_piece = board[self.start_field]
+    def new_en_passant(self, moving_piece: Piece) -> str:
         if moving_piece.color == Color.WHITE:
             return Coordinate(self.start_field.x, self.start_field.y + 1).uci()
         else:

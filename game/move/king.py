@@ -1,45 +1,28 @@
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.move._chessboard import _ChessBoard
-from game.move.move import Move, PureMove
+from game.move.move import PureMove
+from game.move.normal import NormalMove
 from game.piece.color import Color
 
 
-class KingMove(Move):
+class KingMove(NormalMove):
     def __init__(self, start_field: Coordinate, target_field: Coordinate):
         super().__init__(start_field, target_field)
 
-        self.old_en_passant = "-"
         self.old_castling_rights = None
 
-    def uci(self) -> str:
-        return f"{self.start_field.uci()}{self.target_field.uci()}"
-
-    @classmethod
-    def from_uci(cls, uci: str) -> "Move":
-        start_field = Coordinate.from_uci(uci[:2])
-        target_field = Coordinate.from_uci(uci[2:4])
-        return cls(start_field, target_field)
-
     def move(self, board: _ChessBoard) -> None:
-        self.old_en_passant = board.en_passant
         self.old_castling_rights = board.castling_rights
 
         self.update_castling_rights(board)
 
         super().move(board)
 
-        board.turn = board.turn.enemy()
-
-        board.en_passant = "-"
-
     def undo(self, board: _ChessBoard) -> None:
-        board.en_passant = self.old_en_passant
         board.castling_rights = self.old_castling_rights
 
         super().undo(board)
-
-        board.turn = board.turn.enemy()
 
     def update_castling_rights(self, board: _ChessBoard) -> None:
         moving_piece = board[self.start_field]
