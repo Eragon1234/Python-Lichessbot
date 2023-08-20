@@ -4,7 +4,7 @@ from game import ChessBoard
 from game.move import Move
 from game.piece.color import Color
 
-MoveEvaluation = tuple[Move, float]
+MoveEvaluation = tuple[Optional[Move], float]
 
 
 class Cache(Protocol):

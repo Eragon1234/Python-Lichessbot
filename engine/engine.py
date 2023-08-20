@@ -4,16 +4,9 @@ from itertools import count
 
 from engine.cache import Cache, NoCache, MoveEvaluation
 from game import ChessBoard
-from game.coordinate import Coordinate
 from game.move import Move
-from game.move.move import PureMove
 from game.piece.color import Color
 from playercolor import PlayerColor
-
-NULL_MOVE = PureMove(
-    Coordinate(0, 0),
-    Coordinate(4, 5),
-)
 
 
 class Engine:
@@ -42,7 +35,7 @@ class Engine:
         """
         exit_time = time.time() + seconds
 
-        best_move = NULL_MOVE
+        best_move = None
         value = -9999
 
         for depth in count(1):
@@ -66,12 +59,12 @@ class Engine:
             return cached
 
         if depth == 0:
-            return NULL_MOVE, self.material_difference(color)
+            return None, self.material_difference(color)
 
         moves = list(self.board.legal_moves(color))
         moves = self.order_moves(moves)
 
-        best_move = NULL_MOVE
+        best_move = None
         max_value = -9999
 
         for move in moves:
@@ -88,7 +81,7 @@ class Engine:
                 if alpha >= beta:
                     break
 
-        if best_move is NULL_MOVE:
+        if best_move is None:
             max_value = -9999 if self.board.king_in_check(color) else 0
 
         self.cache.set(color, self.board, depth, (best_move, max_value))
