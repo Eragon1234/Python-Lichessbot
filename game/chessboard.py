@@ -1,13 +1,12 @@
 from typing import Generator
 
 from game._chessboard import _ChessBoard, position_to_coordinate
-from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
+from game.move import CastleMove
 from game.move.move import Move
 from game.move.uci import move_from_uci
 from game.piece.color import Color
 from game.piece.move_groups import BACKWARD
-from game.piece.piece import Piece
 from game.piece.piece_type import PieceType
 
 UciMoveGenerator = Generator[str, None, None]
@@ -20,16 +19,7 @@ class ChessBoard:
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[Move] = []
 
-        self.captured_pieces: list[Piece] = []
-
-        self.en_passant: list[str] = []
-        self.castling_rights: list[CastlingRights] = []
-        self.en_passant_takes = []
-
         self.board = _ChessBoard.from_fen(fen)
-
-    def __hash__(self):
-        return hash(self.board)
 
     def move(self, move: Move | str) -> None:
         """
@@ -55,7 +45,7 @@ class ChessBoard:
 
     def whites_move(self) -> bool:
         """returns if it's white's move"""
-        return len(self.moves) % 2 == 0
+        return self.board.turn is Color.WHITE
 
     class TestMove:
         """a class to test a move with the context manager"""
@@ -87,7 +77,7 @@ class ChessBoard:
         moves = self.pseudo_legal_moves(color)
 
         for move in moves:
-            if self.is_castle(move):
+            if isinstance(move, CastleMove):
                 if self.king_in_check(color):
                     continue
                 if self.is_attacked(self.castles_trough(move), color.enemy()):
@@ -98,57 +88,17 @@ class ChessBoard:
 
             yield move
 
-    def is_castle(self, move: Move) -> bool:
-        """
-        returns if the move is a castle
-        Args:
-            move: the move to check
-
-        Returns:
-            bool: if the move is a castle
-        """
-        if not self.board[move.start_field].type is PieceType.KING:
-            return False
-
-        return self.is_kingside_castle(move) or self.is_queenside_castle(move)
-
-    @staticmethod
-    def is_kingside_castle(move: Move) -> bool:
-        """
-        returns if the move is a kingside castle
-        assumes that the moving piece is a king
-        Args:
-            move: thte move to check
-
-        Returns:
-            bool: if the move is a kingside castle
-        """
-        return move.start_field.x - move.target_field.x == 2
-
-    @staticmethod
-    def is_queenside_castle(move: Move) -> bool:
-        """
-        returns if the move is a queenside castle
-        assumes that the moving piece is a king
-        Args:
-            move: the move to check
-
-        Returns:
-            bool: if the move is a queenside castle
-        """
-        return move.start_field.x - move.target_field.x == -2
-
     @staticmethod
     def castles_trough(move: Move) -> Coordinate:
         """
-        returns the coordinate the king moves trough when castling
+        returns the coordinate the king moves through when castling
         It is assumed that the move is a castle
 
         Args:
             move: the move to check
 
         Returns:
-            Coordinate: the coordinate the king moves trough when castling
+            Coordinate: the coordinate the king moves through when castling
         """
         direction = 1 if move.start_field.x < move.target_field.x else -1
         return move.start_field + BACKWARD * direction
