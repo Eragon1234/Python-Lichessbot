@@ -16,19 +16,15 @@ def move_from_uci(board: _ChessBoard, uci: str) -> Move:
     moving_piece = board[start_field]
 
     if moving_piece.type is PieceType.PAWN:
-        return PawnMove.from_uci(uci)
-    elif moving_piece.type is PieceType.KNIGHT:
-        return NormalMove.from_uci(uci)
-    elif moving_piece.type is PieceType.BISHOP:
-        return NormalMove.from_uci(uci)
+        return PawnMove(start_field, target_field)
     elif moving_piece.type is PieceType.ROOK:
-        return RookMove.from_uci(uci)
-    elif moving_piece.type is PieceType.QUEEN:
-        return NormalMove.from_uci(uci)
+        return RookMove(start_field, target_field)
     elif moving_piece.type is PieceType.KING:
         if is_castle(start_field, target_field):
-            return CastleMove.from_uci(uci)
-        return KingMove.from_uci(uci)
+            return CastleMove(start_field, target_field)
+        return KingMove(start_field, target_field)
+
+    return NormalMove(start_field, target_field)
 
 
 def is_castle(start: Coordinate, end: Coordinate) -> bool:
