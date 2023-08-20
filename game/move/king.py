@@ -1,6 +1,6 @@
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
-from game.move._chessboard import _ChessBoard
+from game.move.board import Board
 from game.move.move import PureMove
 from game.move.normal import NormalMove
 from game.piece.color import Color
@@ -12,19 +12,19 @@ class KingMove(NormalMove):
 
         self.old_castling_rights = None
 
-    def move(self, board: _ChessBoard) -> None:
+    def move(self, board: Board) -> None:
         self.old_castling_rights = board.castling_rights
 
         self.update_castling_rights(board)
 
         super().move(board)
 
-    def undo(self, board: _ChessBoard) -> None:
+    def undo(self, board: Board) -> None:
         board.castling_rights = self.old_castling_rights
 
         super().undo(board)
 
-    def update_castling_rights(self, board: _ChessBoard) -> None:
+    def update_castling_rights(self, board: Board) -> None:
         moving_piece = board[self.start_field]
         if moving_piece.color is Color.WHITE:
             remove_rights = CastlingRights.WHITE
@@ -40,13 +40,13 @@ class CastleMove(KingMove):
 
         self.rook_move = None
 
-    def move(self, board: _ChessBoard) -> None:
+    def move(self, board: Board) -> None:
         super().move(board)
 
         self.rook_move = self.get_rook_move()
         self.rook_move.move(board)
 
-    def undo(self, board: _ChessBoard) -> None:
+    def undo(self, board: Board) -> None:
         self.rook_move.undo(board)
 
         super().undo(board)

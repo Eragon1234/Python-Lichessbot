@@ -1,5 +1,5 @@
 from game.coordinate import Coordinate
-from game.move._chessboard import _ChessBoard
+from game.move.board import Board
 from game.move.move import Move
 from game.piece.color import Color
 from game.piece.piece_type import PieceType
@@ -21,7 +21,7 @@ class NormalMove(Move):
         target_field = Coordinate.from_uci(uci[2:4])
         return cls(start_field, target_field)
 
-    def move(self, board: _ChessBoard):
+    def move(self, board: Board):
         self.old_en_passant = board.en_passant
 
         super().move(board)
@@ -40,7 +40,7 @@ class NormalMove(Move):
         if board.turn is Color.WHITE:
             board.fullmove_number += 1
 
-    def undo(self, board: _ChessBoard):
+    def undo(self, board: Board):
         board.en_passant = self.old_en_passant
 
         super().undo(board)

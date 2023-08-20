@@ -1,10 +1,10 @@
 from game.coordinate import Coordinate
 from game.move import Move, PawnPromotion, PawnMove, NormalMove, RookMove, KingMove, CastleMove
-from game.move._chessboard import _ChessBoard
+from game.move.board import Board
 from game.piece.piece_type import PieceType
 
 
-def move_from_uci(board: _ChessBoard, uci: str) -> Move:
+def move_from_uci(board: Board, uci: str) -> Move:
     """
     Converts a UCI string to a Move object.
     """

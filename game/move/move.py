@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from game.coordinate import Coordinate
-from game.move._chessboard import _ChessBoard
+from game.move.board import Board
 
 
 class Move(ABC):
@@ -21,11 +21,11 @@ class Move(ABC):
         pass
 
     @abstractmethod
-    def move(self, board: _ChessBoard) -> None:
+    def move(self, board: Board) -> None:
         self.captured_piece = board.do_move(self.start_field, self.target_field)
 
     @abstractmethod
-    def undo(self, board: _ChessBoard) -> None:
+    def undo(self, board: Board) -> None:
         board.do_move(self.target_field, self.start_field)
         board[self.target_field] = self.captured_piece
 
@@ -41,8 +41,8 @@ class PureMove(Move):
     def from_uci(cls, uci: str) -> "PureMove":
         raise NotImplementedError("PureMove cannot be created from uci")
 
-    def move(self, board: _ChessBoard) -> None:
+    def move(self, board: Board) -> None:
         super().move(board)
 
-    def undo(self, board: _ChessBoard) -> None:
+    def undo(self, board: Board) -> None:
         super().undo(board)

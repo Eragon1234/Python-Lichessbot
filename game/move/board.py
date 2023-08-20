@@ -11,7 +11,7 @@ class Piece(Protocol):
     type: PieceType
 
 
-class _ChessBoard(Protocol):
+class Board(Protocol):
     def __getitem__(self, item: Coordinate) -> Piece:
         ...
 

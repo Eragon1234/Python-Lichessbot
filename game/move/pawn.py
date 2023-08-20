@@ -2,7 +2,7 @@ from typing import Optional
 
 from game.coordinate import Coordinate
 from game.move import NormalMove
-from game.move._chessboard import _ChessBoard, Piece
+from game.move.board import Board, Piece
 from game.move.move import Move
 from game.piece.color import Color
 from game.piece.piece_type import PieceType
@@ -14,7 +14,7 @@ class PawnMove(NormalMove):
 
         self.en_passant_capture = None
 
-    def move(self, board: _ChessBoard) -> None:
+    def move(self, board: Board) -> None:
         en_passant_coordinate = self.en_passant_coordinate(board)
         if en_passant_coordinate is not None:
             self.en_passant_capture = board.pop(en_passant_coordinate)
@@ -26,13 +26,13 @@ class PawnMove(NormalMove):
 
         board.halfmove_clock = 0
 
-    def undo(self, board: _ChessBoard) -> None:
+    def undo(self, board: Board) -> None:
         super().undo(board)
 
         if self.en_passant_capture is not None:
             board[self.en_passant_coordinate(board)] = self.en_passant_capture
 
-    def en_passant_coordinate(self, board: _ChessBoard) -> Optional[Coordinate]:
+    def en_passant_coordinate(self, board: Board) -> Optional[Coordinate]:
         moving_piece = board[self.start_field]
         if board.en_passant == "-":
             return None
@@ -46,7 +46,7 @@ class PawnMove(NormalMove):
         else:
             return Coordinate(coordinate.x, coordinate.y - 1)
 
-    def next_to_pawn(self, board: _ChessBoard) -> bool:
+    def next_to_pawn(self, board: Board) -> bool:
         if self.target_field.x != 0:
             left = Coordinate(self.target_field.x - 1, self.target_field.y)
             if board[left].type == PieceType.PAWN:
@@ -83,10 +83,10 @@ class PawnPromotion(PawnMove):
         promotion = uci[4]
         return cls(start_field, target_field, PieceType(promotion))
 
-    def move(self, board: _ChessBoard) -> None:
+    def move(self, board: Board) -> None:
         super().move(board)
         board[self.target_field].type = self.promote_to
 
-    def undo(self, board: _ChessBoard) -> None:
+    def undo(self, board: Board) -> None:
         board[self.target_field].type = PieceType.PAWN
         super().undo(board)

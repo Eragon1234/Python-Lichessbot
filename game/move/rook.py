@@ -1,7 +1,7 @@
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.move import NormalMove
-from game.move._chessboard import _ChessBoard
+from game.move.board import Board
 from game.piece.color import Color
 
 
@@ -20,19 +20,19 @@ class RookMove(NormalMove):
         target_field = Coordinate.from_uci(uci[2:4])
         return cls(start_field, target_field)
 
-    def move(self, board: _ChessBoard):
+    def move(self, board: Board):
         self.old_castling_rights = board.castling_rights
 
         self.update_castling_rights(board)
 
         super().move(board)
 
-    def undo(self, board: _ChessBoard):
+    def undo(self, board: Board):
         board.castling_rights = self.old_castling_rights
 
         super().undo(board)
 
-    def update_castling_rights(self, board: _ChessBoard):
+    def update_castling_rights(self, board: Board):
         moving_piece = board[self.start_field]
 
         if self.start_field.x == 0:
