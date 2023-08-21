@@ -22,9 +22,8 @@ class TestKnight(unittest.TestCase):
             "positioned in the corner": Case("h1", ['g3', 'f2']),
         }
 
-        knight = Piece(PieceType.KNIGHT, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = knight.moves(test_case.board, test_case.position)
+                knight = Piece(PieceType.KNIGHT, Color.WHITE)
 
-                self.assertCountEqual(test_case.expected, actual)
+                test_case.run(knight, self)

@@ -26,9 +26,8 @@ class TestQueen(TestCase):
             ]).with_piece(Color.BLACK, "d6"),
         }
 
-        queen = Piece(PieceType.QUEEN, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = queen.moves(test_case.board, test_case.position)
+                queen = Piece(PieceType.QUEEN, Color.WHITE)
 
-                self.assertCountEqual(test_case.expected, actual)
+                test_case.run(queen, self)

@@ -25,9 +25,8 @@ class TestBishop(TestCase):
                 Color.BLACK, "c6"),
         }
 
-        bishop = Piece(PieceType.BISHOP, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = bishop.moves(test_case.board, test_case.position)
+                bishop = Piece(PieceType.BISHOP, Color.WHITE)
 
-                self.assertCountEqual(test_case.expected, actual)
+                test_case.run(bishop, self)

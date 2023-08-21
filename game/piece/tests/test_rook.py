@@ -22,9 +22,8 @@ class TestRook(TestCase):
                        'e5', 'f5', 'g5', 'h5', 'd6']).with_piece(Color.BLACK, "d6"),
         }
 
-        rook = Piece(PieceType.ROOK, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = rook.moves(test_case.board, test_case.position)
+                rook = Piece(PieceType.ROOK, Color.WHITE)
 
-                self.assertCountEqual(test_case.expected, actual)
+                test_case.run(rook, self)

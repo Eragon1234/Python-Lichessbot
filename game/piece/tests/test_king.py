@@ -23,9 +23,8 @@ class TestKing(TestCase):
                 Color.BLACK, "e5")
         }
 
-        king = Piece(PieceType.KING, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = king.moves(test_case.board, test_case.position)
+                king = Piece(PieceType.KING, Color.WHITE)
 
-                self.assertCountEqual(test_case.expected, actual)
+                test_case.run(king, self)

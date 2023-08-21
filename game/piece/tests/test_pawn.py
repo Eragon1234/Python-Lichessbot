@@ -35,10 +35,8 @@ class TestPawn(TestCase):
             )
         }
 
-        pawn = Piece(PieceType.PAWN, Color.WHITE)
         for name, test_case in test_cases.items():
             with self.subTest(name):
-                actual = pawn.moves(test_case.board, test_case.position,
-                                    test_case.en_passant)
+                pawn = Piece(PieceType.PAWN, Color.WHITE)
 
-                self.assertCountEqual(test_case.expected, actual)
+                test_case.run(pawn, self)
