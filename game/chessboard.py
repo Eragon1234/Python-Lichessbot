@@ -19,7 +19,7 @@ class ChessBoard:
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[Move] = []
 
-        self.board = Board.from_fen(fen)
+        self._board = Board.from_fen(fen)
 
     def move(self, move: Move | str) -> None:
         """
@@ -29,23 +29,23 @@ class ChessBoard:
             move: the move to move
         """
         if isinstance(move, str):
-            move = move_from_uci(self.board, move)
+            move = move_from_uci(self._board, move)
 
         move: Move
 
         self.moves.append(move)
 
-        move.move(self.board)
+        move.move(self._board)
 
     def unmove(self) -> None:
         """undoes the last move"""
         move = self.moves.pop()
 
-        move.undo(self.board)
+        move.undo(self._board)
 
     def whites_move(self) -> bool:
         """returns if it's white's move"""
-        return self.board.turn is Color.WHITE
+        return self._board.turn is Color.WHITE
 
     class TestMove:
         """a class to test a move with the context manager"""
@@ -116,7 +116,7 @@ class ChessBoard:
         moves = self.pseudo_legal_moves(color.enemy())
 
         for move in moves:
-            attacked_field = self.board[move.target_field]
+            attacked_field = self._board[move.target_field]
 
             if attacked_field.color is not color:
                 continue
@@ -156,17 +156,17 @@ class ChessBoard:
             returns all possible moves for the passed color
         """
         en_passant = None
-        if self.board.en_passant != "-":
-            en_passant = Coordinate.from_uci(self.board.en_passant)
+        if self._board.en_passant != "-":
+            en_passant = Coordinate.from_uci(self._board.en_passant)
 
-        for position, piece in enumerate(self.board):
+        for position, piece in enumerate(self._board):
             if piece.color is not color:
                 continue
 
             coordinate = Coordinate(*position_to_coordinate(position))
 
-            moves = piece.moves(self.board, coordinate, en_passant,
-                                self.board.castling_rights)
+            moves = piece.moves(self._board, coordinate, en_passant,
+                                self._board.castling_rights)
 
             yield from moves
 
@@ -177,7 +177,7 @@ class ChessBoard:
         Returns:
             int: the difference in material
         """
-        return self.board.material_difference()
+        return self._board.material_difference()
 
     def value_at(self, coordinate: Coordinate) -> int:
         """
@@ -189,7 +189,7 @@ class ChessBoard:
         Returns:
             int: the value of the piece at the passed coordinate
         """
-        return self.board[coordinate].value
+        return self._board[coordinate].value
 
     def fen(self) -> str:
         """
@@ -198,4 +198,4 @@ class ChessBoard:
         Returns:
             str: the fen of the board
         """
-        return self.board.fen()
+        return self._board.fen()
