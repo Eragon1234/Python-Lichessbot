@@ -1,5 +1,5 @@
 import json
-from collections.abc import Generator
+from collections.abc import Iterator
 
 import requests
 
@@ -26,7 +26,7 @@ class LichessBotApiClient:
         """makes a move in the game with the given game_id"""
         self.s.post(f'{self.base_url}/bot/game/{game_id}/move/{move}')
 
-    def _stream(self, url: str) -> Generator[...]:
+    def _stream(self, url: str) -> Iterator[dict]:
         """Streams the url and yields the response parsed as json"""
         with self.s.get(url, stream=True) as res:
             for line in res.iter_lines():
@@ -35,10 +35,10 @@ class LichessBotApiClient:
 
                 yield json.loads(line)
 
-    def stream_events(self) -> Generator[dict, None, None]:
+    def stream_events(self) -> Iterator[dict]:
         """streams events from the lichess api"""
         return self._stream(f'{self.base_url}/stream/event')
 
-    def stream_game(self, game_id: str, *args) -> Generator[dict, None, None]:
+    def stream_game(self, game_id: str, *args) -> Iterator[dict]:
         """streams a game with the given game_id"""
         return self._stream(f'{self.base_url}/bot/game/stream/{game_id}')

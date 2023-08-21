@@ -1,4 +1,5 @@
-from typing import Generator, Optional
+from collections.abc import Iterator
+from typing import Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
@@ -10,7 +11,7 @@ from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
 from game.piece.values import VALUES
 
-MoveGenerator = Generator[Move, None, None]
+MoveIterator = Iterator[Move]
 PROMOTE_TYPES = [PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP,
                  PieceType.KNIGHT]
 
@@ -94,7 +95,7 @@ class Piece:
 
     def moves(self, board: Board, pos: Coordinate,
               en_passant: Optional[Coordinate] = None,
-              castling_rights: CastlingRights = CastlingRights.NONE) -> MoveGenerator:
+              castling_rights: CastlingRights = CastlingRights.NONE) -> MoveIterator:
         """
         Generates possible moves for a piece on the given chess board.
 
@@ -121,7 +122,7 @@ class Piece:
                 yield RookMove(move.start_field, move.target_field)
 
     def _king_moves(self, board: Board, pos: Coordinate,
-                    castling_rights: CastlingRights) -> MoveGenerator:
+                    castling_rights: CastlingRights) -> MoveIterator:
         """
         Generates possible moves for a king on the given chess board.
         """
@@ -131,7 +132,7 @@ class Piece:
         yield from self._castling_moves(board, pos, castling_rights)
 
     def _castling_moves(self, board: Board, pos: Coordinate,
-                        castling_rights: CastlingRights) -> MoveGenerator:
+                        castling_rights: CastlingRights) -> MoveIterator:
         """
         Generates possible castling moves for a king on the given chess board.
         """
@@ -159,7 +160,7 @@ class Piece:
                 yield CastleMove(king, Coordinate(king[0] + 2 * steps, king[1]))
 
     def _moves_with_move_groups(self, board: Board,
-                                pos: Coordinate) -> MoveGenerator:
+                                pos: Coordinate) -> MoveIterator:
         """
         Generates possible moves for a piece on the given chess board.
 
@@ -184,7 +185,7 @@ class Piece:
                     break
 
     def _moves_for_pawn(self, board: Board, pos: Coordinate,
-                        en_passant: Optional[Coordinate] = None) -> MoveGenerator:
+                        en_passant: Optional[Coordinate] = None) -> MoveIterator:
         """
         Generates possible moves for a pawn on the given chess board.
 
@@ -206,7 +207,7 @@ class Piece:
                 yield PawnPromotion(pos, target, piece_type)
 
     def _positions_for_pawn(self, board: Board, pos: Coordinate,
-                            en_passant: Optional[Coordinate] = None) -> Generator[Coordinate, None, None]:
+                            en_passant: Optional[Coordinate] = None) -> Iterator[Coordinate]:
         """
         Generates possible positions for a pawn on the given chess board.
         """

@@ -1,4 +1,4 @@
-from typing import Generator
+from collections.abc import Iterator
 
 from game.board import Board
 from game.coordinate import Coordinate
@@ -9,8 +9,7 @@ from game.piece.color import Color
 from game.piece.move_groups import BACKWARD
 from game.piece.piece_type import PieceType
 
-UciMoveGenerator = Generator[str, None, None]
-MoveGenerator = Generator[Move, None, None]
+MoveIterator = Iterator[Move]
 
 
 class ChessBoard:
@@ -64,7 +63,7 @@ class ChessBoard:
         """Returns a context manager to test a move."""
         return self.TestMove(self, move)
 
-    def legal_moves(self, color: Color) -> MoveGenerator:
+    def legal_moves(self, color: Color) -> MoveIterator:
         """
         Generating all possible moves in the current position
 
@@ -72,7 +71,7 @@ class ChessBoard:
             color: for which color to generate the moves for.
 
         Returns:
-            MoveGenerator: a generator for all possible moves
+            A generator object that yields all possible moves.
         """
         moves = self.pseudo_legal_moves(color)
 
@@ -145,7 +144,7 @@ class ChessBoard:
 
         return False
 
-    def pseudo_legal_moves(self, color: Color) -> MoveGenerator:
+    def pseudo_legal_moves(self, color: Color) -> MoveIterator:
         """
         generates the pseudo legal moves for the passed color
 

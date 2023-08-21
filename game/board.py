@@ -1,4 +1,4 @@
-from typing import Iterator
+from collections.abc import Iterator
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
