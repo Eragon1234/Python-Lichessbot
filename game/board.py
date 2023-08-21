@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from typing import Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
@@ -9,7 +10,8 @@ from game.piece.piece_type import PieceType
 
 class Board:
     def __init__(self, board: list[Piece], turn: Color,
-                 castling_rights: CastlingRights, en_passant: str,
+                 castling_rights: CastlingRights,
+                 en_passant: Optional[Coordinate],
                  halfmove_clock: int, fullmove_number: int):
         self._board = board
 
@@ -77,7 +79,10 @@ class Board:
                 elif char == "q":
                     castling_rights |= CastlingRights.BLACK_QUEEN
 
-        en_passant = fen_parts[3]
+        en_passant = None
+        if fen_parts[3] != "-":
+            en_passant = Coordinate.from_uci(fen_parts[3])
+
         halfmove_clock = int(fen_parts[4])
         fullmove_number = int(fen_parts[5])
 
@@ -119,8 +124,10 @@ class Board:
         if castling_rights == "":
             castling_rights = "-"
 
+        en_passant = "-" if self.en_passant is None else self.en_passant.uci()
+
         return (f"{fen} {'w' if self.turn is Color.WHITE else 'b'} "
-                f"{castling_rights} {self.en_passant} "
+                f"{castling_rights} {en_passant} "
                 f"{self.halfmove_clock} {self.fullmove_number}")
 
     def material_difference(self) -> int:

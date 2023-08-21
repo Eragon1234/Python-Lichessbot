@@ -34,17 +34,16 @@ class PawnMove(NormalMove):
 
     def en_passant_coordinate(self, board: Board) -> Optional[Coordinate]:
         moving_piece = board[self.start_field]
-        if board.en_passant == "-":
+        if board.en_passant is None:
             return None
 
-        coordinate = Coordinate.from_uci(board.en_passant)
-        if self.target_field != coordinate:
+        if self.target_field != board.en_passant:
             return None
 
         if moving_piece.color == Color.WHITE:
-            return Coordinate(coordinate.x, coordinate.y + 1)
+            return Coordinate(board.en_passant.x, board.en_passant.y + 1)
         else:
-            return Coordinate(coordinate.x, coordinate.y - 1)
+            return Coordinate(board.en_passant.x, board.en_passant.y - 1)
 
     def next_to_pawn(self, board: Board) -> bool:
         if self.target_field.x != 0:
@@ -60,11 +59,11 @@ class PawnMove(NormalMove):
     def is_double_move(self) -> bool:
         return abs(self.start_field.y - self.target_field.y) == 2
 
-    def new_en_passant(self, moving_piece: Piece) -> str:
+    def new_en_passant(self, moving_piece: Piece) -> Coordinate:
         if moving_piece.color == Color.WHITE:
-            return Coordinate(self.start_field.x, self.start_field.y + 1).uci()
+            return Coordinate(self.start_field.x, self.start_field.y + 1)
         else:
-            return Coordinate(self.start_field.x, self.start_field.y - 1).uci()
+            return Coordinate(self.start_field.x, self.start_field.y - 1)
 
 
 class PawnPromotion(PawnMove):

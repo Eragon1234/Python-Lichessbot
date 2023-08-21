@@ -28,7 +28,7 @@ class NormalMove(Move):
 
         board.turn = board.turn.enemy()
 
-        board.en_passant = "-"
+        board.en_passant = None
 
         self.old_halfmove_clock = board.halfmove_clock
 

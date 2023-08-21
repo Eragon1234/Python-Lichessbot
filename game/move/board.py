@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
@@ -25,7 +25,7 @@ class Board(Protocol):
     def pop(self, field: Coordinate) -> Piece:
         ...
 
-    en_passant: str
+    en_passant: Optional[Coordinate]
 
     castling_rights: CastlingRights
 

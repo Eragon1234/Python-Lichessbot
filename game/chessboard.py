@@ -154,15 +154,12 @@ class ChessBoard:
         Returns:
             returns all possible moves for the passed color
         """
-        en_passant = None
-        if self._board.en_passant != "-":
-            en_passant = Coordinate.from_uci(self._board.en_passant)
-
         for coordinate, piece in self._board.iter_pieces():
             if piece.color is not color:
                 continue
 
-            moves = piece.moves(self._board, coordinate, en_passant,
+            moves = piece.moves(self._board, coordinate,
+                                self._board.en_passant,
                                 self._board.castling_rights)
 
             yield from moves
