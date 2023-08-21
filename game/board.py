@@ -37,6 +37,13 @@ class Board:
         for i in reversed(range(8)):
             yield reversed(self._board[i * 8:i * 8 + 8])
 
+    def iter_pieces(self) -> Iterator[tuple[Coordinate, Piece]]:
+        """
+        Iterate over the pieces of the board.
+        """
+        for i, piece in enumerate(self):
+            yield Coordinate(*position_to_coordinate(i)), piece
+
     def __hash__(self) -> int:
         return hash(tuple(self._board))
 

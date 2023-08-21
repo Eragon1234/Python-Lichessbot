@@ -1,6 +1,6 @@
 from typing import Generator
 
-from game.board import Board, position_to_coordinate
+from game.board import Board
 from game.coordinate import Coordinate
 from game.move import CastleMove
 from game.move.move import Move
@@ -159,11 +159,9 @@ class ChessBoard:
         if self._board.en_passant != "-":
             en_passant = Coordinate.from_uci(self._board.en_passant)
 
-        for position, piece in enumerate(self._board):
+        for coordinate, piece in self._board.iter_pieces():
             if piece.color is not color:
                 continue
-
-            coordinate = Coordinate(*position_to_coordinate(position))
 
             moves = piece.moves(self._board, coordinate, en_passant,
                                 self._board.castling_rights)
