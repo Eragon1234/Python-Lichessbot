@@ -179,6 +179,18 @@ class ChessBoard:
         """
         return self.board.material_difference()
 
+    def value_at(self, coordinate: Coordinate) -> int:
+        """
+        returns the value of the piece at the passed coordinate
+
+        Args:
+            coordinate: the coordinate to check
+
+        Returns:
+            int: the value of the piece at the passed coordinate
+        """
+        return self.board[coordinate].value
+
     def fen(self) -> str:
         """
         returns the fen of the board
