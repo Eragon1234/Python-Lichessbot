@@ -1,6 +1,6 @@
 from typing import Generator
 
-from game._chessboard import _ChessBoard, position_to_coordinate
+from game.board import Board, position_to_coordinate
 from game.coordinate import Coordinate
 from game.move import CastleMove
 from game.move.move import Move
@@ -19,7 +19,7 @@ class ChessBoard:
     def __init__(self, fen: str = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.moves: list[Move] = []
 
-        self.board = _ChessBoard.from_fen(fen)
+        self.board = Board.from_fen(fen)
 
     def move(self, move: Move | str) -> None:
         """

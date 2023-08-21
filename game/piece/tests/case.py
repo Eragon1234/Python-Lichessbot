@@ -10,8 +10,8 @@ class Case:
         self.position = Coordinate.from_uci(pos)
         self.expected = [move_from_uci(pos + e) for e in expected]
 
-        from game._chessboard import _ChessBoard
-        self.board = _ChessBoard.from_fen("8/8/8/8/8/8/8/8 w - - 0 1")
+        from game.board import Board
+        self.board = Board.from_fen("8/8/8/8/8/8/8/8 w - - 0 1")
         self.en_passant = None
 
     def with_piece(self, color: Color, pos: str):

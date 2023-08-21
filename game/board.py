@@ -7,7 +7,7 @@ from game.piece.piece import Piece
 from game.piece.piece_type import PieceType
 
 
-class _ChessBoard:
+class Board:
     def __init__(self, board: list[Piece], turn: Color,
                  castling_rights: CastlingRights, en_passant: str,
                  halfmove_clock: int, fullmove_number: int):
@@ -41,7 +41,7 @@ class _ChessBoard:
         return hash(tuple(self._board))
 
     @classmethod
-    def from_fen(cls, fen: str) -> '_ChessBoard':
+    def from_fen(cls, fen: str) -> 'Board':
         board = []
         fen_parts = fen.split()
 
