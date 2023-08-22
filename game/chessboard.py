@@ -127,7 +127,7 @@ class ChessBoard:
 
     def is_attacked(self, pos: Coordinate, color: Color) -> bool:
         """
-        returns if the passed position is attacked by the passed color
+        returns if the passed color attacks the passed position
 
         Args:
             pos: the position to check

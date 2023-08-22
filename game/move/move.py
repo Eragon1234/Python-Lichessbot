@@ -13,19 +13,23 @@ class Move(ABC):
 
     @abstractmethod
     def uci(self) -> str:
+        """Returns the uci representation of the move."""
         return f"{self.start_field.uci()}{self.target_field.uci()}"
 
     @classmethod
     @abstractmethod
     def from_uci(cls, uci: str) -> "Move":
+        """Creates a move from the uci representation."""
         pass
 
     @abstractmethod
     def move(self, board: Board) -> None:
+        """Executes the move on the board."""
         self.captured_piece = board.do_move(self.start_field, self.target_field)
 
     @abstractmethod
     def undo(self, board: Board) -> None:
+        """Undoes the move on the board."""
         board.do_move(self.target_field, self.start_field)
         board[self.target_field] = self.captured_piece
 
