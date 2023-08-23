@@ -3,6 +3,7 @@ from typing import Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
+from game.move.factory import move_factory
 from game.piece.color import Color
 from game.piece.piece import Piece
 from game.piece.piece_type import PieceType
@@ -59,10 +60,12 @@ class Board:
             for char in row:
                 if char.isdigit():
                     n = int(char)
-                    board.extend(Piece(PieceType.EMPTY, Color.EMPTY) for _ in range(n))
+                    board.extend(Piece(move_factory,
+                                       PieceType.EMPTY,
+                                       Color.EMPTY) for _ in range(n))
                     continue
 
-                board.append(Piece.from_fen(char))
+                board.append(Piece.from_fen(char, move_factory))
 
         board.reverse()
 
@@ -138,7 +141,7 @@ class Board:
 
     def pop(self, position: tuple[int, int]) -> Piece:
         piece = self[position]
-        self[position] = Piece(PieceType.EMPTY, Color.EMPTY)
+        self[position] = Piece(move_factory, PieceType.EMPTY, Color.EMPTY)
         return piece
 
     def do_move(self, start: Coordinate, target: Coordinate) -> Piece:

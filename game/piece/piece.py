@@ -1,15 +1,17 @@
 from collections.abc import Iterator
-from typing import Optional
+from typing import Optional, TypeVar
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
-from game.move import Move, NormalMove, PawnMove, PawnPromotion, KingMove, CastleMove, RookMove
 from game.piece.board import Board
 from game.piece.bonus import BONUS_MAPS
 from game.piece.color import Color
+from game.piece.move_factory import MoveFactory
 from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
 from game.piece.values import VALUES
+
+Move = TypeVar('Move')
 
 MoveIterator = Iterator[Move]
 PROMOTE_TYPES = [PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP,
@@ -23,7 +25,10 @@ class Piece:
     The piece can also represent an empty field.
     """
 
-    def __init__(self, piece_type: PieceType, color: Color):
+    def __init__(self, move_factory: MoveFactory,
+                 piece_type: PieceType, color: Color):
+        self.move_factory = move_factory
+
         self.type = piece_type
 
         self.color = color
@@ -45,12 +50,13 @@ class Piece:
             self.value = -self.value
 
     @classmethod
-    def from_fen(cls, fen: str) -> 'Piece':
+    def from_fen(cls, fen: str, move_factory: MoveFactory) -> 'Piece':
         """
         Creates a piece from a FEN string.
 
         Args:
             fen: The FEN string.
+            move_factory: The move factory.
 
         Returns:
             A piece object.
@@ -58,7 +64,7 @@ class Piece:
         color = Color.WHITE if not fen.islower() else Color.BLACK
         fen = fen.lower()
 
-        return cls(PieceType(fen), color)
+        return cls(move_factory, PieceType(fen), color)
 
     def fen(self) -> str:
         """
@@ -119,7 +125,8 @@ class Piece:
 
         if self.type is PieceType.ROOK:
             for move in self._moves_with_move_groups(board, pos):
-                yield RookMove(move.start_field, move.target_field)
+                yield self.move_factory(PieceType.ROOK, move.start_field,
+                                        move.target_field)
 
     def _king_moves(self, board: Board, pos: Coordinate,
                     castling_rights: CastlingRights) -> MoveIterator:
@@ -127,7 +134,8 @@ class Piece:
         Generates possible moves for a king on the given chess board.
         """
         for move in self._moves_with_move_groups(board, pos):
-            yield KingMove(move.start_field, move.target_field)
+            yield self.move_factory(PieceType.KING, move.start_field,
+                                    move.target_field)
 
         yield from self._castling_moves(board, pos, castling_rights)
 
@@ -157,7 +165,10 @@ class Piece:
                 if board.color_at((x, king[1])) is not Color.EMPTY:
                     break
             else:
-                yield CastleMove(king, Coordinate(king[0] + 2 * steps, king[1]))
+                target = king[0] + 2 * steps
+                yield self.move_factory(PieceType.KING, king,
+                                        Coordinate(target, king[1]),
+                                        castling=True)
 
     def _moves_with_move_groups(self, board: Board,
                                 pos: Coordinate) -> MoveIterator:
@@ -178,7 +189,7 @@ class Piece:
                 if not self.is_legal_target(board, new_pos):
                     break
 
-                yield NormalMove(pos, new_pos)
+                yield self.move_factory(self.type, pos, new_pos)
 
                 target_field_color = board.color_at(new_pos)
                 if target_field_color is not Color.EMPTY:
@@ -200,11 +211,12 @@ class Piece:
         promote = self.is_start_rank(pos, self.color.enemy())
         for target in self._positions_for_pawn(board, pos, en_passant):
             if not promote:
-                yield PawnMove(pos, target)
+                yield self.move_factory(PieceType.PAWN, pos, target)
                 continue
 
             for piece_type in PROMOTE_TYPES:
-                yield PawnPromotion(pos, target, piece_type)
+                yield self.move_factory(PieceType.PAWN, pos, target,
+                                        promote_to=piece_type)
 
     def _positions_for_pawn(self, board: Board, pos: Coordinate,
                             en_passant: Optional[Coordinate] = None) -> Iterator[Coordinate]:
