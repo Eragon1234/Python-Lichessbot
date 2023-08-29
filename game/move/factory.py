@@ -8,6 +8,19 @@ from game.piece.piece_type import PieceType
 def move_factory(piece_type: PieceType, start: Coordinate,
                  end: Coordinate, *, castling: bool = False,
                  promote_to: Optional[PieceType] = None) -> Move:
+    """
+    Factory function for creating a move.
+
+    Args:
+        piece_type: The type of the piece that is being moved.
+        start: The starting coordinate of the move.
+        end: The ending coordinate of the move.
+        castling: Whether the move is a castling move.
+        promote_to: The type to promote to if the move is a pawn promotion.
+
+    Returns:
+        Move: The corresponding move object based on the given parameters.
+    """
     if piece_type is PieceType.ROOK:
         return RookMove(start, end)
     elif piece_type is PieceType.KING:
