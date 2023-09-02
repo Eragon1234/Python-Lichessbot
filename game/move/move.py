@@ -5,6 +5,10 @@ from game.move.board import Board
 
 
 class Move(ABC):
+    """
+    Class representing a move in a game.
+    It provides the functionality to execute and undo the move on a board.
+    """
     def __init__(self, start_field: Coordinate, target_field: Coordinate):
         self.start_field = start_field
         self.target_field = target_field

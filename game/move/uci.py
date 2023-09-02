@@ -28,4 +28,8 @@ def move_from_uci(board: Board, uci: str) -> Move:
 
 
 def is_castle(start: Coordinate, end: Coordinate) -> bool:
+    """
+    Checks if the move is a castle move.
+    Expects the move to be a king move.
+    """
     return abs(start.x - end.x) == 2
