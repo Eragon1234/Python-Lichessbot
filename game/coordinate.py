@@ -39,6 +39,21 @@ class Coordinate(NamedTuple):
         y = int(uci[1]) - 1
         return Coordinate(x, y)
 
+    @classmethod
+    def from_index(cls, index: int) -> "Coordinate":
+        """
+        Calculates the x and y coordinates from an index value.
+
+        Args:
+            index (int): The index value used to calculate the x and y coordinates.
+
+        Returns:
+            Coordinate: The Coordinate object representing the calculated x and y coordinates.
+        """
+        x = index % 8
+        y = index // 8
+        return Coordinate(x, y)
+
     def uci(self):
         x = chr(index_to_letter - self.x)
         y = self.y + 1

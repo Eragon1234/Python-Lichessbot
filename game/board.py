@@ -45,7 +45,7 @@ class Board:
         Iterate over the pieces of the board.
         """
         for i, piece in enumerate(self):
-            yield Coordinate(*position_to_coordinate(i)), piece
+            yield Coordinate.from_index(i), piece
 
     def __hash__(self) -> int:
         return hash(tuple(self._board))
@@ -160,29 +160,3 @@ class Board:
         self[target] = piece
         return captured_piece
 
-
-def position_to_coordinate(position: int) -> tuple[int, int]:
-    """
-    Convert an index in a 1d list to its equivalent in a 8x8 2d list
-
-    Args:
-        position: the index of the item in the 1d list
-
-    Returns:
-        returns the x and y coordinate of the position in a 8x8 2d list
-    """
-    return position % 8, position // 8
-
-
-def coordinate_to_position(x: int, y: int) -> int:
-    """
-    Convert a coordinate in a 8x8 2d list to its equivalent in a 1d list
-
-    Args:
-        x: the x coordinate of the position in a 8x8 2d list
-        y: the y coordinate of the position in a 8x8 2d list
-
-    Returns:
-        returns the index of the item in the 1d list
-    """
-    return y * 8 + x
