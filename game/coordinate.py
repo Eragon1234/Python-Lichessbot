@@ -1,3 +1,4 @@
+from functools import cache
 from typing import NamedTuple
 
 index_to_letter = ord("h")
@@ -7,15 +8,19 @@ class Coordinate(NamedTuple):
     x: int
     y: int
 
+    @cache
     def __add__(self, other: "Coordinate") -> "Coordinate":
         return Coordinate(self.x + other.x, self.y + other.y)
 
+    @cache
     def __neg__(self):
         return Coordinate(-self.x, -self.y)
 
+    @cache
     def __mul__(self, other: int) -> "Coordinate":
         return Coordinate(self.x * other, self.y * other)
 
+    @cache
     def __rmul__(self, other: int) -> "Coordinate":
         return self * other
 
@@ -40,6 +45,7 @@ class Coordinate(NamedTuple):
         return Coordinate(x, y)
 
     @classmethod
+    @cache
     def from_index(cls, index: int) -> "Coordinate":
         """
         Calculates the x and y coordinates from an index value.
