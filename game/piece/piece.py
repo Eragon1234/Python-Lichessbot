@@ -78,8 +78,9 @@ class Piece:
             short = short.upper()
         return short
 
-    def is_legal_target(self, board: Board, position: Coordinate,
-                        legal_target_colors: Optional[Color] = None) -> bool:
+    @staticmethod
+    def is_legal_target(board: Board, position: Coordinate,
+                        legal_target_colors: Color) -> bool:
         """
         Checks if a given position on the board is a legal target for a piece.
 
@@ -91,9 +92,6 @@ class Piece:
         Returns:
             bool: whether the position is a legal target.
         """
-        if legal_target_colors is None:
-            legal_target_colors = self.legal_target_colors
-
         x, y = position
 
         if x < 0 or x > 7 or y < 0 or y > 7:
@@ -188,7 +186,7 @@ class Piece:
             for move in move_group:
                 new_pos = pos + move
 
-                if not self.is_legal_target(board, new_pos):
+                if not self.is_legal_target(board, new_pos, self.legal_target_colors):
                     break
 
                 yield self.move_factory(pos, new_pos)

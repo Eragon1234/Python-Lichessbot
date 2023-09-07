@@ -20,6 +20,9 @@ class ChessBoard:
 
         self._board = Board.from_fen(fen)
 
+    def __hash__(self):
+        return hash(self._board)
+
     def move(self, move: Move | str) -> None:
         """
         makes a move on the board

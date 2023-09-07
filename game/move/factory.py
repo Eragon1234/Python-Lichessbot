@@ -1,3 +1,4 @@
+from functools import cache
 from typing import Optional
 
 from game.coordinate import Coordinate
@@ -5,6 +6,7 @@ from game.move import Move, RookMove, CastleMove, KingMove, PawnMove, PawnPromot
 from game.piece.piece_type import PieceType
 
 
+@cache
 def move_factory(piece_type: PieceType, start: Coordinate,
                  end: Coordinate, *, castling: bool = False,
                  promote_to: Optional[PieceType] = None) -> Move:

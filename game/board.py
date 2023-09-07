@@ -22,6 +22,9 @@ class Board:
         self.halfmove_clock = halfmove_clock
         self.fullmove_number = fullmove_number
 
+    def __hash__(self) -> int:
+        return hash(self.fen())
+
     def __getitem__(self, item: tuple[int, int]) -> Piece:
         return self._board[item[1] * 8 + item[0]]
 
@@ -46,9 +49,6 @@ class Board:
         """
         for i, piece in enumerate(self):
             yield Coordinate.from_index(i), piece
-
-    def __hash__(self) -> int:
-        return hash(tuple(self._board))
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Board':
@@ -159,4 +159,3 @@ class Board:
         captured_piece = self.pop(target)
         self[target] = piece
         return captured_piece
-
