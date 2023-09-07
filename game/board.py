@@ -8,6 +8,8 @@ from game.piece.color import Color
 from game.piece.piece import Piece
 from game.piece.piece_type import PieceType
 
+EMPTY_FIELD = Piece(move_factory, PieceType.EMPTY, Color.EMPTY)
+
 
 class Board:
     def __init__(self, board: list[Piece], turn: Color,
@@ -141,7 +143,7 @@ class Board:
 
     def pop(self, position: tuple[int, int]) -> Piece:
         piece = self[position]
-        self[position] = Piece(move_factory, PieceType.EMPTY, Color.EMPTY)
+        self[position] = EMPTY_FIELD
         return piece
 
     def do_move(self, start: Coordinate, target: Coordinate) -> Piece:
