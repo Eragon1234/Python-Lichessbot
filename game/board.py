@@ -139,6 +139,9 @@ class Board:
         return sum(piece.value for piece in self)
 
     def color_at(self, position: tuple[int, int]) -> Color:
+        if position[0] < 0 or position[0] > 7 or \
+                position[1] < 0 or position[1] > 7:
+            return Color.NONE
         return self[position].color
 
     def pop(self, position: tuple[int, int]) -> Piece:

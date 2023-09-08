@@ -6,6 +6,7 @@ class Color(Flag):
     WHITE = auto()
     BLACK = auto()
     EMPTY = auto()
+    NONE = auto()
 
     @cache
     def enemy(self) -> "Color":

@@ -78,27 +78,6 @@ class Piece:
             short = short.upper()
         return short
 
-    @staticmethod
-    def is_legal_target(board: Board, position: Coordinate,
-                        legal_target_colors: Color) -> bool:
-        """
-        Checks if a given position on the board is a legal target for a piece.
-
-        Args:
-            board (Board): The game board.
-            position (Coordinate): The position to check.
-            legal_target_colors (Optional[Color]): The legal target colors.
-
-        Returns:
-            bool: whether the position is a legal target.
-        """
-        x, y = position
-
-        if x < 0 or x > 7 or y < 0 or y > 7:
-            return False
-
-        return board.color_at(position) in legal_target_colors
-
     def moves(self, board: Board, pos: Coordinate,
               en_passant: Optional[Coordinate] = None,
               castling_rights: CastlingRights = CastlingRights.NONE) -> MoveIterator:
@@ -185,13 +164,13 @@ class Piece:
         for move_group in self.possible_move_groups:
             for move in move_group:
                 new_pos = pos + move
+                target_field_color = board.color_at(new_pos)
 
-                if not self.is_legal_target(board, new_pos, self.legal_target_colors):
+                if target_field_color not in self.legal_target_colors:
                     break
 
                 yield self.move_factory(pos, new_pos)
 
-                target_field_color = board.color_at(new_pos)
                 if target_field_color is not Color.EMPTY:
                     break
 
@@ -228,23 +207,27 @@ class Piece:
             forward = -forward
 
         possible_target = pos + forward
-        if self.is_legal_target(board, possible_target, Color.EMPTY):
+        target_field_color = board.color_at(possible_target)
+        if target_field_color is Color.EMPTY:
             yield possible_target
 
             if self.is_start_rank(pos):
                 possible_target = pos + 2 * forward
-                if self.is_legal_target(board, possible_target, Color.EMPTY):
+                target_field_color = board.color_at(possible_target)
+                if target_field_color is Color.EMPTY:
                     yield possible_target
 
         possible_target = pos + LEFT + forward
-        if self.is_legal_target(board, possible_target, self.color.enemy()):
+        target_field_color = board.color_at(possible_target)
+        if target_field_color is self.color.enemy():
             yield possible_target
 
         if en_passant == possible_target:
             yield en_passant
 
         possible_target = pos + RIGHT + forward
-        if self.is_legal_target(board, possible_target, self.color.enemy()):
+        target_field_color = board.color_at(possible_target)
+        if target_field_color is self.color.enemy():
             yield possible_target
 
         if en_passant == possible_target:
