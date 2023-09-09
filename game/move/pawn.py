@@ -15,11 +15,11 @@ class PawnMove(NormalMove):
         self.en_passant_capture = None
 
     def move(self, board: Board) -> None:
+        super().move(board)
+
         en_passant_coordinate = self.en_passant_coordinate(board)
         if en_passant_coordinate is not None:
             self.en_passant_capture = board.pop(en_passant_coordinate)
-
-        super().move(board)
 
         if self.is_double_move() and self.next_to_pawn(board):
             board.en_passant = self.new_en_passant(board[self.target_field])
