@@ -1,5 +1,4 @@
 from collections.abc import Iterator
-from functools import partial
 from typing import Optional, TypeVar
 
 from game.castling_rights import CastlingRights
@@ -43,7 +42,7 @@ class Piece:
 
         self.bonus_map = BONUS_MAPS[self.type]
 
-        self.move_factory = partial(move_factory, self.type)
+        self.move_factory = move_factory
 
     def move_to(self, position: tuple[int, int]):
         bonus = self.bonus_map[position[1]][position[0]]
@@ -104,8 +103,8 @@ class Piece:
 
         if self.type is PieceType.ROOK:
             for move in self._moves_with_move_groups(board, pos):
-                yield self.move_factory(move.start_field,
-                                        move.target_field)
+                yield self.move_factory.rook_move(move.start_field,
+                                                  move.target_field)
 
     def _king_moves(self, board: Board, pos: Coordinate,
                     castling_rights: CastlingRights) -> MoveIterator:
@@ -113,8 +112,8 @@ class Piece:
         Generates possible moves for a king on the given chess board.
         """
         for move in self._moves_with_move_groups(board, pos):
-            yield self.move_factory(move.start_field,
-                                    move.target_field)
+            yield self.move_factory.king_move(move.start_field,
+                                              move.target_field)
 
         yield from self._castling_moves(board, pos, castling_rights)
 
@@ -145,9 +144,8 @@ class Piece:
                     break
             else:
                 target = king[0] + 2 * steps
-                yield self.move_factory(king,
-                                        Coordinate(target, king[1]),
-                                        castling=True)
+                yield self.move_factory.castle_move(king,
+                                                    Coordinate(target, king[1]))
 
     def _moves_with_move_groups(self, board: Board,
                                 pos: Coordinate) -> MoveIterator:
@@ -169,7 +167,7 @@ class Piece:
                 if target_field_color not in self.legal_target_colors:
                     break
 
-                yield self.move_factory(pos, new_pos)
+                yield self.move_factory.from_type(self.type, pos, new_pos)
 
                 if target_field_color is not Color.EMPTY:
                     break
@@ -190,12 +188,12 @@ class Piece:
         promote = self.is_start_rank(pos, self.color.enemy())
         for target in self._positions_for_pawn(board, pos, en_passant):
             if not promote:
-                yield self.move_factory(pos, target)
+                yield self.move_factory.pawn_move(pos, target)
                 continue
 
             for piece_type in PROMOTE_TYPES:
-                yield self.move_factory(pos, target,
-                                        promote_to=piece_type)
+                yield self.move_factory.pawn_promotion(pos, target,
+                                                       promote_to=piece_type)
 
     def _positions_for_pawn(self, board: Board, pos: Coordinate,
                             en_passant: Optional[Coordinate] = None) -> Iterator[Coordinate]:

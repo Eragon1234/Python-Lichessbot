@@ -3,12 +3,12 @@ from typing import Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
-from game.move.factory import move_factory
+from game.move import factory
 from game.piece.color import Color
 from game.piece.piece import Piece
 from game.piece.piece_type import PieceType
 
-EMPTY_FIELD = Piece(move_factory, PieceType.EMPTY, Color.EMPTY)
+EMPTY_FIELD = Piece(factory, PieceType.EMPTY, Color.EMPTY)
 
 
 class Board:
@@ -62,12 +62,10 @@ class Board:
             for char in row:
                 if char.isdigit():
                     n = int(char)
-                    board.extend(Piece(move_factory,
-                                       PieceType.EMPTY,
-                                       Color.EMPTY) for _ in range(n))
+                    board.extend(EMPTY_FIELD for _ in range(n))
                     continue
 
-                board.append(Piece.from_fen(char, move_factory))
+                board.append(Piece.from_fen(char, factory))
 
         board.reverse()
 
