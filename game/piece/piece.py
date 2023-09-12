@@ -90,7 +90,7 @@ class Piece:
         Returns:
             A generator object that yields possible moves for the piece.
         """
-        if self.type is not PieceType.KING and self.type is not PieceType.ROOK:
+        if self.type is not PieceType.KING:
             yield from self._moves_with_move_groups(board, pos)
 
         if self.type is PieceType.PAWN:
@@ -98,11 +98,6 @@ class Piece:
 
         if self.type is PieceType.KING:
             yield from self._king_moves(board, pos, castling_rights)
-
-        if self.type is PieceType.ROOK:
-            for move in self._moves_with_move_groups(board, pos):
-                yield self.move_factory.rook_move(move.start_field,
-                                                  move.target_field)
 
     def _king_moves(self, board: Board, pos: Coordinate,
                     castling_rights: CastlingRights) -> MoveIterator:
