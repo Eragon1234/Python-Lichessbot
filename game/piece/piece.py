@@ -44,7 +44,7 @@ class Piece:
 
     def move_to(self, position: tuple[int, int]):
         bonus = self.bonus_map[position[1]][position[0]]
-        self.value = VALUES[self.type] + bonus
+        self.value = VALUES[self.type] * bonus
         if self.color is Color.BLACK:
             self.value = -self.value
 
