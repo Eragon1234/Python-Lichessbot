@@ -1,8 +1,9 @@
-from typing import Protocol
+from typing import Protocol, TypeVar
 
 from game.coordinate import Coordinate
-from game.move import Move
 from game.piece.piece_type import PieceType
+
+Move = TypeVar("Move")
 
 
 class MoveFactory(Protocol):

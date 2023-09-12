@@ -1,17 +1,15 @@
 from collections.abc import Iterator
-from typing import Optional, TypeVar
+from typing import Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.piece.board import Board
 from game.piece.bonus import BONUS_MAPS
 from game.piece.color import Color
-from game.piece.move_factory import MoveFactory
+from game.piece.move_factory import MoveFactory, Move
 from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
 from game.piece.values import VALUES
-
-Move = TypeVar('Move')
 
 MoveIterator = Iterator[Move]
 PROMOTE_TYPES = [PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP,
