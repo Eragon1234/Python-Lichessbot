@@ -17,6 +17,7 @@ class Board:
                  en_passant: Optional[Coordinate],
                  halfmove_clock: int, fullmove_number: int):
         self._board = board
+        self._coordinates = [Coordinate.from_index(i) for i in range(64)]
 
         self.turn = turn
         self.castling_rights = castling_rights
@@ -49,8 +50,7 @@ class Board:
         """
         Iterate over the pieces of the board.
         """
-        for i, piece in enumerate(self):
-            yield Coordinate.from_index(i), piece
+        yield from zip(self._coordinates, self._board)
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Board':
