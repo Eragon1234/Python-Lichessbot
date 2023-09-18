@@ -16,7 +16,9 @@ MOVE_GROUPS = {
         [(LEFT + BACKWARD) * i for i in range(1, 8)]
     ],
     PieceType.KNIGHT: [
-        [Coordinate(i, j)] for i in [-2, -1, 1, 2] for j in [-2, -1, 1, 2] if abs(i) != abs(j)
+        [Coordinate(i, j)]
+        for i in [-2, -1, 1, 2]
+        for j in [-2, -1, 1, 2] if abs(i) != abs(j)
     ],
     PieceType.ROOK: [
         [FORWARD * i for i in range(1, 8)],

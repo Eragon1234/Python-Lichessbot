@@ -1,5 +1,5 @@
 from game.coordinate import Coordinate
-from game.move import Move, PawnPromotion, PawnMove, NormalMove, RookMove, KingMove, CastleMove
+from game.move import Move, PawnPromotion, factory
 from game.move.board import Board
 from game.piece.piece_type import PieceType
 
@@ -7,6 +7,7 @@ from game.piece.piece_type import PieceType
 def move_from_uci(board: Board, uci: str) -> Move:
     """
     Converts a UCI string to a Move object.
+    Creates moves based on the current state of the board.
     """
     if len(uci) == 5:
         return PawnPromotion.from_uci(uci)
@@ -15,16 +16,10 @@ def move_from_uci(board: Board, uci: str) -> Move:
     target_field = Coordinate.from_uci(uci[2:4])
     moving_piece = board[start_field]
 
-    if moving_piece.type is PieceType.PAWN:
-        return PawnMove(start_field, target_field)
-    elif moving_piece.type is PieceType.ROOK:
-        return RookMove(start_field, target_field)
-    elif moving_piece.type is PieceType.KING:
-        if is_castle(start_field, target_field):
-            return CastleMove(start_field, target_field)
-        return KingMove(start_field, target_field)
+    if moving_piece.type is PieceType.KING and is_castle(start_field, target_field):
+        return factory.castle_move(start_field, target_field)
 
-    return NormalMove(start_field, target_field)
+    return factory.from_type(moving_piece.type, start_field, target_field)
 
 
 def is_castle(start: Coordinate, end: Coordinate) -> bool:

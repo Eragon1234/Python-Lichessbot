@@ -24,7 +24,6 @@ class Move(ABC):
     @abstractmethod
     def from_uci(cls, uci: str) -> "Move":
         """Creates a move from the uci representation."""
-        pass
 
     @abstractmethod
     def move(self, board: Board) -> None:

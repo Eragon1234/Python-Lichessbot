@@ -42,8 +42,7 @@ class PawnMove(NormalMove):
 
         if moving_piece.color == Color.WHITE:
             return Coordinate(board.en_passant.x, board.en_passant.y + 1)
-        else:
-            return Coordinate(board.en_passant.x, board.en_passant.y - 1)
+        return Coordinate(board.en_passant.x, board.en_passant.y - 1)
 
     def next_to_pawn(self, board: Board) -> bool:
         if self.target_field.x != 0:
@@ -62,8 +61,7 @@ class PawnMove(NormalMove):
     def new_en_passant(self, moving_piece: Piece) -> Coordinate:
         if moving_piece.color == Color.WHITE:
             return Coordinate(self.start_field.x, self.start_field.y + 1)
-        else:
-            return Coordinate(self.start_field.x, self.start_field.y - 1)
+        return Coordinate(self.start_field.x, self.start_field.y - 1)
 
 
 class PawnPromotion(PawnMove):

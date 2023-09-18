@@ -51,17 +51,16 @@ def queen_move(start: Coordinate, end: Coordinate):
     return NormalMove(start, end)
 
 
+PIECE_TYPE_TO_FACTORY = {
+    PieceType.ROOK: rook_move,
+    PieceType.KING: king_move,
+    PieceType.PAWN: pawn_move,
+    PieceType.KNIGHT: knight_move,
+    PieceType.BISHOP: bishop_move,
+    PieceType.QUEEN: queen_move,
+}
+
+
 @cache
 def from_type(piece_type: PieceType, start: Coordinate, end: Coordinate):
-    if piece_type is PieceType.ROOK:
-        return rook_move(start, end)
-    if piece_type is PieceType.KING:
-        return king_move(start, end)
-    if piece_type is PieceType.PAWN:
-        return pawn_move(start, end)
-    if piece_type is PieceType.KNIGHT:
-        return knight_move(start, end)
-    if piece_type is PieceType.BISHOP:
-        return bishop_move(start, end)
-    if piece_type is PieceType.QUEEN:
-        return queen_move(start, end)
+    return PIECE_TYPE_TO_FACTORY[piece_type](start, end)
