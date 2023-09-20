@@ -39,6 +39,6 @@ class LichessBotApiClient:
         """streams events from the lichess api"""
         return self._stream(f'{self.base_url}/stream/event')
 
-    def stream_game(self, game_id: str, *args) -> Iterator[dict]:
+    def stream_game(self, game_id: str) -> Iterator[dict]:
         """streams a game with the given game_id"""
         return self._stream(f'{self.base_url}/bot/game/stream/{game_id}')
