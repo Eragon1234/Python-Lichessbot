@@ -1,8 +1,9 @@
 import logging
 import time
+from functools import cache
 from itertools import count
 
-from engine.cache import Cache, NoCache, MoveEvaluation
+from engine.cache import MoveEvaluation
 from game import ChessBoard
 from game.move import Move
 from game.piece.color import Color
@@ -12,13 +13,14 @@ from playercolor import PlayerColor
 class Engine:
     """Class to generate the best possible moves, etc."""
 
-    def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                 cache: Cache = None):
+    def __init__(self, fen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'):
         self.board = ChessBoard(fen)
 
-        self.cache = cache
-        if self.cache is None:
-            self.cache = NoCache()
+    def __hash__(self):
+        return hash(self.board)
+
+    def __eq__(self, other):
+        return self.board == other.board
 
     def get_best_move(self, color: PlayerColor,
                       moves: list[str], seconds: int = 3) -> MoveEvaluation:
@@ -52,12 +54,9 @@ class Engine:
 
         return self.negamax(depth, -9999, 9999, color)
 
+    @cache
     def negamax(self, depth: int, alpha: float, beta: float,
                 color: Color) -> MoveEvaluation:
-        cached = self.cache.get(color, self.board, depth)
-        if cached is not None:
-            return cached
-
         if depth == 0:
             return None, self.material_difference(color)
 
@@ -83,8 +82,6 @@ class Engine:
 
         if best_move is None:
             max_value = -9999 if self.board.king_in_check(color) else 0
-
-        self.cache.set(color, self.board, depth, (best_move, max_value))
 
         return best_move, max_value
 
