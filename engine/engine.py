@@ -2,12 +2,14 @@ import logging
 import time
 from functools import cache
 from itertools import count
+from typing import Optional
 
-from engine.cache import MoveEvaluation
 from game import ChessBoard
 from game.move import Move
 from game.piece.color import Color
 from playercolor import PlayerColor
+
+MoveEvaluation = tuple[Optional[Move], float]
 
 
 class Engine:
