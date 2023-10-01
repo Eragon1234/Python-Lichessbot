@@ -62,7 +62,7 @@ class Engine:
         if depth == 0:
             return None, self.material_difference(color)
 
-        moves = list(self.board.legal_moves(color))
+        moves = list(self.board.legal_moves())
         moves = self.order_moves(moves)
 
         best_move = None

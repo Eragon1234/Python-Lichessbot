@@ -20,7 +20,7 @@ class TestUnmove(unittest.TestCase):
         if depth == 0:
             return
         board_state = board.fen()
-        for move in board.legal_moves(color):
+        for move in board.legal_moves():
             board.move(move)
             self.move_and_unmove(board, color.enemy(), depth - 1)
             board.unmove()

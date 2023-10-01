@@ -66,16 +66,15 @@ class ChessBoard:
         """Returns a context manager to test a move."""
         return self.TestMove(self, move)
 
-    def legal_moves(self, color: Color) -> MoveIterator:
+    def legal_moves(self) -> MoveIterator:
         """
         Generating all possible moves in the current position
-
-        Args:
-            color: for which color to generate the moves for.
 
         Returns:
             A generator object that yields all possible moves.
         """
+        color = self._board.turn
+        
         moves = self.pseudo_legal_moves(color)
 
         for move in moves:
