@@ -38,6 +38,10 @@ class Move(ABC):
 
 
 class PureMove(Move):
+    """
+    Pure Move just moves a piece from one field to another.
+    It does not capture any pieces, etc.
+    """
     def __init__(self, start_field: Coordinate, target_field: Coordinate):
         super().__init__(start_field, target_field)
 
