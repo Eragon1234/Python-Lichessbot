@@ -1,12 +1,10 @@
-from typing import Protocol, TypeVar
+from typing import Protocol
 
 from game.coordinate import Coordinate
 from game.piece.piece_type import PieceType
 
-Move = TypeVar("Move")
 
-
-class MoveFactory(Protocol):
+class MoveFactory[Move](Protocol):
     def rook_move(self, start: Coordinate, end: Coordinate) -> Move:
         ...
 

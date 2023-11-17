@@ -6,24 +6,23 @@ from game.coordinate import Coordinate
 from game.piece.board import Board
 from game.piece.bonus import BONUS_MAPS
 from game.piece.color import Color
-from game.piece.move_factory import MoveFactory, Move
+from game.piece.move_factory import MoveFactory
 from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
 from game.piece.values import VALUES
 
-MoveIterator = Iterator[Move]
 PROMOTE_TYPES = [PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP,
                  PieceType.KNIGHT]
 
 
-class Piece:
+class Piece[Move]:
     """
     A piece on a chess board.
     The type attribute specifies the type of the piece.
     The piece can also represent an empty field.
     """
 
-    def __init__(self, move_factory: MoveFactory,
+    def __init__(self, move_factory: MoveFactory[Move],
                  piece_type: PieceType, color: Color):
 
         self.type = piece_type
@@ -77,7 +76,7 @@ class Piece:
 
     def moves(self, board: Board, pos: Coordinate,
               en_passant: Optional[Coordinate] = None,
-              castling_rights: CastlingRights = CastlingRights.NONE) -> MoveIterator:
+              castling_rights: CastlingRights = CastlingRights.NONE) -> Iterator[Move]:
         """
         Generates possible moves for a piece on the given chess board.
 
@@ -100,7 +99,7 @@ class Piece:
             yield from self._king_moves(board, pos, castling_rights)
 
     def _king_moves(self, board: Board, pos: Coordinate,
-                    castling_rights: CastlingRights) -> MoveIterator:
+                    castling_rights: CastlingRights) -> Iterator[Move]:
         """
         Generates possible moves for a king on the given chess board.
         """
@@ -111,7 +110,7 @@ class Piece:
         yield from self._castling_moves(board, pos, castling_rights)
 
     def _castling_moves(self, board: Board, pos: Coordinate,
-                        castling_rights: CastlingRights) -> MoveIterator:
+                        castling_rights: CastlingRights) -> Iterator[Move]:
         """
         Generates possible castling moves for a king on the given chess board.
         """
@@ -141,7 +140,7 @@ class Piece:
                                                     Coordinate(target, king[1]))
 
     def _moves_with_move_groups(self, board: Board,
-                                pos: Coordinate) -> MoveIterator:
+                                pos: Coordinate) -> Iterator[Move]:
         """
         Generates possible moves for a piece on the given chess board.
 
@@ -166,7 +165,7 @@ class Piece:
                     break
 
     def _moves_for_pawn(self, board: Board, pos: Coordinate,
-                        en_passant: Optional[Coordinate] = None) -> MoveIterator:
+                        en_passant: Optional[Coordinate] = None) -> Iterator[Move]:
         """
         Generates possible moves for a pawn on the given chess board.
 
