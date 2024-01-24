@@ -35,8 +35,8 @@ class Board:
     def is_type(self, i: int, t: PieceType):
         return self._boards[t] & (1 << i)
 
-    def __getitem__(self, item: tuple[int, int]) -> Piece:
-        return self._get_piece(item[1] * 8 + item[0])
+    def __getitem__(self, item: Coordinate) -> Piece:
+        return self._get_piece(item.value)
 
     def _get_piece(self, i: int) -> Piece:
         t = list(t for t, b in self._boards.items() if b & (1 << i))
@@ -48,8 +48,8 @@ class Board:
 
         return Piece(factory, map.get_type(), color)
 
-    def __setitem__(self, key: tuple[int, int], value: Piece):
-        self._set_piece(key[1] * 8 + key[0], value)
+    def __setitem__(self, key: Coordinate, value: Piece):
+        self._set_piece(key.value, value)
 
     def _set_piece(self, i: int, piece: Piece):
         self._clear_bits(i)
@@ -74,7 +74,7 @@ class Board:
         The rows are a8-h8, a7-h7, ..., a1-h1
         """
         for i in reversed(range(8)):
-            yield list(self[j, i] for j in reversed(range(8)))
+            yield list(self[Coordinate(j, i)] for j in reversed(range(8)))
 
     def iter_pieces(self) -> Iterator[tuple[Coordinate, Piece]]:
         """
@@ -167,13 +167,13 @@ class Board:
     def material_difference(self) -> int:
         return sum(piece.value for piece in self)
 
-    def color_at(self, position: tuple[int, int]) -> Color:
+    def color_at(self, position: Coordinate) -> Color:
         if position[0] < 0 or position[0] > 7 or \
                 position[1] < 0 or position[1] > 7:
             return Color.NONE
         return self[position].color
 
-    def pop(self, position: tuple[int, int]) -> Piece:
+    def pop(self, position: Coordinate) -> Piece:
         piece = self[position]
         self[position] = EMPTY_FIELD
         return piece

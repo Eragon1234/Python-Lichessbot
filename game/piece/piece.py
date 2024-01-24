@@ -134,7 +134,7 @@ class Piece[Move]:
 
         for rook, steps in castling:
             for x in range(king[0] + steps, rook[0], steps):
-                if board.color_at((x, king[1])) is not Color.EMPTY:
+                if board.color_at(Coordinate(x, king.y)) is not Color.EMPTY:
                     break
             else:
                 target = king[0] + 2 * steps

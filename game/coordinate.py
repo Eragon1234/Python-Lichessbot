@@ -64,3 +64,7 @@ class Coordinate(NamedTuple):
         x = chr(index_to_letter - self.x)
         y = self.y + 1
         return f"{x}{y}"
+
+    @property
+    def value(self):
+        return self.y * 8 + self.x
