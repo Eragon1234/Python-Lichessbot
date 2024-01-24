@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import final, Optional
 
 from game.coordinate import Coordinate
 from game.move.board import Board
@@ -12,6 +13,8 @@ class Move(ABC):
     def __init__(self, start_field: Coordinate, target_field: Coordinate):
         self.start_field = start_field
         self.target_field = target_field
+
+        self.old_board: Optional[Board] = None
 
         self.captured_piece = None
 
@@ -28,13 +31,13 @@ class Move(ABC):
     @abstractmethod
     def move(self, board: Board) -> None:
         """Executes the move on the board."""
+        self.old_board = board.clone()
         self.captured_piece = board.do_move(self.start_field, self.target_field)
 
-    @abstractmethod
+    @final
     def undo(self, board: Board) -> None:
         """Undoes the move on the board."""
-        board.do_move(self.target_field, self.start_field)
-        board[self.target_field] = self.captured_piece
+        board.restore(self.old_board)
 
 
 class PureMove(Move):
@@ -54,6 +57,3 @@ class PureMove(Move):
 
     def move(self, board: Board) -> None:
         super().move(board)
-
-    def undo(self, board: Board) -> None:
-        super().undo(board)

@@ -9,28 +9,17 @@ from game.piece.piece_type import PieceType
 
 
 class PawnMove(NormalMove):
-    def __init__(self, start_field: Coordinate, target_field: Coordinate):
-        super().__init__(start_field, target_field)
-
-        self.en_passant_capture = None
-
     def move(self, board: Board) -> None:
         super().move(board)
 
         en_passant_coordinate = self.en_passant_coordinate(board)
         if en_passant_coordinate is not None:
-            self.en_passant_capture = board.pop(en_passant_coordinate)
+            board.pop(en_passant_coordinate)
 
         if self.is_double_move() and self.next_to_pawn(board):
             board.en_passant = self.new_en_passant(board[self.target_field])
 
         board.halfmove_clock = 0
-
-    def undo(self, board: Board) -> None:
-        super().undo(board)
-
-        if self.en_passant_capture is not None:
-            board[self.en_passant_coordinate(board)] = self.en_passant_capture
 
     def en_passant_coordinate(self, board: Board) -> Optional[Coordinate]:
         moving_piece = board[self.start_field]
@@ -71,7 +60,7 @@ class PawnPromotion(PawnMove):
         self.promote_to = promote_to
 
     def uci(self) -> str:
-        return super().uci() + self.promote_to.value
+        return super().uci() + self.promote_to
 
     @classmethod
     def from_uci(cls, uci: str) -> "Move":
@@ -85,9 +74,3 @@ class PawnPromotion(PawnMove):
         piece = board[self.target_field]
         piece.type = self.promote_to
         board[self.target_field] = piece
-
-    def undo(self, board: Board) -> None:
-        piece = board[self.target_field]
-        piece.type = PieceType.PAWN
-        board[self.target_field] = piece
-        super().undo(board)

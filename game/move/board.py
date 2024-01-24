@@ -25,6 +25,12 @@ class Board(Protocol):
     def pop(self, field: Coordinate) -> Piece:
         ...
 
+    def clone(self) -> 'Board':
+        ...
+
+    def restore(self, board: 'Board') -> None:
+        ...
+
     en_passant: Optional[Coordinate]
 
     castling_rights: CastlingRights

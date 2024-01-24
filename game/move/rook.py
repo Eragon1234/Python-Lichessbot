@@ -6,11 +6,6 @@ from game.piece.color import Color
 
 
 class RookMove(NormalMove):
-    def __init__(self, start_field: Coordinate, target_field: Coordinate):
-        super().__init__(start_field, target_field)
-
-        self.old_castling_rights = CastlingRights.NONE
-
     def uci(self) -> str:
         return super().uci()
 
@@ -21,16 +16,9 @@ class RookMove(NormalMove):
         return cls(start_field, target_field)
 
     def move(self, board: Board):
-        self.old_castling_rights = board.castling_rights
-
         self.update_castling_rights(board)
 
         super().move(board)
-
-    def undo(self, board: Board):
-        board.castling_rights = self.old_castling_rights
-
-        super().undo(board)
 
     def update_castling_rights(self, board: Board):
         moving_piece = board[self.start_field]

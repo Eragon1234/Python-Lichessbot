@@ -9,9 +9,6 @@ class NormalMove(Move):
     def __init__(self, start_field: Coordinate, target_field: Coordinate):
         super().__init__(start_field, target_field)
 
-        self.old_en_passant = "-"
-        self.old_halfmove_clock = 0
-
     def uci(self) -> str:
         return f"{self.start_field.uci()}{self.target_field.uci()}"
 
@@ -22,15 +19,11 @@ class NormalMove(Move):
         return cls(start_field, target_field)
 
     def move(self, board: Board):
-        self.old_en_passant = board.en_passant
-
         super().move(board)
 
         board.turn = board.turn.enemy()
 
         board.en_passant = None
-
-        self.old_halfmove_clock = board.halfmove_clock
 
         if self.captured_piece.type is not PieceType.EMPTY:
             board.halfmove_clock = -1
@@ -39,15 +32,3 @@ class NormalMove(Move):
 
         if board.turn is Color.WHITE:
             board.fullmove_number += 1
-
-    def undo(self, board: Board):
-        board.en_passant = self.old_en_passant
-
-        super().undo(board)
-
-        board.turn = board.turn.enemy()
-
-        board.halfmove_clock = self.old_halfmove_clock
-
-        if board.turn is Color.BLACK:
-            board.fullmove_number -= 1
