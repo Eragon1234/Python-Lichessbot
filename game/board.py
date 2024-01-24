@@ -1,3 +1,4 @@
+import copy
 from collections.abc import Iterator
 from typing import Optional
 
@@ -10,6 +11,8 @@ from game.piece.piece_type import PieceType
 
 EMPTY_FIELD = Piece(factory, PieceType.EMPTY, Color.EMPTY)
 
+coordinates = [Coordinate.from_index(i) for i in range(64)]
+
 
 class Board:
     def __init__(self, board: list[Piece], turn: Color,
@@ -20,8 +23,6 @@ class Board:
 
         for i, piece in enumerate(board):
             self._set_piece(i, piece)
-
-        self._coordinates = [Coordinate.from_index(i) for i in range(64)]
 
         self.turn = turn
         self.castling_rights = castling_rights
@@ -81,7 +82,7 @@ class Board:
         Iterate over the pieces of the board.
         """
         for i in range(64):
-            yield self._coordinates[i], self._get_piece(i)
+            yield coordinates[i], self._get_piece(i)
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Board':
