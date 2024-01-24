@@ -36,14 +36,6 @@ class Board:
     def clone(self) -> 'Board':
         return copy.deepcopy(self)
 
-    def restore(self, board: 'Board'):
-        self._boards = board._boards
-        self.turn = board.turn
-        self.castling_rights = board.castling_rights
-        self.en_passant = board.en_passant
-        self.halfmove_clock = board.halfmove_clock
-        self.fullmove_number = board.fullmove_number
-
     def is_type(self, i: int, t: PieceType):
         return self._boards[t] & (1 << i)
 

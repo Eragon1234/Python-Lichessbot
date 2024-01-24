@@ -19,6 +19,7 @@ class ChessBoard:
         self.moves: list[Move] = []
 
         self._board = Board.from_fen(fen)
+        self._previous_boards = []
 
     def __hash__(self):
         return hash(self._board)
@@ -37,13 +38,17 @@ class ChessBoard:
 
         self.moves.append(move)
 
+        self._previous_boards.append(self._board)
+
+        self._board = self._board.clone()
+
         move.move(self._board)
 
     def unmove(self) -> None:
         """undoes the last move"""
-        move = self.moves.pop()
+        self.moves.pop()
 
-        move.undo(self._board)
+        self._board = self._previous_boards.pop()
 
     def whites_move(self) -> bool:
         """returns if it's white's move"""
