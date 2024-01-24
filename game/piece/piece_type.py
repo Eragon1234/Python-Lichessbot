@@ -13,6 +13,8 @@ class PieceType(Flag):
     BLACK = auto()
     EMPTY = auto()
 
+    COLORS = WHITE | BLACK
+
     @staticmethod
     def from_fen(f: str) -> 'PieceType':
         # color = PieceType.WHITE if f.isupper() else PieceType.BLACK
@@ -31,5 +33,4 @@ class PieceType(Flag):
         return t
 
     def get_type(self) -> 'PieceType':
-        return self & (
-                PieceType.PAWN | PieceType.ROOK | PieceType.KNIGHT | PieceType.BISHOP | PieceType.QUEEN | PieceType.KING | PieceType.EMPTY)
+        return self & ~PieceType.COLORS
