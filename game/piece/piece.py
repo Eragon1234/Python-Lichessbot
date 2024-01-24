@@ -41,12 +41,6 @@ class Piece[Move]:
 
         self.move_factory = move_factory
 
-    def move_to(self, position: tuple[int, int]):
-        bonus = self.bonus_map[position[1]][position[0]]
-        self.value = VALUES[self.type] * bonus
-        if self.color is Color.BLACK:
-            self.value = -self.value
-
     @classmethod
     def from_fen(cls, fen: str, move_factory: MoveFactory) -> 'Piece':
         """
