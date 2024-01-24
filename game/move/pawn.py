@@ -82,8 +82,12 @@ class PawnPromotion(PawnMove):
 
     def move(self, board: Board) -> None:
         super().move(board)
-        board[self.target_field].type = self.promote_to
+        piece = board[self.target_field]
+        piece.type = self.promote_to
+        board[self.target_field] = piece
 
     def undo(self, board: Board) -> None:
-        board[self.target_field].type = PieceType.PAWN
+        piece = board[self.target_field]
+        piece.type = PieceType.PAWN
+        board[self.target_field] = piece
         super().undo(board)

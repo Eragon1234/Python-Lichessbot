@@ -16,7 +16,14 @@ class Board:
                  castling_rights: CastlingRights,
                  en_passant: Optional[Coordinate],
                  halfmove_clock: int, fullmove_number: int):
-        self._board = board
+        self._white = 0
+        self._black = 0
+
+        self._piece_boards = {t: 0 for t in PieceType}
+
+        for i, piece in enumerate(board):
+            self._set_piece(i, piece)
+
         self._coordinates = [Coordinate.from_index(i) for i in range(64)]
 
         self.turn = turn
@@ -29,14 +36,37 @@ class Board:
         return hash(self.fen())
 
     def __getitem__(self, item: tuple[int, int]) -> Piece:
-        return self._board[item[1] * 8 + item[0]]
+        i = item[1] * 8 + item[0]
+
+        return self._get_piece(i)
+
+    def _get_piece(self, i: int) -> Piece:
+        t = next(t for t, b in self._piece_boards.items() if b & (1 << i))
+        color = Color.WHITE if self._white & (1 << i) else Color.BLACK if self._black & (1 << i) else Color.EMPTY
+
+        return Piece(factory, t, color)
 
     def __setitem__(self, key: tuple[int, int], value: Piece):
-        value.move_to(key)
-        self._board[key[1] * 8 + key[0]] = value
+        self._set_piece(key[1] * 8 + key[0], value)
+
+    def _set_piece(self, i: int, piece: Piece):
+        self._clear_bits(i)
+        if piece.color == Color.WHITE:
+            self._white |= 1 << i
+        elif piece.color == Color.BLACK:
+            self._black |= 1 << i
+
+        self._piece_boards[piece.type] |= 1 << i
+
+    def _clear_bits(self, i: int) -> None:
+        mask = ~(1 << i)
+        for t in self._piece_boards:
+            self._piece_boards[t] &= mask
+        self._white &= mask
+        self._black &= mask
 
     def __iter__(self) -> Iterator[Piece]:
-        return iter(self._board)
+        return (self._get_piece(i) for i in range(64))
 
     def iter_rows(self) -> Iterator[list[Piece]]:
         """
@@ -44,13 +74,14 @@ class Board:
         The rows are a8-h8, a7-h7, ..., a1-h1
         """
         for i in reversed(range(8)):
-            yield reversed(self._board[i * 8:i * 8 + 8])
+            yield list(self[j, i] for j in reversed(range(8)))
 
     def iter_pieces(self) -> Iterator[tuple[Coordinate, Piece]]:
         """
         Iterate over the pieces of the board.
         """
-        yield from zip(self._coordinates, self._board)
+        for i in range(64):
+            yield self._coordinates[i], self._get_piece(i)
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Board':
