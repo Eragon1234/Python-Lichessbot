@@ -2,7 +2,7 @@ from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.move import NormalMove
 from game.move.board import Board
-from game.piece.color import Color
+from game.piece.piece_type import PieceType
 
 
 class RookMove(NormalMove):
@@ -21,8 +21,6 @@ class RookMove(NormalMove):
         super().move(board)
 
     def update_castling_rights(self, board: Board):
-        moving_piece = board[self.start_field]
-
         if self.start_field.x == 0:
             remove_rights = CastlingRights.KING
         elif self.start_field.x == 7:
@@ -30,7 +28,7 @@ class RookMove(NormalMove):
         else:
             return
 
-        if moving_piece.color is Color.WHITE:
+        if board.is_type(self.start_field.value, PieceType.WHITE):
             remove_rights = remove_rights & CastlingRights.WHITE
         else:
             remove_rights = remove_rights & CastlingRights.BLACK

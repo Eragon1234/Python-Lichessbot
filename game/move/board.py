@@ -18,6 +18,9 @@ class Board(Protocol):
     def __setitem__(self, key: Coordinate, value: Piece):
         ...
 
+    def is_type(self, i: int, t: PieceType):
+        ...
+
     def do_move(self, start_field: Coordinate,
                 target_field: Coordinate) -> Piece:
         ...

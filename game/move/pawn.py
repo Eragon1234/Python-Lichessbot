@@ -2,9 +2,8 @@ from typing import Optional
 
 from game.coordinate import Coordinate
 from game.move import NormalMove
-from game.move.board import Board, Piece
+from game.move.board import Board
 from game.move.move import Move
-from game.piece.color import Color
 from game.piece.piece_type import PieceType
 
 
@@ -17,38 +16,37 @@ class PawnMove(NormalMove):
             board.pop(en_passant_coordinate)
 
         if self.is_double_move() and self.next_to_pawn(board):
-            board.en_passant = self.new_en_passant(board[self.target_field])
+            board.en_passant = self.new_en_passant(board)
 
         board.halfmove_clock = 0
 
     def en_passant_coordinate(self, board: Board) -> Optional[Coordinate]:
-        moving_piece = board[self.start_field]
         if board.en_passant is None:
             return None
 
         if self.target_field != board.en_passant:
             return None
 
-        if moving_piece.color == Color.WHITE:
+        if board.is_type(self.start_field.value, PieceType.WHITE):
             return Coordinate(board.en_passant.x, board.en_passant.y + 1)
         return Coordinate(board.en_passant.x, board.en_passant.y - 1)
 
     def next_to_pawn(self, board: Board) -> bool:
         if self.target_field.x != 0:
             left = Coordinate(self.target_field.x - 1, self.target_field.y)
-            if board[left].type == PieceType.PAWN:
+            if board.is_type(left.value, PieceType.PAWN):
                 return True
         if self.target_field.x != 7:
             right = Coordinate(self.target_field.x + 1, self.target_field.y)
-            if board[right].type == PieceType.PAWN:
+            if board.is_type(right.value, PieceType.PAWN):
                 return True
         return False
 
     def is_double_move(self) -> bool:
         return abs(self.start_field.y - self.target_field.y) == 2
 
-    def new_en_passant(self, moving_piece: Piece) -> Coordinate:
-        if moving_piece.color == Color.WHITE:
+    def new_en_passant(self, board: Board) -> Coordinate:
+        if board.is_type(self.target_field.value, PieceType.WHITE):
             return Coordinate(self.start_field.x, self.start_field.y + 1)
         return Coordinate(self.start_field.x, self.start_field.y - 1)
 

@@ -3,7 +3,7 @@ from game.coordinate import Coordinate
 from game.move.board import Board
 from game.move.move import PureMove
 from game.move.normal import NormalMove
-from game.piece.color import Color
+from game.piece.piece_type import PieceType
 
 
 class KingMove(NormalMove):
@@ -13,8 +13,7 @@ class KingMove(NormalMove):
         self.update_castling_rights(board)
 
     def update_castling_rights(self, board: Board) -> None:
-        moving_piece = board[self.target_field]
-        if moving_piece.color is Color.WHITE:
+        if board.is_type(self.target_field.value, PieceType.WHITE):
             remove_rights = CastlingRights.WHITE
         else:
             remove_rights = CastlingRights.BLACK
