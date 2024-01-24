@@ -16,10 +16,7 @@ class Board:
                  castling_rights: CastlingRights,
                  en_passant: Optional[Coordinate],
                  halfmove_clock: int, fullmove_number: int):
-        self._white = 0
-        self._black = 0
-
-        self._piece_boards = {t: 0 for t in PieceType}
+        self._boards: dict[PieceType, int] = {t: 0 for t in PieceType}
 
         for i, piece in enumerate(board):
             self._set_piece(i, piece)
@@ -35,16 +32,21 @@ class Board:
     def __hash__(self) -> int:
         return hash(self.fen())
 
-    def __getitem__(self, item: tuple[int, int]) -> Piece:
-        i = item[1] * 8 + item[0]
+    def is_type(self, i: int, t: PieceType):
+        return self._boards[t] & (1 << i)
 
-        return self._get_piece(i)
+    def __getitem__(self, item: tuple[int, int]) -> Piece:
+        return self._get_piece(item[1] * 8 + item[0])
 
     def _get_piece(self, i: int) -> Piece:
-        t = next(t for t, b in self._piece_boards.items() if b & (1 << i))
-        color = Color.WHITE if self._white & (1 << i) else Color.BLACK if self._black & (1 << i) else Color.EMPTY
+        t = list(t for t, b in self._boards.items() if b & (1 << i))
+        color = Color.WHITE if PieceType.WHITE in t else Color.BLACK if PieceType.BLACK in t else Color.EMPTY
 
-        return Piece(factory, t, color)
+        map = t[0]
+        for m in t[1:]:
+            map |= m
+
+        return Piece(factory, map.get_type(), color)
 
     def __setitem__(self, key: tuple[int, int], value: Piece):
         self._set_piece(key[1] * 8 + key[0], value)
@@ -52,18 +54,16 @@ class Board:
     def _set_piece(self, i: int, piece: Piece):
         self._clear_bits(i)
         if piece.color == Color.WHITE:
-            self._white |= 1 << i
+            self._boards[PieceType.WHITE] |= 1 << i
         elif piece.color == Color.BLACK:
-            self._black |= 1 << i
+            self._boards[PieceType.BLACK] |= 1 << i
 
-        self._piece_boards[piece.type] |= 1 << i
+        self._boards[piece.type] |= 1 << i
 
     def _clear_bits(self, i: int) -> None:
         mask = ~(1 << i)
-        for t in self._piece_boards:
-            self._piece_boards[t] &= mask
-        self._white &= mask
-        self._black &= mask
+        for t in self._boards:
+            self._boards[t] &= mask
 
     def __iter__(self) -> Iterator[Piece]:
         return (self._get_piece(i) for i in range(64))

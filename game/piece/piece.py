@@ -62,14 +62,22 @@ class Piece[Move]:
         color = Color.WHITE if not fen.islower() else Color.BLACK
         fen = fen.lower()
 
-        return cls(move_factory, PieceType(fen), color)
+        return cls(move_factory, PieceType.from_fen(fen), color)
 
     def fen(self) -> str:
         """
         Returns:
             The FEN string for the piece.
         """
-        short = self.type.value
+        piece_map = {
+            PieceType.PAWN: 'p',
+            PieceType.ROOK: 'r',
+            PieceType.KNIGHT: 'n',
+            PieceType.BISHOP: 'b',
+            PieceType.QUEEN: 'q',
+            PieceType.KING: 'k'
+        }
+        short = piece_map[self.type]
         if self.color is Color.WHITE:
             short = short.upper()
         return short

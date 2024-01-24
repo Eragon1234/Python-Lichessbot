@@ -78,7 +78,7 @@ class PawnPromotion(PawnMove):
         start_field = Coordinate.from_uci(uci[:2])
         target_field = Coordinate.from_uci(uci[2:4])
         promotion = uci[4]
-        return cls(start_field, target_field, PieceType(promotion))
+        return cls(start_field, target_field, PieceType.from_fen(promotion))
 
     def move(self, board: Board) -> None:
         super().move(board)
