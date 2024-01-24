@@ -134,7 +134,7 @@ class Piece[Move]:
 
         for rook, steps in castling:
             for x in range(king[0] + steps, rook[0], steps):
-                if board.color_at(Coordinate(x, king.y)) is not Color.EMPTY:
+                if not board.is_type(Coordinate(x, king.y).value, PieceType.EMPTY):
                     break
             else:
                 target = king[0] + 2 * steps
@@ -199,14 +199,12 @@ class Piece[Move]:
             forward = -forward
 
         possible_target = pos + forward
-        target_field_color = board.color_at(possible_target)
-        if target_field_color is Color.EMPTY:
+        if board.is_type(possible_target.value, PieceType.EMPTY):
             yield possible_target
 
             if self.is_start_rank(pos):
                 possible_target = pos + 2 * forward
-                target_field_color = board.color_at(possible_target)
-                if target_field_color is Color.EMPTY:
+                if board.is_type(possible_target.value, PieceType.EMPTY):
                     yield possible_target
 
         possible_target = pos + LEFT + forward
