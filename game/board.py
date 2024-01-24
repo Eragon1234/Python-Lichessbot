@@ -183,7 +183,10 @@ class Board:
         if position[0] < 0 or position[0] > 7 or \
                 position[1] < 0 or position[1] > 7:
             return Color.NONE
-        return self[position].color
+        for color in PieceType.COLORS:
+            if self.is_type(position.value, color):
+                return Color.WHITE if color is PieceType.WHITE else Color.BLACK
+        return Color.EMPTY
 
     def pop(self, position: Coordinate) -> Piece:
         piece = self[position]
