@@ -43,14 +43,18 @@ class Board:
         return self._get_piece(item.value)
 
     def _get_piece(self, i: int) -> Piece:
-        t = list(t for t, b in self._boards.items() if b & (1 << i))
-        color = Color.WHITE if PieceType.WHITE in t else Color.BLACK if PieceType.BLACK in t else Color.EMPTY
+        piece_type = self._get_type(i)
+        color = Color.WHITE if PieceType.WHITE in piece_type else Color.BLACK if PieceType.BLACK in piece_type else Color.EMPTY
 
-        map = t[0]
-        for m in t[1:]:
-            map |= m
+        return Piece(factory, piece_type.get_type(), color)
 
-        return Piece(factory, map.get_type(), color)
+    def _get_type(self, i: int) -> PieceType:
+        piece_type = PieceType(0)
+        for t, b in self._boards.items():
+            if not b & (1 << i):
+                continue
+            piece_type |= t
+        return piece_type
 
     def __setitem__(self, key: Coordinate, value: Piece):
         self._set_piece(key.value, value)
