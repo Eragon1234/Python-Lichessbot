@@ -1,5 +1,5 @@
 from game.coordinate import Coordinate
-from game.move import Move, PawnPromotion, factory
+from game.move import Move, factory
 from game.move.board import Board
 from game.piece.piece_type import PieceType
 
@@ -9,11 +9,11 @@ def move_from_uci(board: Board, uci: str) -> Move:
     Converts a UCI string to a Move object.
     Creates moves based on the current state of the board.
     """
-    if len(uci) == 5:
-        return PawnPromotion.from_uci(uci)
-
     start_field = Coordinate.from_uci(uci[:2])
     target_field = Coordinate.from_uci(uci[2:4])
+    if len(uci) == 5:
+        return factory.pawn_promotion(start_field, target_field, PieceType.from_fen(uci[4]))
+
     moving_piece = board[start_field]
 
     if moving_piece.type is PieceType.KING and is_castle(start_field, target_field):

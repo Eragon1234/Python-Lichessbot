@@ -32,5 +32,16 @@ class PieceType(Flag):
         t = piece_map[f]
         return t
 
+    def fen(self) -> str:
+        piece_map = {
+            PieceType.PAWN: 'p',
+            PieceType.ROOK: 'r',
+            PieceType.KNIGHT: 'n',
+            PieceType.BISHOP: 'b',
+            PieceType.QUEEN: 'q',
+            PieceType.KING: 'k',
+        }
+        return piece_map[self]
+
     def get_type(self) -> 'PieceType':
         return self & ~PieceType.COLORS

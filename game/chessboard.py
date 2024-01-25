@@ -2,8 +2,7 @@ from collections.abc import Iterator
 
 from game.board import Board, coordinates
 from game.coordinate import Coordinate
-from game.move import CastleMove
-from game.move.move import Move
+from game.move import castle_move, Move
 from game.move.uci import move_from_uci
 from game.piece.color import Color
 from game.piece.move_groups import BACKWARD
@@ -79,11 +78,11 @@ class ChessBoard:
             A generator object that yields all possible moves.
         """
         color = self._board.turn
-        
+
         moves = self.pseudo_legal_moves(color)
 
         for move in moves:
-            if isinstance(move, CastleMove):
+            if move.func is castle_move:
                 if self.king_in_check(color):
                     continue
                 if self.is_attacked(self.castles_trough(move), color.enemy()):

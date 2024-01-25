@@ -1,41 +1,40 @@
+from functools import partial
+
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
 from game.move.board import Board
-from game.move.move import PureMove
-from game.move.normal import NormalMove
+from game.move.move import move
+from game.move.normal import normal_move
 from game.piece.piece_type import PieceType
 
 
-class KingMove(NormalMove):
-    def move(self, board: Board) -> None:
-        super().move(board)
+def king_move(start_field: Coordinate, target_field: Coordinate, board: Board):
+    normal_move(start_field, target_field, board)
 
-        self.update_castling_rights(board)
-
-    def update_castling_rights(self, board: Board) -> None:
-        if board.is_type(self.target_field.value, PieceType.WHITE):
-            remove_rights = CastlingRights.WHITE
-        else:
-            remove_rights = CastlingRights.BLACK
-
-        board.castling_rights &= ~remove_rights
+    update_castling_rights(target_field, board)
 
 
-class CastleMove(KingMove):
-    def __init__(self, start_field: Coordinate, target_field: Coordinate):
-        super().__init__(start_field, target_field)
+def update_castling_rights(target_field: Coordinate, board: Board) -> None:
+    if board.is_type(target_field.value, PieceType.WHITE):
+        remove_rights = CastlingRights.WHITE
+    else:
+        remove_rights = CastlingRights.BLACK
 
-    def move(self, board: Board) -> None:
-        super().move(board)
+    board.castling_rights &= ~remove_rights
 
-        self.get_rook_move().move(board)
 
-    def get_rook_move(self) -> PureMove:
-        if self.target_field.x == 1:
-            rook_start = Coordinate(0, self.target_field.y)
-            rook_target = Coordinate(2, self.target_field.y)
-        else:
-            rook_start = Coordinate(7, self.target_field.y)
-            rook_target = Coordinate(4, self.target_field.y)
+def castle_move(start_field: Coordinate, target_field: Coordinate, board: Board):
+    king_move(start_field, target_field, board)
 
-        return PureMove(rook_start, rook_target)
+    get_rook_move(target_field)(board)
+
+
+def get_rook_move(target_field: Coordinate):
+    if target_field.x == 1:
+        rook_start = Coordinate(0, target_field.y)
+        rook_target = Coordinate(2, target_field.y)
+    else:
+        rook_start = Coordinate(7, target_field.y)
+        rook_target = Coordinate(4, target_field.y)
+
+    return partial(move, rook_start, rook_target)

@@ -1,36 +1,27 @@
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
-from game.move import NormalMove
 from game.move.board import Board
+from game.move.normal import normal_move
 from game.piece.piece_type import PieceType
 
 
-class RookMove(NormalMove):
-    def uci(self) -> str:
-        return super().uci()
+def rook_move(start_field: Coordinate, target_field: Coordinate, board: Board):
+    update_castling_rights(start_field, board)
 
-    @classmethod
-    def from_uci(cls, uci: str) -> "RookMove":
-        start_field = Coordinate.from_uci(uci[:2])
-        target_field = Coordinate.from_uci(uci[2:4])
-        return cls(start_field, target_field)
+    normal_move(start_field, target_field, board)
 
-    def move(self, board: Board):
-        self.update_castling_rights(board)
 
-        super().move(board)
+def update_castling_rights(start_field: Coordinate, board: Board):
+    if start_field.x == 0:
+        remove_rights = CastlingRights.KING
+    elif start_field.x == 7:
+        remove_rights = CastlingRights.QUEEN
+    else:
+        return
 
-    def update_castling_rights(self, board: Board):
-        if self.start_field.x == 0:
-            remove_rights = CastlingRights.KING
-        elif self.start_field.x == 7:
-            remove_rights = CastlingRights.QUEEN
-        else:
-            return
+    if board.is_type(start_field.value, PieceType.WHITE):
+        remove_rights = remove_rights & CastlingRights.WHITE
+    else:
+        remove_rights = remove_rights & CastlingRights.BLACK
 
-        if board.is_type(self.start_field.value, PieceType.WHITE):
-            remove_rights = remove_rights & CastlingRights.WHITE
-        else:
-            remove_rights = remove_rights & CastlingRights.BLACK
-
-        board.castling_rights &= ~remove_rights
+    board.castling_rights &= ~remove_rights
