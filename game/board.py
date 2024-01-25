@@ -4,25 +4,21 @@ from typing import Optional
 
 from game.castling_rights import CastlingRights
 from game.coordinate import Coordinate
-from game.move import factory
 from game.piece.color import Color
-from game.piece.piece import Piece
 from game.piece.piece_type import PieceType
-
-EMPTY_FIELD = Piece(factory, PieceType.EMPTY, Color.EMPTY)
 
 coordinates = [Coordinate.from_index(i) for i in range(64)]
 
 
 class Board:
-    def __init__(self, board: list[Piece], turn: Color,
+    def __init__(self, board: list[PieceType], turn: Color,
                  castling_rights: CastlingRights,
                  en_passant: Optional[Coordinate],
                  halfmove_clock: int, fullmove_number: int):
         self._boards: dict[PieceType, int] = {t: 0 for t in PieceType}
 
         for i, piece in enumerate(board):
-            self._set_piece(i, piece)
+            self._set_type(i, piece)
 
         self.turn = turn
         self.castling_rights = castling_rights
@@ -39,13 +35,8 @@ class Board:
     def is_type(self, i: int, t: PieceType):
         return self._boards[t] & (1 << i)
 
-    def __getitem__(self, item: Coordinate) -> Piece:
-        return self._get_piece(item.value)
-
-    def _get_piece(self, i: int) -> Piece:
-        piece_type = self._get_type(i)
-
-        return Piece(factory, piece_type.get_type(), piece_type.to_color())
+    def __getitem__(self, item: Coordinate) -> PieceType:
+        return self._get_type(item.value)
 
     def _get_type(self, i: int) -> PieceType:
         piece_type = PieceType(0)
@@ -55,27 +46,23 @@ class Board:
             piece_type |= t
         return piece_type
 
-    def __setitem__(self, key: Coordinate, value: Piece):
-        self._set_piece(key.value, value)
+    def __setitem__(self, key: Coordinate, value: PieceType):
+        self._set_type(key.value, value)
 
-    def _set_piece(self, i: int, piece: Piece):
+    def _set_type(self, i: int, piece_type: PieceType):
         self._clear_bits(i)
-        if piece.color == Color.WHITE:
-            self._boards[PieceType.WHITE] |= 1 << i
-        elif piece.color == Color.BLACK:
-            self._boards[PieceType.BLACK] |= 1 << i
-
-        self._boards[piece.type] |= 1 << i
+        for t in piece_type:
+            self._boards[t] |= 1 << i
 
     def _clear_bits(self, i: int) -> None:
         mask = ~(1 << i)
         for t in self._boards:
             self._boards[t] &= mask
 
-    def __iter__(self) -> Iterator[Piece]:
-        return (self._get_piece(i) for i in range(64))
+    def __iter__(self) -> Iterator[PieceType]:
+        return (self._get_type(i) for i in range(64))
 
-    def iter_rows(self) -> Iterator[list[Piece]]:
+    def iter_rows(self) -> Iterator[list[PieceType]]:
         """
         Iterate over the rows of the board.
         The rows are a8-h8, a7-h7, ..., a1-h1
@@ -93,10 +80,10 @@ class Board:
             for char in row:
                 if char.isdigit():
                     n = int(char)
-                    board.extend(EMPTY_FIELD for _ in range(n))
+                    board.extend(PieceType.EMPTY for _ in range(n))
                     continue
 
-                board.append(Piece.from_fen(char, factory))
+                board.append(PieceType.from_fen(char))
 
         board.reverse()
 
@@ -176,12 +163,12 @@ class Board:
                 return Color.WHITE if color is PieceType.WHITE else Color.BLACK
         return Color.EMPTY
 
-    def pop(self, position: Coordinate) -> Piece:
+    def pop(self, position: Coordinate) -> PieceType:
         piece = self[position]
-        self[position] = EMPTY_FIELD
+        self[position] = PieceType.EMPTY
         return piece
 
-    def do_move(self, start: Coordinate, target: Coordinate) -> Piece:
+    def do_move(self, start: Coordinate, target: Coordinate) -> PieceType:
         """
         Removes the piece at the start field and moves it to the end field.
         If there is a piece at the end field, it is removed and returned.

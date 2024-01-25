@@ -19,7 +19,7 @@ class PieceType(Flag):
 
     @staticmethod
     def from_fen(f: str) -> 'PieceType':
-        # color = PieceType.WHITE if f.isupper() else PieceType.BLACK
+        color = PieceType.WHITE if f.isupper() else PieceType.BLACK
         f = f.lower()
 
         piece_map = {
@@ -32,6 +32,7 @@ class PieceType(Flag):
         }
 
         t = piece_map[f]
+        t |= color
         return t
 
     def fen(self) -> str:
@@ -43,12 +44,16 @@ class PieceType(Flag):
             PieceType.QUEEN: 'q',
             PieceType.KING: 'k',
         }
-        return piece_map[self]
+        if PieceType.WHITE in self:
+            return piece_map[self.type].upper()
+        return piece_map[self.type]
 
-    def get_type(self) -> 'PieceType':
+    @property
+    def type(self) -> 'PieceType':
         return self & ~PieceType.COLORS
 
-    def to_color(self) -> Color:
+    @property
+    def color(self) -> Color:
         if PieceType.WHITE in self:
             return Color.WHITE
 

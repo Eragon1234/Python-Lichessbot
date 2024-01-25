@@ -2,8 +2,9 @@ from collections.abc import Iterator
 
 from game.board import Board, coordinates
 from game.coordinate import Coordinate
-from game.move import castle_move, Move
+from game.move import castle_move, Move, factory
 from game.move.uci import move_from_uci
+from game.piece import Piece
 from game.piece.color import Color
 from game.piece.move_groups import BACKWARD
 from game.piece.piece_type import PieceType
@@ -164,7 +165,8 @@ class ChessBoard:
             if not self._board.is_type(coordinate.value, PieceType.WHITE if color is Color.WHITE else PieceType.BLACK):
                 continue
 
-            piece = self._board[coordinate]
+            piece_type = self._board[coordinate]
+            piece = Piece(factory, piece_type.type, piece_type.color)
             moves = piece.moves(self._board, coordinate,
                                 self._board.en_passant,
                                 self._board.castling_rights)
