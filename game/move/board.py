@@ -28,9 +28,6 @@ class Board(Protocol):
     def pop(self, field: Coordinate) -> Piece:
         ...
 
-    def clone(self) -> 'Board':
-        ...
-
     en_passant: Optional[Coordinate]
 
     castling_rights: CastlingRights
