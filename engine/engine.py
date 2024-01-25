@@ -1,6 +1,5 @@
 import logging
 import time
-from functools import cache
 from itertools import count
 from typing import Optional
 
@@ -56,7 +55,6 @@ class Engine:
 
         return self.negamax(depth, -9999, 9999, color)
 
-    @cache
     def negamax(self, depth: int, alpha: float, beta: float,
                 color: Color) -> MoveEvaluation:
         if depth == 0:
