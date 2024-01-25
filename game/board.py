@@ -83,13 +83,6 @@ class Board:
         for i in reversed(range(8)):
             yield list(self[Coordinate(j, i)] for j in reversed(range(8)))
 
-    def iter_pieces(self) -> Iterator[tuple[Coordinate, Piece]]:
-        """
-        Iterate over the pieces of the board.
-        """
-        for i in range(64):
-            yield coordinates[i], self._get_piece(i)
-
     @classmethod
     def from_fen(cls, fen: str) -> 'Board':
         board = []
