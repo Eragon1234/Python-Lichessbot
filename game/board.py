@@ -44,9 +44,8 @@ class Board:
 
     def _get_piece(self, i: int) -> Piece:
         piece_type = self._get_type(i)
-        color = Color.WHITE if PieceType.WHITE in piece_type else Color.BLACK if PieceType.BLACK in piece_type else Color.EMPTY
 
-        return Piece(factory, piece_type.get_type(), color)
+        return Piece(factory, piece_type.get_type(), piece_type.to_color())
 
     def _get_type(self, i: int) -> PieceType:
         piece_type = PieceType(0)

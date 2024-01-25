@@ -1,5 +1,7 @@
 from enum import Flag, auto
 
+from game.piece.color import Color
+
 
 class PieceType(Flag):
     PAWN = auto()
@@ -45,3 +47,12 @@ class PieceType(Flag):
 
     def get_type(self) -> 'PieceType':
         return self & ~PieceType.COLORS
+
+    def to_color(self) -> Color:
+        if PieceType.WHITE in self:
+            return Color.WHITE
+
+        if PieceType.BLACK in self:
+            return Color.BLACK
+
+        return Color.EMPTY
