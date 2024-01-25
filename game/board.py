@@ -9,6 +9,8 @@ from game.piece.piece_type import PieceType
 
 coordinates = [Coordinate.from_index(i) for i in range(64)]
 
+masks = [1 << i for i in range(64)]
+
 
 class Board:
     def __init__(self, board: list[PieceType], turn: Color,
@@ -33,7 +35,7 @@ class Board:
         return copy.deepcopy(self)
 
     def is_type(self, i: int, t: PieceType):
-        return self._boards[t] & (1 << i)
+        return self._boards[t] & (masks[i])
 
     def __getitem__(self, item: Coordinate) -> PieceType:
         return self._get_type(item.value)
@@ -41,7 +43,7 @@ class Board:
     def _get_type(self, i: int) -> PieceType:
         piece_type = PieceType(0)
         for t, b in self._boards.items():
-            if not b & (1 << i):
+            if not b & (masks[i]):
                 continue
             piece_type |= t
         return piece_type
@@ -52,10 +54,10 @@ class Board:
     def _set_type(self, i: int, piece_type: PieceType):
         self._clear_bits(i)
         for t in piece_type:
-            self._boards[t] |= 1 << i
+            self._boards[t] |= masks[i]
 
     def _clear_bits(self, i: int) -> None:
-        mask = ~(1 << i)
+        mask = ~(masks[i])
         for t in self._boards:
             self._boards[t] &= mask
 
