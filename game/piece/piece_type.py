@@ -69,7 +69,7 @@ def _fen_from_piece_type(piece_type: PieceType) -> str:
     if PieceType.WHITE in piece_type:
         return _piece_to_fen_map[piece_type].upper()
 
-    return _piece_to_fen_map[piece_type]
+    return _piece_to_fen_map[piece_type.type]
 
 
 _VALUES = {
