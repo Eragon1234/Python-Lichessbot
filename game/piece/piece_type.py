@@ -68,7 +68,7 @@ _piece_to_fen_map = {v: k for k, v in _fen_to_piece_map.items()}
 
 def _fen_from_piece_type(piece_type: PieceType) -> str:
     if PieceType.WHITE in piece_type:
-        return _piece_to_fen_map[piece_type].upper()
+        return _piece_to_fen_map[piece_type.type].upper()
 
     return _piece_to_fen_map[piece_type.type]
 
