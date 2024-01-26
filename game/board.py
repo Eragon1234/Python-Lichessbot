@@ -166,8 +166,8 @@ class Board:
         return value
 
     def color_at(self, position: Coordinate) -> Color:
-        if position[0] < 0 or position[0] > 7 or \
-                position[1] < 0 or position[1] > 7:
+        if position.x < 0 or position.x > 7 or \
+                position.y < 0 or position.y > 7:
             return Color.NONE
         for color in PieceType.COLORS:
             if self.is_type(position.value, color):

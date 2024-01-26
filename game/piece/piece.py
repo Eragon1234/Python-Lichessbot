@@ -93,13 +93,13 @@ class Piece[Move]:
                 castling.append((Coordinate(7, 7), 1))
 
         for rook, steps in castling:
-            for x in range(king[0] + steps, rook[0], steps):
+            for x in range(king.x + steps, rook.x, steps):
                 if not board.is_type(Coordinate(x, king.y).value, PieceType.EMPTY):
                     break
             else:
-                target = king[0] + 2 * steps
+                target = king.x + 2 * steps
                 yield self.move_factory.castle_move(king,
-                                                    Coordinate(target, king[1]))
+                                                    Coordinate(target, king.y))
 
     def _moves_with_move_groups(self, board: Board,
                                 pos: Coordinate) -> Iterator[Move]:
@@ -198,4 +198,4 @@ class Piece[Move]:
         if color is None:
             color = self.color
         start_rank = 1 if color is Color.WHITE else 6
-        return pos[1] == start_rank
+        return pos.y == start_rank
