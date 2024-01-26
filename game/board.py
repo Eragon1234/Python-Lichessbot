@@ -154,7 +154,16 @@ class Board:
                 f"{self.halfmove_clock} {self.fullmove_number}")
 
     def material_difference(self) -> int:
-        return sum(piece.value for piece in self)
+        value = 0
+        for color in PieceType.COLORS:
+            for piece_type in ~PieceType.COLORS:
+                bitmask = self._boards[color] & self._boards[piece_type]
+                count = bitmask.bit_count()
+                if color is PieceType.WHITE:
+                    value += piece_type.value * count
+                else:
+                    value -= piece_type.value * count
+        return value
 
     def color_at(self, position: Coordinate) -> Color:
         if position[0] < 0 or position[0] > 7 or \

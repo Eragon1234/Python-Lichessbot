@@ -9,7 +9,6 @@ from game.piece.color import Color
 from game.piece.move_factory import MoveFactory
 from game.piece.move_groups import MOVE_GROUPS, FORWARD, LEFT, RIGHT
 from game.piece.piece_type import PieceType
-from game.piece.values import VALUES
 
 PROMOTE_TYPES = [PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP,
                  PieceType.KNIGHT]
@@ -28,10 +27,6 @@ class Piece[Move]:
         self.type = piece_type
 
         self.color = color
-
-        self.value = VALUES[self.type]
-        if self.color is Color.BLACK:
-            self.value = -self.value
 
         self.legal_target_colors = self.color.enemy() | Color.EMPTY
 

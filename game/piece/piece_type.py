@@ -38,6 +38,10 @@ class PieceType(Flag):
 
         return Color.EMPTY
 
+    @property
+    def value(self) -> int:
+        return _value_from_piece_type(self.type)
+
 
 _fen_to_piece_map = {
     'p': PieceType.PAWN,
@@ -66,3 +70,18 @@ def _fen_from_piece_type(piece_type: PieceType) -> str:
         return _piece_to_fen_map[piece_type].upper()
 
     return _piece_to_fen_map[piece_type]
+
+
+_VALUES = {
+    PieceType.PAWN: 1,
+    PieceType.KNIGHT: 3,
+    PieceType.BISHOP: 3,
+    PieceType.ROOK: 5,
+    PieceType.QUEEN: 9,
+    PieceType.KING: 9999,
+    PieceType.EMPTY: 0
+}
+
+
+def _value_from_piece_type(piece_type: PieceType) -> int:
+    return _VALUES[piece_type]
