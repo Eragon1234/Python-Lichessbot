@@ -20,7 +20,7 @@ class Board:
         self._boards: dict[PieceType, int] = {t: 0 for t in PieceType}
 
         for i, piece in enumerate(board):
-            self._set_type(i, piece)
+            self[i] = piece
 
         self.turn = turn
         self.castling_rights = castling_rights
@@ -37,24 +37,22 @@ class Board:
     def is_type(self, i: int, t: PieceType):
         return self._boards[t] & (masks[i])
 
-    def __getitem__(self, item: Coordinate) -> PieceType:
-        return self._get_type(item.value)
-
-    def _get_type(self, i: int) -> PieceType:
+    def __getitem__(self, item: Coordinate | int) -> PieceType:
+        if isinstance(item, Coordinate):
+            item = item.value
         piece_type = PieceType(0)
         for t, b in self._boards.items():
-            if not b & (masks[i]):
+            if not b & (masks[item]):
                 continue
             piece_type |= t
         return piece_type
 
-    def __setitem__(self, key: Coordinate, value: PieceType):
-        self._set_type(key.value, value)
-
-    def _set_type(self, i: int, piece_type: PieceType):
-        self._clear_bits(i)
-        for t in piece_type:
-            self._boards[t] |= masks[i]
+    def __setitem__(self, key: Coordinate | int, value: PieceType):
+        if isinstance(key, Coordinate):
+            key = key.value
+        self._clear_bits(key)
+        for t in value:
+            self._boards[t] |= masks[key]
 
     def _clear_bits(self, i: int) -> None:
         mask = ~(masks[i])
@@ -62,7 +60,7 @@ class Board:
             self._boards[t] &= mask
 
     def __iter__(self) -> Iterator[PieceType]:
-        return (self._get_type(i) for i in range(64))
+        return (self[i] for i in range(64))
 
     def iter_rows(self) -> Iterator[list[PieceType]]:
         """
