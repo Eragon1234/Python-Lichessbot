@@ -41,41 +41,6 @@ class Piece[Move]:
 
         self.move_factory = move_factory
 
-    @classmethod
-    def from_fen(cls, fen: str, move_factory: MoveFactory) -> 'Piece':
-        """
-        Creates a piece from a FEN string.
-
-        Args:
-            fen: The FEN string.
-            move_factory: The move factory.
-
-        Returns:
-            A piece object.
-        """
-        color = Color.WHITE if not fen.islower() else Color.BLACK
-        fen = fen.lower()
-
-        return cls(move_factory, PieceType.from_fen(fen), color)
-
-    def fen(self) -> str:
-        """
-        Returns:
-            The FEN string for the piece.
-        """
-        piece_map = {
-            PieceType.PAWN: 'p',
-            PieceType.ROOK: 'r',
-            PieceType.KNIGHT: 'n',
-            PieceType.BISHOP: 'b',
-            PieceType.QUEEN: 'q',
-            PieceType.KING: 'k'
-        }
-        short = piece_map[self.type]
-        if self.color is Color.WHITE:
-            short = short.upper()
-        return short
-
     def moves(self, board: Board, pos: Coordinate,
               en_passant: Optional[Coordinate] = None,
               castling_rights: CastlingRights = CastlingRights.NONE) -> Iterator[Move]:
