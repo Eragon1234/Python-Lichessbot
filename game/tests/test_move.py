@@ -37,6 +37,12 @@ class TestMove(unittest.TestCase):
                 "8/5pk1/4p1rp/1r6/8/5R2/2RK4/5q2 w - - 0 50"
             ),
             (
+                "test promotion to knight",
+                "r4n1k/pp2P3/8/8/P5bp/4P3/5K2/8 w - - 0 55",
+                "e7f8n",
+                "r4N1k/pp6/8/8/P5bp/4P3/5K2/8 b - - 0 55"
+            ),
+            (
                 "test castling",
                 "r1bqk2r/p1p2ppp/1pnp1n2/2b1p3/4P2P/2N5/PPPP1PP1/R1BQKB1R b kq - 3 9",
                 "e8g8",
