@@ -1,4 +1,5 @@
 from enum import Flag, auto
+from functools import cached_property
 
 from game.piece.color import Color
 
@@ -24,11 +25,11 @@ class PieceType(Flag):
     def fen(self) -> str:
         return _fen_from_piece_type(self)
 
-    @property
+    @cached_property
     def type(self) -> 'PieceType':
         return self & ~PieceType.COLORS
 
-    @property
+    @cached_property
     def color(self) -> Color:
         if PieceType.WHITE in self:
             return Color.WHITE
@@ -38,7 +39,7 @@ class PieceType(Flag):
 
         return Color.EMPTY
 
-    @property
+    @cached_property
     def value(self) -> int:
         return _value_from_piece_type(self.type)
 
