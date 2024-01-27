@@ -34,7 +34,9 @@ class Board:
     def clone(self) -> 'Board':
         return copy.deepcopy(self)
 
-    def is_type(self, i: int, t: PieceType):
+    def is_type(self, i: int | Coordinate, t: PieceType):
+        if isinstance(i, Coordinate):
+            i = i.value
         return self._boards[t] & (masks[i])
 
     def __getitem__(self, item: Coordinate | int) -> PieceType:
@@ -168,7 +170,7 @@ class Board:
                 position.y < 0 or position.y > 7:
             return Color.NONE
         for color in PieceType.COLORS:
-            if self.is_type(position.value, color):
+            if self.is_type(position, color):
                 return Color.WHITE if color is PieceType.WHITE else Color.BLACK
         return Color.EMPTY
 

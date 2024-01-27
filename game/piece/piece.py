@@ -75,7 +75,7 @@ def _castling_moves(piece_type: PieceType, factory: MoveFactory, board: Board, p
 
     for rook, steps in castling:
         for x in range(king.x + steps, rook.x, steps):
-            if not board.is_type(Coordinate(x, king.y).value, PieceType.EMPTY):
+            if not board.is_type(Coordinate(x, king.y), PieceType.EMPTY):
                 break
         else:
             target = king.x + 2 * steps
@@ -143,12 +143,12 @@ def _positions_for_pawn(piece_type: PieceType, board: Board, pos: Coordinate,
         forward = -forward
 
     possible_target = pos + forward
-    if board.is_type(possible_target.value, PieceType.EMPTY):
+    if board.is_type(possible_target, PieceType.EMPTY):
         yield possible_target
 
         if is_start_rank(pos, piece_type.color):
             possible_target = pos + 2 * forward
-            if board.is_type(possible_target.value, PieceType.EMPTY):
+            if board.is_type(possible_target, PieceType.EMPTY):
                 yield possible_target
 
     possible_target = pos + LEFT + forward

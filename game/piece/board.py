@@ -9,5 +9,5 @@ class Board(Protocol):
     def color_at(self, position: Coordinate) -> Color:
         pass
 
-    def is_type(self, i: int, t: PieceType):
+    def is_type(self, i: int | Coordinate, t: PieceType):
         pass

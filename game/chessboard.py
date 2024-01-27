@@ -162,7 +162,7 @@ class ChessBoard:
             returns all possible moves for the passed color
         """
         for coordinate in coordinates:
-            if not self._board.is_type(coordinate.value, PieceType.WHITE if color is Color.WHITE else PieceType.BLACK):
+            if not self._board.is_type(coordinate, PieceType.WHITE if color is Color.WHITE else PieceType.BLACK):
                 continue
 
             piece_type = self._board[coordinate]
