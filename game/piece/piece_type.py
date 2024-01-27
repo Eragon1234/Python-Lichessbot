@@ -43,6 +43,14 @@ class PieceType(Flag):
     def value(self) -> int:
         return _value_from_piece_type(self.type)
 
+    @cached_property
+    def enemy(self) -> 'PieceType':
+        if PieceType.WHITE in self:
+            return PieceType.BLACK
+        if PieceType.BLACK in self:
+            return PieceType.WHITE
+        return PieceType.EMPTY
+
 
 _fen_to_piece_map = {
     'p': PieceType.PAWN,
