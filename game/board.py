@@ -165,15 +165,6 @@ class Board:
                     value -= piece_type.value * count
         return value
 
-    def color_at(self, position: Coordinate) -> Color:
-        if position.x < 0 or position.x > 7 or \
-                position.y < 0 or position.y > 7:
-            return Color.NONE
-        for color in PieceType.COLORS:
-            if self.is_type(position, color):
-                return Color.WHITE if color is PieceType.WHITE else Color.BLACK
-        return Color.EMPTY
-
     def pop(self, position: Coordinate) -> PieceType:
         piece = self[position]
         self[position] = PieceType.EMPTY
