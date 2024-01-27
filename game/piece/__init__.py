@@ -1,3 +1,5 @@
-from .piece import Piece
+from .piece import moves
 
-__all__ = ['Piece']
+__all__ = [
+    "moves"
+]
