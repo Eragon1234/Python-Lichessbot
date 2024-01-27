@@ -81,6 +81,8 @@ class Engine:
                     break
 
         if best_move is None:
+            if moves:
+                best_move = moves[0]
             max_value = -9999 if self.board.king_in_check(color) else 0
 
         return best_move, max_value
