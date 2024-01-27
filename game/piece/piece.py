@@ -98,14 +98,16 @@ def _moves_with_move_groups(piece_type: PieceType, factory: MoveFactory, board: 
     for move_group in MOVE_GROUPS[piece_type.type]:
         for move in move_group:
             new_pos = pos + move
-            target_field_color = board.color_at(new_pos)
 
-            if target_field_color not in piece_type.color.enemy() | Color.EMPTY:
+            if new_pos.out_of_bounds():
+                break
+
+            if board.is_type(new_pos, piece_type & PieceType.COLORS):
                 break
 
             yield factory.from_type(piece_type.type, pos, new_pos)
 
-            if target_field_color is not Color.EMPTY:
+            if not board.is_type(new_pos, PieceType.EMPTY):
                 break
 
 
@@ -152,16 +154,14 @@ def _positions_for_pawn(piece_type: PieceType, board: Board, pos: Coordinate,
                 yield possible_target
 
     possible_target = pos + LEFT + forward
-    target_field_color = board.color_at(possible_target)
-    if target_field_color is piece_type.color.enemy():
+    if not possible_target.out_of_bounds() and board.is_type(possible_target, piece_type.enemy):
         yield possible_target
 
     if en_passant == possible_target:
         yield en_passant
 
     possible_target = pos + RIGHT + forward
-    target_field_color = board.color_at(possible_target)
-    if target_field_color is piece_type.color.enemy():
+    if not possible_target.out_of_bounds() and board.is_type(possible_target, piece_type.enemy):
         yield possible_target
 
     if en_passant == possible_target:
