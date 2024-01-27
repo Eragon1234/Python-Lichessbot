@@ -68,7 +68,7 @@ class Board:
         The rows are a8-h8, a7-h7, ..., a1-h1
         """
         for i in reversed(range(8)):
-            yield list(self[Coordinate(j, i)] for j in reversed(range(8)))
+            yield [self[Coordinate(j, i)] for j in reversed(range(8))]
 
     @classmethod
     def from_fen(cls, fen: str) -> 'Board':
