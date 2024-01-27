@@ -68,3 +68,6 @@ class Coordinate(NamedTuple):
     @property
     def value(self):
         return self.y * 8 + self.x
+
+    def out_of_bounds(self) -> bool:
+        return self.x < 0 or self.x >= 8 or self.y < 0 or self.y >= 8
