@@ -41,7 +41,7 @@ class PieceType(Flag):
 
     @cached_property
     def piece_value(self) -> int:
-        return _value_from_piece_type(self.type)
+        return _value_from_piece_type(self)
 
     @cached_property
     def enemy(self) -> 'PieceType':
@@ -93,4 +93,6 @@ _VALUES = {
 
 
 def _value_from_piece_type(piece_type: PieceType) -> int:
-    return _VALUES[piece_type]
+    if PieceType.BLACK in piece_type:
+        return -_VALUES[piece_type.type]
+    return _VALUES[piece_type.type]

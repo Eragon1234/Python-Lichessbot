@@ -161,10 +161,8 @@ class Board:
             for piece_type in ~PieceType.COLORS:
                 bitmask = self._boards[color] & self._boards[piece_type]
                 count = bitmask.bit_count()
-                if color is PieceType.WHITE:
-                    value += piece_type.piece_value * count
-                else:
-                    value -= piece_type.piece_value * count
+                piece_type = color | piece_type
+                value += piece_type.piece_value * count
         return value
 
     def pop(self, position: Coordinate) -> PieceType:
