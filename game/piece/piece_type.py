@@ -40,7 +40,7 @@ class PieceType(Flag):
         return Color.EMPTY
 
     @cached_property
-    def value(self) -> int:
+    def piece_value(self) -> int:
         return _value_from_piece_type(self.type)
 
     @cached_property
