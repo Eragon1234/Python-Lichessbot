@@ -1,6 +1,7 @@
 from enum import Flag, auto
 from functools import cached_property
 
+from game.coordinate import Coordinate
 from game.piece.color import Color
 
 
@@ -42,6 +43,9 @@ class PieceType(Flag):
     @cached_property
     def piece_value(self) -> int:
         return _value_from_piece_type(self)
+
+    def value_at(self, c: Coordinate | int) -> int:
+        return _value_at(self, c)
 
     @cached_property
     def enemy(self) -> 'PieceType':
@@ -93,6 +97,78 @@ _VALUES = {
 
 
 def _value_from_piece_type(piece_type: PieceType) -> int:
+    if piece_type.type not in _VALUES:
+        return 0
     if PieceType.BLACK in piece_type:
         return -_VALUES[piece_type.type]
     return _VALUES[piece_type.type]
+
+
+_BONUS_MAPS = {
+    PieceType.PAWN: [
+        5, 5, 5, 5, 5, 5, 5, 5,
+        1, 1.2, 1, 1, 1, 1, 1.2, 1,
+        1.2, 1, 1.5, 1.6, 1.6, 1.5, 1, 1.2,
+        1.2, 1, 1.5, 2, 2, 1.5, 1, 1.2,
+        1.2, 1, 1.5, 2, 2, 1.5, 1, 1.2,
+        1.2, 1, 1.5, 1.6, 1.6, 1.5, 1, 1.2,
+        1, 1.2, 1, 1, 1, 1, 1.2, 1,
+        5, 5, 5, 5, 5, 5, 5, 5,
+    ],
+    PieceType.KNIGHT: [
+        0.8, 1, 1, 1, 1, 1, 1, 0.8,
+        0.9, 1, 1, 1, 1, 1, 1, 0.9,
+        0.9, 1, 1.1, 1.05, 1.05, 1.1, 1, 0.9,
+        0.9, 1, 1.05, 1.1, 1.1, 1.05, 1, 0.9,
+        0.9, 1, 1.05, 1.1, 1.1, 1.05, 1, 0.9,
+        0.9, 1, 1.1, 1.05, 1.05, 1.1, 1, 0.9,
+        0.9, 1, 1, 1, 1, 1, 1, 0.9,
+        0.8, 1, 1, 1, 1, 1, 1, 0.8
+    ],
+    PieceType.BISHOP: [
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1.1, 1, 1, 1, 1, 1.1, 1,
+        1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1,
+        1, 1.1, 1.15, 1.1, 1.1, 1.15, 1.1, 1,
+        1, 1.1, 1.15, 1.1, 1.1, 1.15, 1.1, 1,
+        1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1,
+        1, 1.1, 1, 1, 1, 1, 1.1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1
+    ],
+    PieceType.ROOK: [
+        1, 1, 1.1, 1.2, 1.2, 1.1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        .9, 1, 1.1, 1.2, 1.2, 1.1, 1, .9
+    ],
+    PieceType.QUEEN: [
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1.05, 1.05, 1.05, 1, 1, 1,
+        1, 1, 1, 1.03, 1.03, 1, 1, 1,
+        1, 1.03, 1.01, 1.01, 1.01, 1.01, 1.03, 1,
+        1, 1.03, 1.01, 1.01, 1.01, 1.01, 1.03, 1,
+        1, 1, 1, 1.03, 1.03, 1, 1, 1,
+        1, 1, 1.05, 1.05, 1.05, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1
+    ],
+    PieceType.KING: [
+        1 for _ in range(64)
+    ],
+    PieceType.EMPTY: [
+        0 for _ in range(64)
+    ]
+}
+
+
+def _value_at(piece_type: PieceType, c: Coordinate | int) -> int:
+    if isinstance(c, Coordinate):
+        c = c.value
+    if piece_type.type not in _VALUES:
+        return 0
+    if PieceType.BLACK in piece_type:
+        return -(_VALUES[piece_type.type] + _BONUS_MAPS[piece_type.type][c])
+    return _VALUES[piece_type.type] + _BONUS_MAPS[piece_type.type][c]
