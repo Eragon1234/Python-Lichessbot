@@ -56,11 +56,11 @@ class Board:
     def __setitem__(self, key: Coordinate | int, value: PieceType):
         if isinstance(key, Coordinate):
             key = key.value
-        self.value -= self[key].piece_value
+        self.value -= self[key].value_at(key)
         self._clear_bits(key)
         for t in value:
             self._boards[t] |= masks[key]
-        self.value += value.piece_value
+        self.value += value.value_at(key)
 
     def _clear_bits(self, i: int) -> None:
         mask = ~(masks[i])
