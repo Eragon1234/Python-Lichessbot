@@ -42,6 +42,8 @@ class Board:
     def __getitem__(self, item: Coordinate | int) -> PieceType:
         if isinstance(item, Coordinate):
             item = item.value
+        if self._boards[PieceType.EMPTY] & masks[item]:
+            return PieceType.EMPTY
         piece_type = PieceType(0)
         for t, b in self._boards.items():
             if not b & (masks[item]):
