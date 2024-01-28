@@ -166,10 +166,7 @@ class ChessBoard:
                 continue
 
             piece_type = self._board[coordinate]
-            moves = piece.moves(piece_type, factory, self._board, coordinate,
-                                self._board.en_passant,
-                                self._board.castling_rights)
-
+            moves = piece.moves(piece_type, factory, self._board, coordinate)
             yield from moves
 
     def material_difference(self) -> int:
