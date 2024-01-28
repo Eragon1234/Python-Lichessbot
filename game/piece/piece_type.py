@@ -165,10 +165,8 @@ _BONUS_MAPS = {
 
 
 def _value_at(piece_type: PieceType, c: Coordinate | int) -> int:
+    if piece_type.type not in _BONUS_MAPS:
+        return piece_type.piece_value
     if isinstance(c, Coordinate):
         c = c.value
-    if piece_type.type not in _VALUES:
-        return 0
-    if PieceType.BLACK in piece_type:
-        return -(_VALUES[piece_type.type] + _BONUS_MAPS[piece_type.type][c])
-    return _VALUES[piece_type.type] + _BONUS_MAPS[piece_type.type][c]
+    return piece_type.piece_value * _BONUS_MAPS[piece_type.type][c]
