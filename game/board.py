@@ -17,6 +17,8 @@ class Board:
                  castling_rights: CastlingRights,
                  en_passant: Optional[Coordinate],
                  halfmove_clock: int, fullmove_number: int):
+        self.value = 0
+
         self._boards: dict[PieceType, int] = {t: 0 for t in PieceType}
 
         for i, piece in enumerate(board):
@@ -54,9 +56,11 @@ class Board:
     def __setitem__(self, key: Coordinate | int, value: PieceType):
         if isinstance(key, Coordinate):
             key = key.value
+        self.value -= self[key].piece_value
         self._clear_bits(key)
         for t in value:
             self._boards[t] |= masks[key]
+        self.value += value.piece_value
 
     def _clear_bits(self, i: int) -> None:
         mask = ~(masks[i])

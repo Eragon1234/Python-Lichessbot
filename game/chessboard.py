@@ -176,7 +176,7 @@ class ChessBoard:
         Returns:
             int: the difference in material
         """
-        return self._board.material_difference()
+        return self._board.value
 
     def value_at(self, coordinate: Coordinate) -> int:
         """
