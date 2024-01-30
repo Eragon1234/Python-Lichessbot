@@ -26,7 +26,7 @@ def en_passant_coordinate(start_field: Coordinate, target_field: Coordinate, boa
     if target_field != board.en_passant:
         return None
 
-    if board.is_type(start_field.value, PieceType.WHITE):
+    if board.is_type(start_field, PieceType.WHITE):
         return Coordinate(board.en_passant.x, board.en_passant.y + 1)
     return Coordinate(board.en_passant.x, board.en_passant.y - 1)
 
@@ -34,11 +34,11 @@ def en_passant_coordinate(start_field: Coordinate, target_field: Coordinate, boa
 def next_to_pawn(target_field: Coordinate, board: Board) -> bool:
     if target_field.x != 0:
         left = Coordinate(target_field.x - 1, target_field.y)
-        if board.is_type(left.value, PieceType.PAWN):
+        if board.is_type(left, PieceType.PAWN):
             return True
     if target_field.x != 7:
         right = Coordinate(target_field.x + 1, target_field.y)
-        if board.is_type(right.value, PieceType.PAWN):
+        if board.is_type(right, PieceType.PAWN):
             return True
     return False
 
@@ -48,7 +48,7 @@ def is_double_move(start_field: Coordinate, target_field: Coordinate) -> bool:
 
 
 def new_en_passant(start_field: Coordinate, target_field: Coordinate, board: Board) -> Coordinate:
-    if board.is_type(target_field.value, PieceType.WHITE):
+    if board.is_type(target_field, PieceType.WHITE):
         return Coordinate(start_field.x, start_field.y + 1)
     return Coordinate(start_field.x, start_field.y - 1)
 

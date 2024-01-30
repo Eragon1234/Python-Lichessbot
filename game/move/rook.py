@@ -19,7 +19,7 @@ def update_castling_rights(start_field: Coordinate, board: Board):
     else:
         return
 
-    if board.is_type(start_field.value, PieceType.WHITE):
+    if board.is_type(start_field, PieceType.WHITE):
         remove_rights = remove_rights & CastlingRights.WHITE
     else:
         remove_rights = remove_rights & CastlingRights.BLACK

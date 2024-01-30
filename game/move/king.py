@@ -15,7 +15,7 @@ def king_move(start_field: Coordinate, target_field: Coordinate, board: Board):
 
 
 def update_castling_rights(target_field: Coordinate, board: Board) -> None:
-    if board.is_type(target_field.value, PieceType.WHITE):
+    if board.is_type(target_field, PieceType.WHITE):
         remove_rights = CastlingRights.WHITE
     else:
         remove_rights = CastlingRights.BLACK
