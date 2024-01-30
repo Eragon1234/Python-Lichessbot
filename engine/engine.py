@@ -89,7 +89,7 @@ class Engine:
 
     def order_moves(self, moves: list[Move]) -> list[Move]:
         def sort_key(move: Move) -> int:
-            return self.board.value_at(move.target_field)
+            return abs(self.board.value_at(move.target_field))
 
         return sorted(moves, key=sort_key, reverse=True)
 
