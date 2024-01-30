@@ -188,7 +188,7 @@ class ChessBoard:
         Returns:
             int: the value of the piece at the passed coordinate
         """
-        return self._board[coordinate].piece_value
+        return self._board[coordinate].value_at(coordinate)
 
     def fen(self) -> str:
         """
