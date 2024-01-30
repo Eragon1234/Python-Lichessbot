@@ -9,5 +9,5 @@ class Board(Protocol):
     en_passant: Optional[Coordinate]
     castling_rights: CastlingRights
 
-    def is_type(self, i: int | Coordinate, t: PieceType):
+    def is_type(self, i: Coordinate, t: PieceType):
         pass

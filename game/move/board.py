@@ -13,7 +13,7 @@ class Board(Protocol):
     def __setitem__(self, key: Coordinate, value: PieceType):
         ...
 
-    def is_type(self, i: int, t: PieceType):
+    def is_type(self, i: Coordinate, t: PieceType):
         ...
 
     def do_move(self, start_field: Coordinate,
