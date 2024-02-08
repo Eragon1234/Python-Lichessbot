@@ -57,4 +57,4 @@ def pawn_promotion(start_field: Coordinate, target_field: Coordinate, promote_to
                    board: Board):
     pawn_move(start_field, target_field, board)
     piece = board[target_field]
-    board[target_field] = promote_to | (piece & PieceType.COLORS)
+    board[target_field] = (promote_to & ~PieceType.COLORS) | (piece & PieceType.COLORS)
