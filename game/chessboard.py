@@ -4,7 +4,7 @@ from game.board import Board, coordinates
 from game.coordinate import Coordinate
 from game.move import castle_move, Move, factory
 from game.move.uci import move_from_uci
-from game.piece import piece
+from game.piece import generate_moves
 from game.piece.color import Color
 from game.piece.move_groups import BACKWARD
 from game.piece.piece_type import PieceType
@@ -166,7 +166,7 @@ class ChessBoard:
                 continue
 
             piece_type = self._board[coordinate]
-            moves = piece.moves(piece_type, factory, self._board, coordinate)
+            moves = generate_moves(piece_type, factory, self._board, coordinate)
             yield from moves
 
     def material_difference(self) -> int:

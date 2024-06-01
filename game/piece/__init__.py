@@ -1,5 +1,5 @@
-from .piece import moves
+from .moves.moves import generate_moves
 
 __all__ = [
-    "moves"
+    "generate_moves"
 ]
