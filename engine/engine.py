@@ -1,5 +1,6 @@
 import logging
 import time
+from collections import defaultdict
 from itertools import count
 from typing import Optional
 
@@ -56,19 +57,19 @@ class Engine:
         return self.negamax(depth, -9999, 9999, color)
 
     def negamax(self, depth: int, alpha: float, beta: float,
-                color: Color) -> MoveEvaluation:
+                color: Color, evaluation_cache=defaultdict(dict)) -> MoveEvaluation:
         if depth == 0:
             return None, self.material_difference(color)
 
         moves = list(self.board.legal_moves())
-        moves = self.order_moves(moves)
+        moves = self.order_moves(moves, evaluation_cache)
 
         best_move = None
         max_value = -9999
 
         for move in moves:
             with self.board.test_move(move):
-                _, value = self.negamax(depth - 1, -beta, -alpha, color.enemy())
+                _, value = self.negamax(depth - 1, -beta, -alpha, color.enemy(), evaluation_cache)
                 value = -value
 
                 if value > max_value:
@@ -79,6 +80,7 @@ class Engine:
 
                 if alpha >= beta:
                     break
+            evaluation_cache[self.board.fen()][move.uci()] = value
 
         if best_move is None:
             if moves:
@@ -87,9 +89,9 @@ class Engine:
 
         return best_move, max_value
 
-    def order_moves(self, moves: list[Move]) -> list[Move]:
-        def sort_key(move: Move) -> int:
-            return abs(self.board.value_at(move.target_field))
+    def order_moves(self, moves: list[Move], evaluation_cache: dict[str, dict[str, float]]) -> list[Move]:
+        def sort_key(move: Move) -> float:
+            return evaluation_cache[self.board.fen()].get(move.uci(), abs(self.board.value_at(move.target_field)))
 
         return sorted(moves, key=sort_key, reverse=True)
 
