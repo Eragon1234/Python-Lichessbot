@@ -159,6 +159,13 @@ class Board:
                 f"{castling_rights} {en_passant} "
                 f"{self.halfmove_clock} {self.fullmove_number}")
 
+    def approximate_board_state(self) -> int:
+        state = 0
+        for board in self._boards:
+            state |= self._boards[board]
+            state = state << 64
+        return state
+
     def material_difference(self) -> int:
         value = 0
         for color in PieceType.COLORS:

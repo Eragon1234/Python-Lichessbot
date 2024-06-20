@@ -198,3 +198,6 @@ class ChessBoard:
             str: the fen of the board
         """
         return self._board.fen()
+
+    def approximate_board_state(self) -> int:
+        return self._board.approximate_board_state()

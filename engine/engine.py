@@ -80,7 +80,7 @@ class Engine:
 
                 if alpha >= beta:
                     break
-            evaluation_cache[self.board.fen()][move.uci()] = value
+            evaluation_cache[self.board.approximate_board_state()][move.uci()] = value
 
         if best_move is None:
             if moves:
@@ -89,9 +89,10 @@ class Engine:
 
         return best_move, max_value
 
-    def order_moves(self, moves: list[Move], evaluation_cache: dict[str, dict[str, float]]) -> list[Move]:
+    def order_moves(self, moves: list[Move], evaluation_cache: dict[int, dict[str, float]]) -> list[Move]:
         def sort_key(move: Move) -> float:
-            return evaluation_cache[self.board.fen()].get(move.uci(), abs(self.board.value_at(move.target_field)))
+            return evaluation_cache[self.board.approximate_board_state()].get(move.uci(), abs(self.board.value_at(
+                move.target_field)))
 
         return sorted(moves, key=sort_key, reverse=True)
 
