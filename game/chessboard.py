@@ -44,6 +44,12 @@ class ChessBoard:
 
         move.move(self._board)
 
+    def is_valid_move(self, move: Move | str) -> bool:
+        if isinstance(move, Move):
+            move = move.uci()
+
+        return move in (m.uci() for m in self.legal_moves())
+
     def is_threefold_repetition(self) -> bool:
         return self._previous_boards.count(self._board) >= 2
 
