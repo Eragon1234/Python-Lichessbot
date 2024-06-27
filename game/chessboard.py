@@ -44,6 +44,9 @@ class ChessBoard:
 
         move.move(self._board)
 
+    def is_threefold_repetition(self) -> bool:
+        return self._previous_boards.count(self._board) >= 2
+
     def unmove(self) -> None:
         """undoes the last move"""
         self.moves.pop()
