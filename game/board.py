@@ -33,6 +33,12 @@ class Board:
     def __hash__(self) -> int:
         return hash(self.fen())
 
+    def __eq__(self, other: "Board") -> bool:
+        return (self._boards == other._boards and
+                self.turn == other.turn and
+                self.castling_rights == other.castling_rights and
+                self.en_passant == other.en_passant)
+
     def clone(self) -> 'Board':
         return copy.deepcopy(self)
 
