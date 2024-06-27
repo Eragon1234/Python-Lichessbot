@@ -58,6 +58,9 @@ class Engine:
 
     def negamax(self, depth: int, alpha: float, beta: float,
                 color: Color, evaluation_cache=defaultdict(dict)) -> MoveEvaluation:
+        if self.board.is_threefold_repetition():
+            return None, 0
+
         if depth == 0:
             return None, self.material_difference(color)
 
