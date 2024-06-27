@@ -41,6 +41,13 @@ def start_game(game: Game):
         game.move(uci_move)
 
     def on_move(move: str):
+        # if move is invalid ignore it
+        # this happens if the engine is started during a running game
+        # it loads the board in the current state but then gets a game state
+        # event and tries to move the last move again which obviously doesn't work
+        if not engine.board.is_valid_move(move):
+            logging.info("ignored %s, because it is invalid", move)
+            return
         logging.info("moved %s", move)
         engine.board.move(move)
         logging.info("new fen: %s\n\n", engine.board.fen())
