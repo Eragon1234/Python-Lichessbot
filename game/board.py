@@ -13,17 +13,12 @@ masks = [1 << i for i in range(64)]
 
 
 class Board:
-    def __init__(self, board: list[PieceType], turn: Color,
+    def __init__(self, value: int, _boards: dict[PieceType, int], turn: Color,
                  castling_rights: CastlingRights,
                  en_passant: Optional[Coordinate],
                  halfmove_clock: int, fullmove_number: int):
-        self.value = 0
-
-        self._boards: dict[PieceType, int] = {t: 0 for t in PieceType}
-
-        for i, piece in enumerate(board):
-            self[i] = piece
-
+        self.value = value
+        self._boards: dict[PieceType, int] = _boards
         self.turn = turn
         self.castling_rights = castling_rights
         self.en_passant = en_passant
@@ -85,6 +80,28 @@ class Board:
             yield [self[Coordinate(j, i)] for j in reversed(range(8))]
 
     @classmethod
+    def from_list(cls, board: list[PieceType], turn: Color,
+                  castling_rights: CastlingRights,
+                  en_passant: Optional[Coordinate],
+                  halfmove_clock: int, fullmove_number: int):
+        new_board = cls(
+            0,
+            {t: 0 for t in PieceType},
+            turn,
+            castling_rights,
+            en_passant,
+            halfmove_clock,
+            fullmove_number
+        )
+
+        for i, piece in enumerate(board):
+            new_board[i] = piece
+
+        new_board.value = new_board.material_difference()
+
+        return new_board
+
+    @classmethod
     def from_fen(cls, fen: str) -> 'Board':
         board = []
         fen_parts = fen.split()
@@ -121,8 +138,8 @@ class Board:
         halfmove_clock = int(fen_parts[4])
         fullmove_number = int(fen_parts[5])
 
-        return cls(board, turn, castling_rights, en_passant,
-                   halfmove_clock, fullmove_number)
+        return cls.from_list(board, turn, castling_rights, en_passant,
+                             halfmove_clock, fullmove_number)
 
     def fen(self) -> str:
         rows = []
