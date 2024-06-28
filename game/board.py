@@ -35,7 +35,8 @@ class Board:
                 self.en_passant == other.en_passant)
 
     def clone(self) -> 'Board':
-        return copy.deepcopy(self)
+        return Board(self.value, copy.copy(self._boards), self.turn, self.castling_rights,
+                     self.en_passant, self.halfmove_clock, self.fullmove_number)
 
     def is_type(self, i: int | Coordinate, t: PieceType):
         if isinstance(i, Coordinate):
