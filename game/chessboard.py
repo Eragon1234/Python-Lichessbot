@@ -128,15 +128,35 @@ class ChessBoard:
         Returns:
             bool: if the king is in check
         """
-        moves = self.pseudo_legal_moves(color.enemy())
+        color = PieceType.WHITE if color is Color.WHITE else PieceType.BLACK
 
-        for move in moves:
-            attacked_field = self._board[move.target_field]
+        king_pos = next(coordinate for coordinate in coordinates if self._board[coordinate] is PieceType.KING | color)
 
-            if attacked_field.color is not color:
-                continue
+        knight_moves = generate_moves(PieceType.KNIGHT | color, factory, self._board, king_pos)
+        for move in knight_moves:
+            if self._board.is_type(move.target_field, PieceType.KNIGHT):
+                return True
 
-            if attacked_field.type is PieceType.KING:
+        bishop_moves = generate_moves(PieceType.BISHOP | color, factory, self._board, king_pos)
+        for move in bishop_moves:
+            if self._board.is_type(move.target_field, PieceType.BISHOP) or self._board.is_type(move.target_field,
+                                                                                               PieceType.QUEEN):
+                return True
+
+        rook_moves = generate_moves(PieceType.ROOK | color, factory, self._board, king_pos)
+        for move in rook_moves:
+            if self._board.is_type(move.target_field, PieceType.ROOK) or self._board.is_type(move.target_field,
+                                                                                             PieceType.QUEEN):
+                return True
+
+        pawn_moves = generate_moves(PieceType.PAWN | color, factory, self._board, king_pos)
+        for move in pawn_moves:
+            if self._board.is_type(move.target_field, PieceType.PAWN):
+                return True
+
+        king_moves = generate_moves(PieceType.KING | color, factory, self._board, king_pos)
+        for move in king_moves:
+            if self._board.is_type(move.target_field, PieceType.KING):
                 return True
 
         return False
